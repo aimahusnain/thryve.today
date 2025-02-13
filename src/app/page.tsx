@@ -31,6 +31,7 @@ export default function Home() {
               <Card className="p-2 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="aspect-video relative bg-zinc-100 rounded-lg overflow-hidden">
                   <Image
+                    draggable={false}
                     src="/nursing-herosection-image-2.webp"
                     alt="Medical training session with healthcare professionals"
                     fill
@@ -61,6 +62,7 @@ export default function Home() {
               <Image
                 src="/nursing-herosection-image-transparent.png"
                 alt="Nursing Herosection Image"
+                draggable={false}
                 fill
                 className="object-contain lg:object-cover rounded-2xl rounded-br-[5.25rem]"
                 priority
@@ -116,12 +118,15 @@ export default function Home() {
                 Training Center
               </motion.h2>
               <motion.h1
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-bold mb-4 sm:mb-6 font-space-grotesk leading-tight text-black"
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-semibold mb-4 sm:mb-6 text-black"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.3 }}
               >
-                Transform Your Life with Quality Medical Training
+                Transform Your Life with Quality <br />{" "}
+                <span className="text-lime-500 font-bold">
+                  - Medical Training
+                </span>
               </motion.h1>
               <motion.p
                 className="text-zinc-600 text-base sm:text-lg mb-6"
@@ -138,7 +143,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.3 }}
               >
-                <Button className="group px-6 py-3 sm:px-5 sm:py-5 text-base sm:text-lg w-full sm:w-auto transition-all duration-300">
+                <Button className="group px-6 py-3 sm:px-5 sm:py-5 w-full sm:w-auto transition-all duration-75">
                   Get Started Today{" "}
                   <ArrowUpRight className="ml-2 group-hover:rotate-45 transition-all duration-300" />
                 </Button>
