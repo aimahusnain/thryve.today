@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import ContactSection from "@/components/contact/contact_section";
 import WhyChooseUsSection from "@/components/why-choose-us";
 import TeamofEducators from "@/components/team-of-educators";
+import CoursesSection from "@/components/couses-section";
 
 export default function Home() {
   return (
@@ -212,6 +213,7 @@ export default function Home() {
         </div>
       </div>
       <WhyChooseUsSection />
+      <CoursesSection />
       <TeamofEducators />
       <ContactSection />
     </main>
