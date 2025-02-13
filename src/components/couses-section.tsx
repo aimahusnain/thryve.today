@@ -20,8 +20,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
   whoFor = [],
   className = "",
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
     <div
       className={`
@@ -30,8 +28,6 @@ const CourseCard: React.FC<CourseCardProps> = ({
         border border-zinc-100 hover:border-zinc-200
         ${className}
       `}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-lime-50/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
