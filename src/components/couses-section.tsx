@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Clock, DollarSign, Calendar, CheckCircle, GraduationCap, Users, ArrowRight } from 'lucide-react';
+import { ArrowRight, Calendar, CheckCircle, Clock, DollarSign, GraduationCap, Users } from 'lucide-react';
+import React from 'react';
 
 interface CourseCardProps {
   title: string;
