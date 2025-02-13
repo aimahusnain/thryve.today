@@ -8,6 +8,7 @@ import { ArrowUpRight, Star } from "lucide-react";
 import { SpinningText } from "@/components/ui/spinning-text";
 import { motion } from "framer-motion";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import ContactSection from "@/components/contact/contact_section";
 
 export default function Home() {
   return (
@@ -208,6 +209,7 @@ export default function Home() {
           </motion.div>
         </div>
       </div>
+      <ContactSection />
     </main>
   );
 }
