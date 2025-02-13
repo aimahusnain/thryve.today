@@ -1,130 +1,206 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  MessageCircle,
-  Youtube,
-  Phone,
-  Video,
-  ArrowUpRight,
-} from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { ArrowUpRight, Star } from "lucide-react";
+import { SpinningText } from "@/components/ui/spinning-text";
+import { motion } from "framer-motion";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Home() {
   return (
-    <main className="min-h-screen p-4 md:p-8 lg:p-12 bg-zinc-50">
+    <main className="min-h-screen p-4 sm:p-6 md:p-8 lg:p-12 bg-gradient-to-br from-zinc-50 to-white">
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-8 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 items-center lg:p-0 p-5">
           {/* Left Column - Image and Mentors */}
-          <div className="relative">
+          <motion.div
+            className="relative order-2 lg:order-1"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             {/* Video Call Card */}
-            <div className="absolute top-4 left-4 z-10">
-              <Card className="w-48 p-2">
-                <div className="aspect-video relative bg-zinc-100 rounded-lg">
+            <motion.div
+              className="absolute top-4 left-4 z-10 w-1/3 sm:w-1/4 lg:w-48 max-w-[200px]"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+            >
+              <Card className="p-2 shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div className="aspect-video relative bg-zinc-100 rounded-lg overflow-hidden">
                   <Image
                     src="/nursing-herosection-image-2.webp"
                     alt="Medical training session with healthcare professionals"
                     fill
-                    className="object-cover rounded-lg"
+                    className="object-cover rounded-lg transform hover:scale-105 transition-transform duration-300"
                   />
                 </div>
               </Card>
-            </div>
+            </motion.div>
+
+            {/* Experience Badge */}
+            <motion.div
+              className="hidden lg:flex absolute right-10 top-[65%] w-28 h-28 rounded-full items-center justify-center z-50"
+              initial={{ opacity: 0, scale: 0.8, rotate: -180 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              transition={{ delay: 0.6, duration: 0.5 }}
+            >
+              <SpinningText
+                radius={6}
+                fontSize={1}
+                className="font-medium leading-none text-primary text-white"
+              >
+                {`13+ YEARS EXPERIENCE • `}
+              </SpinningText>
+            </motion.div>
 
             {/* Main Image */}
-            <div className="relative h-[750px]">
+            <div className="relative h-[400px] sm:h-[500px] md:h-[600px] lg:h-[750px]">
               <Image
                 src="/nursing-herosection-image-transparent.png"
                 alt="Nursing Herosection Image"
                 fill
-                className="object-cover rounded-2xl"
+                className="object-contain lg:object-cover rounded-2xl rounded-br-[5.25rem]"
                 priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
               />
             </div>
 
             {/* Mentors Card */}
-            <div className="absolute bottom-4 left-4">
-              <Card className="p-3">
+            <motion.div
+              className="absolute bottom-4 left-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.3 }}
+            >
+              <Card className="p-3 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="flex items-center gap-2">
                   <div className="flex -space-x-2">
                     {[1, 2, 3].map((i) => (
-                      <Avatar key={i} className="border-2 border-white">
+                      <Avatar
+                        key={i}
+                        className="border-2 border-white w-8 h-8 sm:w-10 sm:h-10 transition-transform hover:scale-110 duration-200"
+                      >
                         <AvatarImage
-                          src={`https://i.pravatar.cc/32?img=${i}`}
+                          src={`https://i.pravatar.cc/40?img=${i}`}
                         />
                         <AvatarFallback>M{i}</AvatarFallback>
                       </Avatar>
                     ))}
                   </div>
-                  <div className="text-sm">
+                  <div className="text-xs sm:text-sm">
                     <p className="font-semibold">99+</p>
                     <p className="text-zinc-600">Certified Mentor</p>
                   </div>
                 </div>
               </Card>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Right Column - Content */}
-          <div className="space-y-8">
+          <motion.div
+            className="space-y-6 sm:space-y-8 order-1 lg:order-2"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             <div>
-              <h2 className="px-3 py-2 bg-white w-fit rounded-xl text-md font-medium text-zinc-600 mb-4">
+              <motion.h2
+                className="px-3 py-2 bg-white w-fit rounded-xl text-sm sm:text-md font-medium text-zinc-600 mb-1 shadow-sm"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.3 }}
+              >
                 Training Center
-              </h2>
-              <h1 className="text-7xl font-bold mb-6 font-space-grotesk">
+              </motion.h2>
+              <motion.h1
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-bold mb-4 sm:mb-6 font-space-grotesk leading-tight text-black"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.3 }}
+              >
                 Transform Your Life with Quality Medical Training
-              </h1>
-              <p className="text-zinc-600 text-lg mb-3">
+              </motion.h1>
+              <motion.p
+                className="text-zinc-600 text-base sm:text-lg mb-6"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.3 }}
+              >
                 Empower yourself with medical skills guided by experienced
                 educators who care about your growth.
-              </p>
+              </motion.p>
 
-              <Button className="bg-primary group text-white p-6 rounded-2xl text-lg">
-                Get Started Today{" "}
-                <ArrowUpRight className="group-hover:rotate-0 transition-all rotate-45" />
-              </Button>
-            </div>
-
-            {/* Experience Badge */}
-            <div className="absolute right-10 top-1/2 rounded-full border-2 border-primary flex items-center justify-center">
-              <div className="text-center">
-                <div className="font-bold">1.5+</div>
-                <div className="text-xs">YEARS</div>
-                <div className="text-xs">EXPERIENCE</div>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.3 }}
+              >
+                <Button className="group px-6 py-3 sm:px-5 sm:py-5 text-base sm:text-lg w-full sm:w-auto transition-all duration-300">
+                  Get Started Today{" "}
+                  <ArrowUpRight className="ml-2 group-hover:rotate-45 transition-all duration-300" />
+                </Button>
+              </motion.div>
             </div>
 
             {/* Reviews Section */}
-            <Card className="p-6">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
+              className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 sm:p-6"
+            >
               <div className="flex justify-between items-center mb-4">
-                <h3 className="font-semibold text-lg">Reviews</h3>
-                <Button variant="link" className="text-primary">
+                <h3 className="font-semibold text-base sm:text-lg">Reviews</h3>
+                <Button
+                  variant="link"
+                  className="text-primary text-sm sm:text-base hover:text-primary/80 transition-colors duration-200"
+                >
                   View all
                 </Button>
               </div>
-              {[1, 2].map((i) => (
-                <div key={i} className="flex items-start gap-4 mb-4">
-                  <Avatar>
-                    <AvatarImage
-                      src={`https://i.pravatar.cc/40?img=${i + 3}`}
-                    />
-                    <AvatarFallback>U{i}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <p className="text-sm text-zinc-600">
-                      We are committed to continuous improvement and strive to
-                      provide a learning environment.
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span className="font-semibold">4.8</span>
-                    <span className="text-yellow-400">★</span>
-                  </div>
-                </div>
-              ))}
-            </Card>
-          </div>
+              <ScrollArea className="h-[200px] sm:h-[250px] pr-4">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <motion.div
+                    key={i}
+                    className="flex items-start gap-3 sm:gap-4 mb-4 last:mb-0 bg-white/50 p-3 rounded-lg"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.8 + i * 0.1, duration: 0.3 }}
+                  >
+                    <Avatar className="w-10 h-10 sm:w-12 sm:h-12 border-2 border-primary/20">
+                      <AvatarImage
+                        src={`https://i.pravatar.cc/48?img=${i + 3}`}
+                      />
+                      <AvatarFallback>U{i}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <div className="flex items-center mb-1">
+                        <p className="font-semibold text-sm sm:text-base mr-2">
+                          User {i}
+                        </p>
+                        <div className="flex">
+                          {[...Array(5)].map((_, index) => (
+                            <Star
+                              key={index}
+                              className="w-4 h-4 fill-yellow-400 text-yellow-400"
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="text-sm sm:text-base text-zinc-600">
+                        The quality of education and support from mentors is
+                        exceptional. This program has truly transformed my
+                        career in healthcare.
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+              </ScrollArea>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </main>
