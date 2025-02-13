@@ -9,10 +9,11 @@ import { SpinningText } from "@/components/ui/spinning-text";
 import { motion } from "framer-motion";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ContactSection from "@/components/contact/contact_section";
+import WhyChooseUsSection from "@/components/why-choose-us";
 
 export default function Home() {
   return (
-    <main className="min-h-screen p-4 sm:p-6 md:p-8 lg:p-12 bg-gradient-to-br from-zinc-50 to-white">
+    <main className="overflow-hidden min-h-screen p-4 sm:p-6 md:p-8 lg:p-12 bg-gradient-to-br from-zinc-50 to-white">
       <div className="max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 items-center lg:p-0 p-5">
           {/* Left Column - Image and Mentors */}
@@ -178,7 +179,7 @@ export default function Home() {
                   >
                     <Avatar className="w-10 h-10 sm:w-12 sm:h-12 border-2 border-primary/20">
                       <AvatarImage
-                        src={`https://i.pravatar.cc/48?img=${i + 3}`}
+                        src={`https://i.pravatar.cc/124?img=${i + 1}`}
                       />
                       <AvatarFallback>U{i}</AvatarFallback>
                     </Avatar>
@@ -209,6 +210,7 @@ export default function Home() {
           </motion.div>
         </div>
       </div>
+      <WhyChooseUsSection />
       <ContactSection />
     </main>
   );

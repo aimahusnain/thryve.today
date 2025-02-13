@@ -8,6 +8,7 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-space-grotesk",
 });
+
 export const metadata: Metadata = {
   title: "Thryve - Quality Medical Training",
   description: "Built by nurses, inspired by care, and driven by education.",
