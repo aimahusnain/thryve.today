@@ -72,7 +72,7 @@ const Footer = () => {
         </div>
 
         {/* Platform Support */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6 pt-5 border-t">
+        <div className="mx-auto flex flex-col md:flex-row items-center justify-center sm:justify-between gap-4 md:gap-6 pt-5 border-t">
           <div className="flex flex-col md:flex-row items-center gap-2">
             <span className="text-[14px] text-[#101828] text-center">
               Copyright © {year} Thryve.Today - All Rights Reserved.
@@ -90,7 +90,7 @@ const Footer = () => {
           </div>
 
           {/* Rest of the Platform Support section remains the same */}
-          <div className="flex flex-wrap gap-2 w-full md:w-auto">
+          <div className="flex flex-wrap gap-2 w-full md:w-auto items-center sm:justify-center justify-end">
             {[
               { name: "Home", link: "/home" },
               { name: "Courses", link: "/cources" },
