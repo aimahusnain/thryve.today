@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ContactSection from "@/components/contact/contact_section";
 import WhyChooseUsSection from "@/components/why-choose-us";
+import TeamofEducators from "@/components/team-of-educators";
 
 export default function Home() {
   return (
@@ -211,6 +212,7 @@ export default function Home() {
         </div>
       </div>
       <WhyChooseUsSection />
+      <TeamofEducators />
       <ContactSection />
     </main>
   );
