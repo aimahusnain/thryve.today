@@ -225,7 +225,7 @@ const Navbar = () => {
           {isMenuOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "100vh" }}
+              animate={{ opacity: 1, height: "90vh" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="fixed inset-0 bg-white/95 backdrop-blur-md md:hidden"
@@ -317,7 +317,7 @@ const Navbar = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2 }}
-                      className="space-y-3"
+                      className="space-y-3 grid grid-cols-2"
                     >
                       <Button
                         variant="ghost"
