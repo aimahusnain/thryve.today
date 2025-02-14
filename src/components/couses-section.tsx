@@ -43,7 +43,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
   return (
     <div
       className={`
-        group relative overflow-hidden rounded-3xl p-4 sm:p-6 md:p-8
+        group relative overflow-hidden rounded-3xl p-8 sm:p-6 md:p-8
         bg-white dark:bg-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-800
         transition-all duration-500 ease-in-out
         border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700
