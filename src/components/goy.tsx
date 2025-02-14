@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, MouseEvent } from "react";
+import React, { MouseEvent } from "react";
 
 const Goy = ({
   id,
@@ -11,12 +11,10 @@ const Goy = ({
   children: React.ReactNode;
   className?: string;
 }) => {
-  const [scrollMargin, setScrollMargin] = useState(0);
-  console.log(scrollMargin);
+//   console.log(scrollMargin);
 
   const handleButtonClick = (e: MouseEvent<HTMLButtonElement>, myelement: string) => {
     const newScrollMargin = 60;
-    setScrollMargin(newScrollMargin);
     console.log(e);
 
     const element = document.getElementById(myelement);
