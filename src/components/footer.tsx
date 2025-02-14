@@ -112,6 +112,15 @@ const Footer = () => {
                 </Button>
               </Goy>
             ))}
+              <Link
+                href="/enrollment"
+                key="Enrollment"
+                className="rounded-[100px] flex items-center gap-2 text-[14px] text-[#101828]"
+              >
+                <Button variant="link" className="m-0">
+                  <span className="whitespace-nowrap">Enrollment</span>
+                </Button>
+              </Link>
           </div>
         </div>
       </div>
