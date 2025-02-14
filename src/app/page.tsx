@@ -1,17 +1,17 @@
 "use client";
 
-import Image from "next/image";
+import ContactSection from "@/components/contact/contact_section";
+import CoursesSection from "@/components/couses-section";
+import TeamofEducators from "@/components/team-of-educators";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ArrowUpRight, Star } from "lucide-react";
-import { SpinningText } from "@/components/ui/spinning-text";
-import { motion } from "framer-motion";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import ContactSection from "@/components/contact/contact_section";
+import { SpinningText } from "@/components/ui/spinning-text";
 import WhyChooseUsSection from "@/components/why-choose-us";
-import TeamofEducators from "@/components/team-of-educators";
-import CoursesSection from "@/components/couses-section";
+import { motion } from "framer-motion";
+import { Star } from "lucide-react";
+import Image from "next/image";
 
 export default function Home() {
   return (
