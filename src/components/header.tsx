@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -108,7 +109,7 @@ const Navbar = () => {
           <motion.div
             initial={{ y: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-white rounded-none sm:rounded-full px-4 sm:px-6 shadow-sm relative flex-1 lg:flex-none w-full sm:w-auto"
+            className="bg-white rounded-none sm:rounded-full px-4 sm:px-0 shadow-sm relative flex-1 lg:flex-none w-full sm:w-auto"
             style={{
               height: "64px",
               borderRadius: undefined,
@@ -117,9 +118,15 @@ const Navbar = () => {
             <div className="flex items-center justify-between h-full px-5">
               {/* Logo */}
               <Link href="/" className="flex items-center">
-                <span className="text-xl font-bold bg-gradient-to-r from-lime-500 to-emerald-600 bg-clip-text text-transparent">
+                {/* <span className="text-xl font-bold bg-gradient-to-r from-lime-500 to-emerald-600 bg-clip-text text-transparent">
                   Thryve
-                </span>
+                </span> */}
+                <Image
+                  src="/logo.svg"
+                  alt="Thryve Logo"
+                  width={100}
+                  height={100}
+                />
               </Link>
 
               {/* Desktop Navigation Links */}
@@ -209,7 +216,7 @@ const Navbar = () => {
               opacity: scrollPosition > 20 ? 0 : 1,
             }}
             transition={{ duration: 0.3 }}
-            className="hidden lg:flex bg-white rounded-full px-6 py-2 shadow-sm transition-shadow duration-300"
+            className="hidden lg:flex bg-white rounded-full px-6 py-1 shadow-sm transition-shadow duration-300"
           >
             <div className="flex items-center space-x-4">
               <Button variant="ghost" className="rounded-full duration-300">

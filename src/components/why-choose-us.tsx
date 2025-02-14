@@ -67,8 +67,9 @@ const WhyChooseUsSection = () => {
             WHY CHOOSE US?
           </h2>
           <h3 className="text-4xl md:text-5xl font-bold mb-6 text-zinc-900">
-            Why <span className="text-lime-500">thryve.today</span> is The Right
-            Choice for You
+            Why{" "}
+            <span className="ml-2 font-thryez text-lime-500">thryve.today</span>{" "}
+            is The Right Choice for You
           </h3>
         </motion.div>
 

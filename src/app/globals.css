@@ -70,3 +70,11 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@font-face {
+  font-family: 'brunella';
+  src: url('/fonts/Brunella Italic.ttf') format('woff2'),
+       url('/fonts/Brunella Italic.ttf') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}

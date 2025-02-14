@@ -47,7 +47,7 @@ const TeamofEducators = () => {
           Contact us
         </span>
         <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold tracking-tight mb-6">
-          Our Team of Educators
+          Our Team of <span className="font-thryez text-lime-500">Educators</span>
         </h2>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button variant="secondary" className="gap-2 w-full sm:w-auto">

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
+import Image from "next/image";
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -12,13 +13,7 @@ const Footer = () => {
           {/* Left Section */}
           <div className="space-y-6 w-full md:w-auto">
             {/* Logo */}
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-[#96F80F]"></div>
-              <span className="text-[20px] font-semibold text-[#101828]">
-                Thryve.Today
-              </span>
-            </div>
-
+            <Image src="/logo.svg" alt="Thryve Logo" width={200} height={200} />
             {/* Contact Info */}
             <div className="grid grid-cols-1 sm:grid-cols-2 items-start gap-4 sm:gap-6">
               <div>
@@ -75,7 +70,7 @@ const Footer = () => {
         <div className="mx-auto flex flex-col md:flex-row items-center justify-center sm:justify-between gap-4 md:gap-6 pt-5 border-t">
           <div className="flex flex-col md:flex-row items-center gap-2">
             <span className="text-[14px] text-[#101828] text-center">
-              Copyright © {year} Thryve.Today - All Rights Reserved.
+              Copyright © {year} Thryve.today - All Rights Reserved.
             </span>
             <span className="text-[14px] text-[#101828]">
               | Designed by{" "}
