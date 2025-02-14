@@ -43,12 +43,9 @@ const TeamofEducators = () => {
   return (
     <section className="container mx-auto px-4 py-8 md:py-16">
       <div className="text-center mb-2 md:mb-4">
-        <a
-          href="#contact"
-          className="text-primary hover:underline mb-4 inline-block"
-        >
+        <span className="text-primary mb-4 inline-block">
           Contact us
-        </a>
+        </span>
         <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold tracking-tight mb-6">
           Our Team of Educators
         </h2>
@@ -71,7 +68,10 @@ const TeamofEducators = () => {
         >
           <CarouselContent className="-ml-4">
             {teamMembers.map((member, index) => (
-              <CarouselItem key={index} className="pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 py-5">
+              <CarouselItem
+                key={index}
+                className="pl-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 py-5"
+              >
                 <div className="group cursor-pointer transition-all duration-300 hover:-translate-y-4">
                   <Card className="rounded-2xl transition-all duration-300 hover:shadow-lg bg-transparent border-none">
                     <CardContent className="p-0 relative">
@@ -84,7 +84,9 @@ const TeamofEducators = () => {
                         />
                       </div>
                       <div className="absolute bottom-2 left-2 right-2 p-3 backdrop-blur-xl bg-white/60 rounded-lg text-black">
-                        <h3 className="font-semibold text-2xl md:text-base">{member.name}</h3>
+                        <h3 className="font-semibold text-2xl md:text-base">
+                          {member.name}
+                        </h3>
                         <p className="text-md md:text-sm">{member.role}</p>
                       </div>
                     </CardContent>

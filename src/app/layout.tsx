@@ -4,6 +4,7 @@ import "./globals.css";
 import Footer from "@/components/footer";
 import { Toaster } from "sonner";
 import BottomContactBar from "@/components/bottom-contact-bar";
+import Navbar from "@/components/header";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -24,6 +25,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${spaceGrotesk.variable} font-sans`}>
         <Toaster />
+        <Navbar />
         <BottomContactBar />
         {children}
         <Footer />
