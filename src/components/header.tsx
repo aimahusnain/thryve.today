@@ -3,13 +3,13 @@
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-    Check,
-    ChevronRight,
-    Copy,
-    Mail,
-    Menu,
-    PhoneCall,
-    X,
+  Check,
+  ChevronRight,
+  Copy,
+  Mail,
+  Menu,
+  PhoneCall,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -61,7 +61,9 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className={`fixed top-0 sm:top-4 left-0 right-0 z-[60] bg-transparent`}>
+    <div
+      className={`fixed top-0 sm:top-4 left-0 right-0 z-[60] bg-transparent`}
+    >
       <div className="container mx-auto px-0 md:px-6 lg:px-0">
         <div className="flex justify-between items-center gap-4">
           {/* Email Group - Visible only on large screens */}
@@ -273,8 +275,9 @@ const Navbar = () => {
 
                 {/* Bottom Actions Section */}
                 <div className="absolute bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-t border-zinc-100">
-                  <div className="px-6 py-8 space-y-6">
-                    <div className="grid grid-cols-2 gap-5">
+                  <div className="px-6 py-8 grid grid-cols-2 gap-5">
+                    <div                         className="flex flex-col w-full items-start justify-center gap-3"
+                    >
                       {/* Contact Info */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -295,6 +298,7 @@ const Navbar = () => {
                           <Copy className="w-5 h-5 text-zinc-400 ml-auto" />
                         )}
                       </motion.div>
+
                       {/* Contact Info */}
                       <motion.a
                         href="tel:+19794847983"
@@ -312,23 +316,23 @@ const Navbar = () => {
                       </motion.a>
                     </div>
 
-                    {/* Action Buttons */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 }}
-                      className="space-y-3 grid grid-cols-2"
-                    >
-                      <Button
-                        variant="ghost"
-                        className="w-full rounded-full h-12 text-base"
+                      {/* Action Buttons */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="flex flex-col w-full items-center justify-center gap-3"
                       >
-                        Sign In
-                      </Button>
-                      <Button className="w-full rounded-full h-12 text-base bg-lime-500 hover:bg-lime-600">
-                        Get Started Today
-                      </Button>
-                    </motion.div>
+                        <Button
+                          variant="ghost"
+                          className="w-full rounded-full h-12 text-base"
+                        >
+                          Sign In
+                        </Button>
+                        <Button className="w-full rounded-full h-12 text-base bg-lime-500 hover:bg-lime-600">
+                          Get Started Today
+                        </Button>
+                      </motion.div>
                   </div>
                 </div>
               </motion.div>
