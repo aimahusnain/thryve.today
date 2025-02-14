@@ -61,8 +61,8 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className="fixed top-0 sm:top-4 left-0 right-0 z-[60] bg-transparent">
-      <div className="container mx-auto px-4 md:px-6 lg:px-0">
+    <div className={`fixed top-0 sm:top-4 left-0 right-0 z-[60] bg-transparent`}>
+      <div className="container mx-auto px-0 md:px-6 lg:px-0">
         <div className="flex justify-between items-center gap-4">
           {/* Email Group - Visible only on large screens */}
           <motion.div
@@ -109,10 +109,10 @@ const Navbar = () => {
             className="bg-white rounded-none sm:rounded-full px-4 sm:px-6 shadow-sm relative flex-1 lg:flex-none w-full sm:w-auto"
             style={{
               height: "64px",
-              borderRadius: isMenuOpen ? "9999px 9999px 9999px 9999px" : undefined,
+              borderRadius: undefined,
             }}
           >
-            <div className="flex items-center justify-between h-full">
+            <div className="flex items-center justify-between h-full px-5">
               {/* Logo */}
               <Link href="/" className="flex items-center">
                 <span className="text-xl font-bold bg-gradient-to-r from-lime-500 to-emerald-600 bg-clip-text text-transparent">
@@ -225,7 +225,7 @@ const Navbar = () => {
           {isMenuOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "95vh" }}
+              animate={{ opacity: 1, height: "100vh" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="fixed inset-0 bg-white/95 backdrop-blur-md md:hidden"
@@ -239,7 +239,7 @@ const Navbar = () => {
                 className="h-full overflow-auto"
               >
                 {/* Navigation Links with Animations */}
-                <div className="px-6 py-8 space-y-6">
+                <div className="px-8 py-8 space-y-6">
                   {navLinks.map((link, index) => (
                     <motion.div
                       key={link.href}
