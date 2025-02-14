@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import type React from "react";
+import type React from "react"
 import {
   ArrowRight,
   Calendar,
@@ -11,21 +11,21 @@ import {
   Users,
   Search,
   Filter,
-} from "lucide-react";
-import { useState } from "react";
+} from "lucide-react"
+import { useState } from "react"
 
 interface CourseCardProps {
-  title: string;
-  price: string;
-  duration: string;
-  hours?: { type: string; amount: string }[];
-  whoFor?: string[];
-  description: string;
-  highlights: string[];
-  className?: string;
-  variant?: "default" | "wide" | "row"; // Added "row" option
-  additionalInfo?: string;
-  category: string;
+  title: string
+  price: string
+  duration: string
+  hours?: { type: string; amount: string }[]
+  whoFor?: string[]
+  description: string
+  highlights: string[]
+  className?: string
+  variant?: "default" | "wide" | "row" // Added "row" option
+  additionalInfo?: string
+  category: string
 }
 
 const CourseCard: React.FC<CourseCardProps> = ({
@@ -52,20 +52,16 @@ const CourseCard: React.FC<CourseCardProps> = ({
           variant === "wide"
             ? "col-span-full md:col-span-2"
             : variant === "row"
-            ? "col-span-full"
-            : "col-span-full sm:col-span-1"
+              ? "col-span-full"
+              : "col-span-full sm:col-span-1"
         }
         ${variant === "row" ? "md:grid md:grid-cols-12 md:gap-8" : ""}
         ${className}
       `}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-lime-50/50 via-transparent to-transparent dark:from-lime-950/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="absolute inset-0 bg-gradient-to-br from-lime-50/50 via-transparent to-transparent dark:from-lime-950/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-      <div
-        className={`relative space-y-6 h-full ${
-          variant === "row" ? "md:col-span-4" : ""
-        }`}
-      >
+      <div className={`relative space-y-6 h-full z-10 ${variant === "row" ? "md:col-span-4" : ""}`}>
         <div className="space-y-2">
           <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white group-hover:text-lime-600 dark:group-hover:text-lime-400 transition-colors duration-300">
             {title}
@@ -82,29 +78,20 @@ const CourseCard: React.FC<CourseCardProps> = ({
           </div>
         </div>
 
-        <p className="text-sm md:text-base text-zinc-600 dark:text-zinc-400 line-clamp-3">
-          {description}
-        </p>
+        <p className="text-sm md:text-base text-zinc-600 dark:text-zinc-400 line-clamp-3">{description}</p>
 
         {variant === "row" && additionalInfo && (
-          <p className="text-sm text-lime-600 dark:text-lime-400 italic">
-            {additionalInfo}
-          </p>
+          <p className="text-sm text-lime-600 dark:text-lime-400 italic">{additionalInfo}</p>
         )}
       </div>
 
       {variant === "row" ? (
-        <div className="md:col-span-8 space-y-6 mt-6 md:mt-0">
+        <div className="md:col-span-8 space-y-6 mt-6 md:mt-0 relative z-10">
           {hours.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {hours.map((hour, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col gap-1 text-sm md:text-base text-zinc-600 dark:text-zinc-300"
-                >
-                  <span className="font-medium text-zinc-900 dark:text-white">
-                    {hour.type}:
-                  </span>
+                <div key={index} className="flex flex-col gap-1 text-sm md:text-base text-zinc-600 dark:text-zinc-300">
+                  <span className="font-medium text-zinc-900 dark:text-white">{hour.type}:</span>
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4 md:w-5 md:h-5 text-zinc-400 dark:text-zinc-500" />
                     <span className="font-semibold">{hour.amount}</span>
@@ -171,13 +158,8 @@ const CourseCard: React.FC<CourseCardProps> = ({
           {hours.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-4">
               {hours.map((hour, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col gap-1 text-sm md:text-base text-zinc-600 dark:text-zinc-300"
-                >
-                  <span className="font-medium text-zinc-900 dark:text-white">
-                    {hour.type}:
-                  </span>
+                <div key={index} className="flex flex-col gap-1 text-sm md:text-base text-zinc-600 dark:text-zinc-300">
+                  <span className="font-medium text-zinc-900 dark:text-white">{hour.type}:</span>
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4 md:w-5 md:h-5 text-zinc-400 dark:text-zinc-500" />
                     <span className="font-semibold">{hour.amount}</span>
@@ -190,14 +172,11 @@ const CourseCard: React.FC<CourseCardProps> = ({
           {whoFor.length > 0 && (
             <div className="space-y-3 md:space-y-4 mt-4">
               <h4 className="text-sm md:text-base font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
-                <Users className="w-4 h-4 md:w-5 md:h-5 text-lime-600 dark:text-lime-400" />{" "}
-                Who Should Enroll?
+                <Users className="w-4 h-4 md:w-5 md:h-5 text-lime-600 dark:text-lime-400" /> Who Should Enroll?
               </h4>
               <ul
                 className={`grid gap-3 md:gap-4 ${
-                  whoFor.length === 5
-                    ? "grid-cols-2 [&>li:last-child]:col-span-2"
-                    : "grid-cols-1 sm:grid-cols-2"
+                  whoFor.length === 5 ? "grid-cols-2 [&>li:last-child]:col-span-2" : "grid-cols-1 sm:grid-cols-2"
                 }`}
               >
                 {whoFor.map((item, index) => (
@@ -215,8 +194,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
           <div className="space-y-3 mt-6 mb-1">
             <h4 className="text-sm font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
-              <GraduationCap className="w-4 h-4 text-lime-600 dark:text-lime-400" />{" "}
-              Program Highlights
+              <GraduationCap className="w-4 h-4 text-lime-600 dark:text-lime-400" /> Program Highlights
             </h4>
             <ul className="grid gap-2 md:gap-3">
               {highlights.map((highlight, index) => (
@@ -231,11 +209,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
             </ul>
           </div>
 
-          {additionalInfo && (
-            <p className="text-sm text-lime-600 dark:text-lime-400 italic mt-5">
-              {additionalInfo}
-            </p>
-          )}
+          {additionalInfo && <p className="text-sm text-lime-600 dark:text-lime-400 italic mt-5">{additionalInfo}</p>}
 
           <div className="mt-auto pt-6">
             <button
@@ -251,12 +225,12 @@ const CourseCard: React.FC<CourseCardProps> = ({
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
 const CoursesPage: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("all")
 
   const courses = [
     {
@@ -381,22 +355,19 @@ const CoursesPage: React.FC = () => {
         "Medical Students",
       ],
     },
-  ];
+  ]
 
   const categories = [
     { id: "all", name: "All Courses" },
     { id: "certification", name: "Certification Programs" },
     { id: "life-support", name: "Life Support" },
-  ];
+  ]
 
   const filteredCourses = courses.filter((course) => {
-    const matchesSearch = course.title
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "all" || course.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+    const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesCategory = selectedCategory === "all" || course.category === selectedCategory
+    return matchesSearch && matchesCategory
+  })
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
@@ -408,8 +379,7 @@ const CoursesPage: React.FC = () => {
               Healthcare Training Programs
             </h1>
             <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto">
-              Discover our comprehensive range of healthcare courses designed to
-              launch and advance your medical career
+              Discover our comprehensive range of healthcare courses designed to launch and advance your medical career
             </p>
           </div>
         </div>
@@ -465,12 +435,8 @@ const CoursesPage: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         {filteredCourses.length === 0 ? (
           <div className="text-center py-12">
-            <h3 className="text-xl md:text-2xl font-medium text-zinc-900 dark:text-white">
-              No courses found
-            </h3>
-            <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-              Try adjusting your search or filter criteria
-            </p>
+            <h3 className="text-xl md:text-2xl font-medium text-zinc-900 dark:text-white">No courses found</h3>
+            <p className="mt-2 text-zinc-600 dark:text-zinc-400">Try adjusting your search or filter criteria</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
@@ -481,7 +447,7 @@ const CoursesPage: React.FC = () => {
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CoursesPage;
+export default CoursesPage
