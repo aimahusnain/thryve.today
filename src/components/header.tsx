@@ -64,7 +64,7 @@ const Navbar = () => {
     <div
       className={`fixed top-0 sm:top-4 left-0 right-0 z-[60] bg-transparent`}
     >
-      <div className="container mx-auto px-0 md:px-6 lg:px-0">
+      <div className="sm:mx-12 px-0 md:px-6 lg:px-0">
         <div className="flex justify-between items-center gap-4">
           {/* Email Group - Visible only on large screens */}
           <motion.div
@@ -276,8 +276,7 @@ const Navbar = () => {
                 {/* Bottom Actions Section */}
                 <div className="absolute bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-t border-zinc-100">
                   <div className="px-6 py-8 grid grid-cols-2 gap-5">
-                    <div                         className="flex flex-col w-full items-start justify-center gap-3"
-                    >
+                    <div className="flex flex-col w-full items-start justify-center gap-3">
                       {/* Contact Info */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -316,23 +315,23 @@ const Navbar = () => {
                       </motion.a>
                     </div>
 
-                      {/* Action Buttons */}
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.2 }}
-                        className="flex flex-col w-full items-center justify-center gap-3"
+                    {/* Action Buttons */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="flex flex-col w-full items-center justify-center gap-3"
+                    >
+                      <Button
+                        variant="ghost"
+                        className="w-full rounded-full h-12 text-base"
                       >
-                        <Button
-                          variant="ghost"
-                          className="w-full rounded-full h-12 text-base"
-                        >
-                          Sign In
-                        </Button>
-                        <Button className="w-full rounded-full h-12 text-base bg-lime-500 hover:bg-lime-600">
-                          Get Started Today
-                        </Button>
-                      </motion.div>
+                        Sign In
+                      </Button>
+                      <Button className="w-full rounded-full h-12 text-base bg-lime-500 hover:bg-lime-600">
+                        Get Started Today
+                      </Button>
+                    </motion.div>
                   </div>
                 </div>
               </motion.div>
