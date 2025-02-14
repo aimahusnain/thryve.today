@@ -15,6 +15,7 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import Goy from "./goy";
 
 interface NavLink {
   title: string;
@@ -22,11 +23,11 @@ interface NavLink {
 }
 
 const navLinks: NavLink[] = [
-  { title: "Home", href: "/" },
-  { title: "Courses", href: "/courses" },
-  { title: "Whyus", href: "/#why-us" },
-  { title: "Educators", href: "/#educators" },
-  { title: "Contact", href: "/contact" },
+  { title: "Home", href: "home" },
+  { title: "Courses", href: "courses" },
+  { title: "Whyus", href: "why-us" },
+  { title: "Educators", href: "educators" },
+  { title: "Contact", href: "contact" },
 ];
 
 const Navbar = () => {
@@ -132,26 +133,26 @@ const Navbar = () => {
               {/* Desktop Navigation Links */}
               <div className="hidden lg:flex items-center space-x-8 ml-8">
                 {navLinks.map((link) => (
-                  <Link
+                  <Goy
                     key={link.href}
-                    href={link.href}
+                    id={link.href}
                     className="text-zinc-700 hover:text-lime-500 transition-colors duration-200"
                   >
                     {link.title}
-                  </Link>
+                  </Goy>
                 ))}
               </div>
 
               {/* Tablet Navigation Links */}
               <div className="hidden md:flex lg:hidden items-center space-x-6 ml-6">
                 {navLinks.slice(0, 3).map((link) => (
-                  <Link
+                  <Goy
                     key={link.href}
-                    href={link.href}
+                    id={link.href}
                     className="text-zinc-700 hover:text-lime-500 transition-colors duration-200 text-sm"
                   >
                     {link.title}
-                  </Link>
+                  </Goy>
                 ))}
                 <button
                   className="text-zinc-700 hover:text-lime-500"
@@ -197,12 +198,16 @@ const Navbar = () => {
                     delay: showCTAInNav ? 0.2 : 0,
                   }}
                 >
-                  <Button variant="ghost" className="rounded-full">
-                    Sign In
-                  </Button>
-                  <Button className="bg-lime-500 hover:bg-lime-600 rounded-full">
-                    Get Started
-                  </Button>
+                  <Goy id="contact">
+                    <Button variant="ghost" className="rounded-full">
+                      Sign In
+                    </Button>
+                  </Goy>
+                  <Goy id="courses">
+                    <Button className="bg-lime-500 hover:bg-lime-600 rounded-full">
+                      Get Started
+                    </Button>
+                  </Goy>
                 </motion.div>
               </motion.div>
             </div>
@@ -256,26 +261,27 @@ const Navbar = () => {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
                     >
-                      <Link
-                        href={link.href}
-                        className="flex items-center justify-between group"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        <div className="flex flex-col">
-                          <span className="text-2xl font-medium text-zinc-800">
-                            {link.title}
-                          </span>
-                          <span className="text-sm text-zinc-500 group-hover:text-lime-500 transition-colors">
-                            Explore {link.title.toLowerCase()}
-                          </span>
-                        </div>
-                        <motion.div
-                          whileHover={{ x: 5 }}
-                          className="text-lime-500"
+                      <Goy id={link.href} className="w-full">
+                        <div
+                          className="flex items-center justify-between group w-full"
+                          onClick={() => setIsMenuOpen(false)}
                         >
-                          <ChevronRight />
-                        </motion.div>
-                      </Link>
+                          <div className="flex flex-col items-start">
+                            <span className="text-2xl font-medium text-zinc-800">
+                              {link.title}
+                            </span>
+                            <span className="text-sm text-zinc-500 group-hover:text-lime-500 transition-colors">
+                              Explore {link.title.toLowerCase()}
+                            </span>
+                          </div>
+                          <motion.div
+                            whileHover={{ x: 5 }}
+                            className="text-lime-500"
+                          >
+                            <ChevronRight />
+                          </motion.div>
+                        </div>
+                      </Goy>
                     </motion.div>
                   ))}
                 </div>
@@ -329,15 +335,23 @@ const Navbar = () => {
                       transition={{ delay: 0.2 }}
                       className="flex flex-col w-full items-center justify-center gap-3"
                     >
-                      <Button
-                        variant="ghost"
-                        className="w-full rounded-full h-12 text-base"
-                      >
-                        Sign In
-                      </Button>
-                      <Button className="w-full rounded-full h-12 text-base bg-lime-500 hover:bg-lime-600">
-                        Get Started Today
-                      </Button>
+                      <Goy id="courses">
+                        <Button
+                          onClick={() => setIsMenuOpen(false)}
+                          variant="ghost"
+                          className="w-full rounded-full h-12 text-base"
+                        >
+                          Sign In
+                        </Button>
+                      </Goy>
+                      <Goy id="contact">
+                        <Button
+                          onClick={() => setIsMenuOpen(false)}
+                          className="w-full rounded-full h-12 text-base bg-lime-500 hover:bg-lime-600"
+                        >
+                          Get Started Today
+                        </Button>
+                      </Goy>
                     </motion.div>
                   </div>
                 </div>

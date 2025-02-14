@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
 import Image from "next/image";
+import Goy from "./goy";
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -56,12 +57,18 @@ const Footer = () => {
               best self today.
             </h3>
             <div className="flex flex-col sm:flex-row gap-3">
-              <button className="w-full sm:w-auto px-5 py-[10px] bg-[#96F80F] rounded-[100px] text-[#101828] font-semibold text-[14px]">
+              <Goy
+                id="contact"
+                className="w-full sm:w-auto px-5 py-[10px] bg-[#96F80F] rounded-[100px] text-[#101828] font-semibold text-[14px]"
+              >
                 Apply Now
-              </button>
-              <button className="w-full sm:w-auto px-5 py-[10px] border border-[#D0D5DD] rounded-[100px] text-[#101828] font-semibold text-[14px]">
+              </Goy>
+              <Goy
+                id="courses"
+                className="w-full sm:w-auto px-5 py-[10px] border border-[#D0D5DD] rounded-[100px] text-[#101828] font-semibold text-[14px]"
+              >
                 Explore Courses
-              </button>
+              </Goy>
             </div>
           </div>
         </div>
@@ -85,25 +92,25 @@ const Footer = () => {
           </div>
 
           {/* Rest of the Platform Support section remains the same */}
-          <div className="flex flex-wrap gap-2 w-full md:w-auto items-center sm:justify-center justify-end">
+          <div className="flex flex-wrap gap-2 w-full md:w-auto items-center sm:justify-center justify-center">
             {[
-              { name: "Home", link: "/home" },
-              { name: "Courses", link: "/cources" },
+              { name: "Home", link: "home" },
+              { name: "Courses", link: "courses" },
               {
                 name: "Apply Now",
-                link: "/apply-now",
+                link: "contact",
               },
-              { name: "Checkout", link: "/checkout" },
+              { name: "Checkout", link: "checkout" },
             ].map((platform) => (
-              <Link
-                href={platform.link}
+              <Goy
+                id={platform.link}
                 key={platform.name}
                 className="rounded-[100px] flex items-center gap-2 text-[14px] text-[#101828]"
               >
                 <Button variant="link" className="m-0">
                   <span className="whitespace-nowrap">{platform.name}</span>
                 </Button>
-              </Link>
+              </Goy>
             ))}
           </div>
         </div>

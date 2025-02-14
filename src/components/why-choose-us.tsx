@@ -3,6 +3,7 @@
 import React from "react";
 import { Heart, GraduationCap, BookOpen, Hand, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import Goy from "./goy";
 
 const WhyChooseUsSection = () => {
   const features = [
@@ -122,10 +123,10 @@ const WhyChooseUsSection = () => {
                   do, ensuring that our students not only excel in their careers
                   but also contribute meaningfully to healthcare.
                 </p>
-                <button className="mt-auto w-full bg-lime-500 text-zinc-900 px-8 py-4 rounded-xl font-semibold hover:bg-lime-400 transition-colors duration-300 flex items-center justify-center group/button">
+                <Goy id='courses' className="mt-auto w-full bg-lime-500 text-zinc-900 px-8 py-4 rounded-xl font-semibold hover:bg-lime-400 transition-colors duration-300 flex items-center justify-center group/button">
                   Start Your Journey
                   <ArrowRight className="ml-2 w-5 h-5 group-hover/button:translate-x-1 transition-transform duration-300" />
-                </button>
+                </Goy>
               </div>
             </div>
           </motion.div>

@@ -370,7 +370,7 @@ const CoursesPage: React.FC = () => {
   })
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div id="courses" className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       {/* Hero Section */}
       <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20">

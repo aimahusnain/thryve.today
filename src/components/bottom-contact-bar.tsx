@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Phone, ArrowRight, BookOpen } from "lucide-react";
 import Link from "next/link";
+import Goy from "./goy";
 
 const BottomContactBar = () => {
   const [isVisible, setIsVisible] = useState(true);
@@ -50,8 +51,8 @@ const BottomContactBar = () => {
             <Phone className="w-5 h-5" />
           </Link>
 
-          <Link
-            href="#contact"
+          <Goy
+            id="contact"
             className="flex-1 group flex items-center justify-center gap-2 px-4 py-2.5
                      bg-gradient-to-r from-lime-500 to-lime-600
                      hover:from-lime-600 hover:to-lime-700
@@ -62,10 +63,10 @@ const BottomContactBar = () => {
           >
             <span className="text-sm">Contact Now</span>
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-          </Link>
+          </Goy>
 
-          <Link
-            href="#courses"
+          <Goy
+            id="courses"
             className="flex items-center justify-center p-2.5
                      bg-zinc-800 text-zinc-100
                      hover:bg-zinc-900 hover:text-white
@@ -73,7 +74,7 @@ const BottomContactBar = () => {
                      border border-zinc-700"
           >
             <BookOpen className="w-5 h-5" />
-          </Link>
+          </Goy>
         </div>
 
         {/* Desktop Design */}
@@ -91,8 +92,8 @@ const BottomContactBar = () => {
             <span className="text-sm font-medium">+1 (979) 484-7983</span>
           </Link>
 
-          <Link
-            href="#courses"
+          <Goy
+            id="courses"
             className="group flex items-center gap-2 px-4 py-2.5 
                      bg-zinc-800 text-zinc-100
                      hover:bg-zinc-900 hover:text-white
@@ -102,10 +103,10 @@ const BottomContactBar = () => {
           >
             <BookOpen className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
             <span className="text-sm font-medium">View Courses</span>
-          </Link>
+          </Goy>
 
-          <Link
-            href="#contact"
+          <Goy
+            id="contact"
             className="group flex items-center gap-2 px-6 py-2.5
                      bg-gradient-to-r from-lime-500 to-lime-600
                      hover:from-lime-600 hover:to-lime-700
@@ -117,7 +118,7 @@ const BottomContactBar = () => {
           >
             <span className="text-sm">Contact Now</span>
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-          </Link>
+          </Goy>
         </div>
       </div>
     </div>

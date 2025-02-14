@@ -4,6 +4,7 @@ import React from "react";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
+import Goy from "./goy";
 
 interface TeamMember {
   name: string;
@@ -41,20 +42,23 @@ const TeamofEducators = () => {
   ];
 
   return (
-    <section className="container mx-auto px-4 py-8 md:py-16">
+    <section id="educators" className="container mx-auto px-4 py-8 md:py-16">
       <div className="text-center mb-2 md:mb-4">
-        <span className="text-primary mb-4 inline-block">
-          Contact us
-        </span>
+        <span className="text-primary mb-4 inline-block">OUR TEAM</span>
         <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold tracking-tight mb-6">
-          Our Team of <span className="font-thryez text-lime-500">Educators</span>
+          Our Team of{" "}
+          <span className="font-thryez text-lime-500">Educators</span>
         </h2>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button variant="secondary" className="gap-2 w-full sm:w-auto">
-            <PhoneCall className="h-4 w-4" />
-            Book a Call
-          </Button>
-          <Button className="w-full sm:w-auto">Book a Demo</Button>
+          <Goy id="contact">
+            <Button variant="secondary" className="gap-2 w-full sm:w-auto">
+              <PhoneCall className="h-4 w-4" />
+              Book a Call
+            </Button>
+          </Goy>
+          <Goy id="courses">
+            <Button className="w-full sm:w-auto">Book a Demo</Button>
+          </Goy>
         </div>
       </div>
 

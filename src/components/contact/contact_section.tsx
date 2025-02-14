@@ -4,7 +4,7 @@ import { SupportCard } from "./support-card"
 
 export default function ContactSection() {
   return (
-    <main className="mx-auto px-4 py-8 sm:px-6 lg:px-8 mt-10">
+    <main id="contact" className="mx-auto px-4 py-8 sm:px-6 lg:px-8 mt-10">
       <div className="mx-auto max-w-7xl">
         <h1 className="mb-12 text-center text-4xl font-bold text-foreground sm:text-5xl">
           Contact <span className="font-thryez text-lime-500">Thryves</span>
