@@ -1,7 +1,7 @@
 "use client";
 
 import ContactSection from "@/components/contact/contact_section";
-import CoursesSection from "@/components/couses-section";
+import CoursesSection from "@/components/courses-section";
 import Goy from "@/components/goy";
 import TeamofEducators from "@/components/team-of-educators";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

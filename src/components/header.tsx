@@ -218,9 +218,9 @@ const Navbar = () => {
               opacity: scrollPosition > 20 ? 0 : 1,
             }}
             transition={{ duration: 0.3 }}
-            className="hidden lg:flex bg-white dark:bg-zinc-900 rounded-full px-6 py-1 shadow-sm transition-shadow duration-300"
+            className="hidden lg:flex bg-white dark:bg-zinc-900 rounded-full px-2 py-1 shadow-sm transition-shadow duration-300 pl-2"
           >
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
               <ThemeToggle />
               <Button variant="ghost" className="rounded-full duration-300">
                 Sign In
