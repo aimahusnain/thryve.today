@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Goy from "./goy";
+import { ThemeToggle } from "./theme-toggler";
 
 interface NavLink {
   title: string;
@@ -63,9 +64,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div
-      className={`fixed top-0 sm:top-4 left-0 right-0 z-[60] bg-transparent`}
-    >
+    <div className={`fixed top-0 sm:top-4 left-0 right-0 z-[60] bg-transparent`}>
       <div className="sm:mx-12 px-0 md:px-6 lg:px-0">
         <div className="flex justify-between items-center gap-4">
           {/* Email Group - Visible only on large screens */}
@@ -76,10 +75,10 @@ const Navbar = () => {
               opacity: scrollPosition > 20 ? 0 : 1,
             }}
             transition={{ duration: 0.3 }}
-            className="hidden lg:flex bg-white rounded-full px-6 py-2.5 shadow-sm transition-shadow duration-300"
+            className="hidden lg:flex bg-white dark:bg-zinc-900 rounded-full px-6 py-2.5 shadow-sm transition-shadow duration-300"
           >
             <div
-              className="flex items-center space-x-2 text-zinc-700 cursor-pointer"
+              className="flex items-center space-x-2 text-zinc-700 dark:text-zinc-200 cursor-pointer"
               onClick={copyEmail}
             >
               <Mail className="w-4 h-4" />
@@ -110,7 +109,7 @@ const Navbar = () => {
           <motion.div
             initial={{ y: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-white rounded-none sm:rounded-full px-4 sm:px-0 shadow-sm relative flex-1 lg:flex-none w-full sm:w-auto"
+            className="bg-white dark:bg-zinc-900 rounded-none sm:rounded-full px-4 sm:px-0 shadow-sm relative flex-1 lg:flex-none w-full sm:w-auto"
             style={{
               height: "64px",
               borderRadius: undefined,
@@ -119,9 +118,6 @@ const Navbar = () => {
             <div className="flex items-center justify-between h-full px-5">
               {/* Logo */}
               <Link href="/" className="flex items-center">
-                {/* <span className="text-xl font-bold bg-gradient-to-r from-lime-500 to-emerald-600 bg-clip-text text-transparent">
-                  Thryve
-                </span> */}
                 <Image
                   src="/logo.svg"
                   alt="Thryve Logo"
@@ -136,7 +132,7 @@ const Navbar = () => {
                   <Goy
                     key={link.href}
                     id={link.href}
-                    className="text-zinc-700 hover:text-lime-500 transition-colors duration-200"
+                    className="text-zinc-700 dark:text-zinc-200 hover:text-lime-500 transition-colors duration-200"
                   >
                     {link.title}
                   </Goy>
@@ -149,13 +145,13 @@ const Navbar = () => {
                   <Goy
                     key={link.href}
                     id={link.href}
-                    className="text-zinc-700 hover:text-lime-500 transition-colors duration-200 text-sm"
+                    className="text-zinc-700 dark:text-zinc-200 hover:text-lime-500 transition-colors duration-200 text-sm"
                   >
                     {link.title}
                   </Goy>
                 ))}
                 <button
-                  className="text-zinc-700 hover:text-lime-500"
+                  className="text-zinc-700 dark:text-zinc-200 hover:text-lime-500"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
                   <Menu className="w-5 h-5" />
@@ -164,19 +160,19 @@ const Navbar = () => {
 
               {/* Mobile Menu Button */}
               <button
-                className="md:hidden flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-50"
+                className="md:hidden flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-800"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? (
-                  <X className="w-5 h-5 text-zinc-700" />
+                  <X className="w-5 h-5 text-zinc-700 dark:text-zinc-200" />
                 ) : (
-                  <Menu className="w-5 h-5 text-zinc-700" />
+                  <Menu className="w-5 h-5 text-zinc-700 dark:text-zinc-200" />
                 )}
               </button>
 
               {/* Desktop CTA Container */}
               <motion.div
-                className="hidden lg:flex items-center space-x-4 pl-2 border-l border-zinc-200"
+                className="hidden lg:flex items-center space-x-4 pl-2 border-l border-zinc-200 dark:border-zinc-700"
                 animate={{
                   width: showCTAInNav ? "auto" : 0,
                   opacity: showCTAInNav ? 1 : 0,
@@ -198,6 +194,7 @@ const Navbar = () => {
                     delay: showCTAInNav ? 0.2 : 0,
                   }}
                 >
+                  <ThemeToggle />
                   <Goy id="contact">
                     <Button variant="ghost" className="rounded-full">
                       Sign In
@@ -221,9 +218,10 @@ const Navbar = () => {
               opacity: scrollPosition > 20 ? 0 : 1,
             }}
             transition={{ duration: 0.3 }}
-            className="hidden lg:flex bg-white rounded-full px-6 py-1 shadow-sm transition-shadow duration-300"
+            className="hidden lg:flex bg-white dark:bg-zinc-900 rounded-full px-6 py-1 shadow-sm transition-shadow duration-300"
           >
             <div className="flex items-center space-x-4">
+              <ThemeToggle />
               <Button variant="ghost" className="rounded-full duration-300">
                 Sign In
               </Button>
@@ -242,7 +240,7 @@ const Navbar = () => {
               animate={{ opacity: 1, height: "90vh" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="fixed inset-0 bg-white/95 backdrop-blur-md md:hidden"
+              className="fixed inset-0 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md md:hidden"
               style={{ top: "64px" }}
             >
               <motion.div
@@ -267,10 +265,10 @@ const Navbar = () => {
                           onClick={() => setIsMenuOpen(false)}
                         >
                           <div className="flex flex-col items-start">
-                            <span className="text-2xl font-medium text-zinc-800">
+                            <span className="text-2xl font-medium text-zinc-800 dark:text-zinc-200">
                               {link.title}
                             </span>
-                            <span className="text-sm text-zinc-500 group-hover:text-lime-500 transition-colors">
+                            <span className="text-sm text-zinc-500 dark:text-zinc-400 group-hover:text-lime-500 transition-colors">
                               Explore {link.title.toLowerCase()}
                             </span>
                           </div>
@@ -287,17 +285,17 @@ const Navbar = () => {
                 </div>
 
                 {/* Bottom Actions Section */}
-                <div className="absolute bottom-0 left-0 right-0 bg-white/80 backdrop-blur-sm border-t border-zinc-100">
+                <div className="absolute bottom-0 left-0 right-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border-t border-zinc-100 dark:border-zinc-800">
                   <div className="px-6 py-8 grid grid-cols-2 gap-5">
                     <div className="flex flex-col w-full items-start justify-center gap-3">
                       {/* Contact Info */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center space-x-3 text-zinc-600"
+                        className="flex items-center space-x-3 text-zinc-600 dark:text-zinc-300"
                         onClick={copyEmail}
                       >
-                        <div className="w-10 h-10 rounded-full bg-lime-50 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-lime-50 dark:bg-lime-900 flex items-center justify-center">
                           <Mail className="w-5 h-5 text-lime-500" />
                         </div>
                         <div className="flex flex-col">
@@ -316,9 +314,9 @@ const Navbar = () => {
                         href="tel:+19794847983"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center space-x-3 text-zinc-600"
+                        className="flex items-center space-x-3 text-zinc-600 dark:text-zinc-300"
                       >
-                        <div className="w-10 h-10 rounded-full bg-lime-50 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-lime-50 dark:bg-lime-900 flex items-center justify-center">
                           <PhoneCall className="w-5 h-5 text-lime-500" />
                         </div>
                         <div className="flex flex-col">
