@@ -1,15 +1,15 @@
 "use client"
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { Moon, Sun, Check, AlertCircle } from "lucide-react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Progress } from "@/components/ui/progress"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { AlertCircle, Check } from "lucide-react"
+import type React from "react"
+import { useEffect, useState } from "react"
 
 interface FormData {
   fullName: string
@@ -31,7 +31,6 @@ interface FormErrors {
 }
 
 export default function EnrollmentAgreement() {
-  const [darkMode, setDarkMode] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
   const [progress, setProgress] = useState(25)
   const [formData, setFormData] = useState<FormData>({
@@ -49,14 +48,6 @@ export default function EnrollmentAgreement() {
     agreeToTerms: false,
   })
   const [errors, setErrors] = useState<FormErrors>({})
-
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark")
-    } else {
-      document.documentElement.classList.remove("dark")
-    }
-  }, [darkMode])
 
   useEffect(() => {
     setProgress(currentStep * 25)
@@ -118,7 +109,7 @@ export default function EnrollmentAgreement() {
 
   return (
     <div
-      className={`min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-black transition-colors duration-300 flex items-center justify-center ${darkMode ? "dark" : ""}`}
+      className={`min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-black transition-colors duration-300 flex items-center justify-center`}
     >
       {/* Main Content */}
         <div className="bg-white dark:bg-zinc-800 rounded-3xl shadow-2xl overflow-hidden max-w-3xl p-8">
