@@ -1004,7 +1004,7 @@ export default function PhlebotomyEnrollment() {
                   <li className="text-lg">Follow the manufacturer&apos;s instructions for operating equipment</li>
                   <li className="text-lg">Handle equipment with care and store chemicals properly</li>
                   <li className="text-lg">Report any broken or frayed electrical cord to your instructor</li>
-                  <li className="text-lg">Discard any broken glassware into a "Sharps" container</li>
+                  <li className="text-lg">Discard any broken glassware into a &quot;Sharps&quot; container</li>
                   <li className="text-lg">Use appropriate chemical spill kits to clean up spills</li>
                   <li className="text-lg">Report any accident to your instructor</li>
                 </ol>
