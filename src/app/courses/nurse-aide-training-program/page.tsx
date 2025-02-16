@@ -109,7 +109,7 @@ export default function EnrollmentAgreement() {
 
   return (
     <div
-      className={`min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-black transition-colors duration-300 flex items-center justify-center`}
+      className={`min-h-screen bg-gradient-to-br from-zinc-50 sm:mt-0 mt-6 to-zinc-100 dark:from-zinc-900 dark:to-black transition-colors duration-300 flex items-center justify-center`}
     >
       {/* Main Content */}
         <div className="bg-white dark:bg-zinc-800 rounded-3xl shadow-2xl overflow-hidden max-w-3xl p-8">

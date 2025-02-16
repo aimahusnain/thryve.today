@@ -294,7 +294,7 @@ const CoursesPage: React.FC = () => {
       title: "Phlebotomy Class",
       price: "555",
       duration: "3.5 weeks",
-      link: "/courses/nurse-aide-training-program",
+      link: "/courses/phlebotomy-class",
       category: "certification",
       hours: [
         { type: "Classroom", amount: "50 Hours" },
