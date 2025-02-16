@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CalendarIcon, Upload } from "lucide-react"
-import { useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -45,8 +44,6 @@ const formSchema = z.object({
 })
 
 export default function PhlebotomyEnrollment() {
-  const [isDarkMode, setIsDarkMode] = useState(false)
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
