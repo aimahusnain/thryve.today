@@ -58,7 +58,7 @@ export default function Home() {
                 fontSize={1}
                 className="font-medium leading-none text-primary text-white dark:text-zinc-200"
               >
-                {`13+ YEARS EXPERIENCE • `}
+                {`THRYVE.TODAY TRAINING CENTER • `}
               </SpinningText>
             </motion.div>
 
@@ -140,7 +140,7 @@ export default function Home() {
                 transition={{ delay: 0.4, duration: 0.3 }}
               >
                 Empower yourself with medical skills guided by experienced
-                educators who care about your growth.
+                instructors who care about your growth.
               </motion.p>
 
               <motion.div

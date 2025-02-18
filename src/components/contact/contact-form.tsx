@@ -131,7 +131,7 @@ export function ContactForm() {
           <h2 className="text-2xl font-semibold">Contact us</h2>
         </div>
         <p className="text-muted-foreground">
-          Talk to our educators about your enterprise needs.
+          Talk to our instructors about your enterprise needs.
         </p>
       </CardHeader>
       <CardContent>

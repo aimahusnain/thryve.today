@@ -89,7 +89,7 @@ export default function PhlebotomyEnrollment() {
               <br />
               Phone: (979) 4-Thryve (979-484-7983)
               <br />
-              Email: info@thryve.today
+              Email: infor@thryve.today 
             </CardDescription>
           </CardHeader>
         </Card>

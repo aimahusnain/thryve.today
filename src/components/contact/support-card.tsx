@@ -14,7 +14,7 @@ export function SupportCard() {
         <div className="space-y-2">
           <div className="flex items-center space-x-2">
             <Mail className="h-5 w-5 text-primary" />
-            <Link href="mailto:info@thryve.today" className="text-foreground hover:underline">info@thryve.today</Link>
+            <Link href="mailto:infor@thryve.today " className="text-foreground hover:underline">infor@thryve.today</Link>
           </div>
           <div className="flex items-center space-x-2">
             <Phone className="h-5 w-5 text-primary" />

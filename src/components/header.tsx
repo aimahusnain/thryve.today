@@ -27,7 +27,7 @@ const navLinks: NavLink[] = [
   { title: "Home", href: "home" },
   { title: "Courses", href: "courses" },
   { title: "Whyus", href: "why-us" },
-  { title: "Educators", href: "educators" },
+  { title: "Instructors", href: "instructors" },
   { title: "Contact", href: "contact" },
 ];
 
@@ -38,7 +38,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const copyEmail = async () => {
-    const email = "info@thryve.today";
+    const email = "infor@thryve.today";
     await navigator.clipboard.writeText(email);
     setCopied(true);
     toast.success("Email copied to clipboard!", {
@@ -82,7 +82,7 @@ const Navbar = () => {
               onClick={copyEmail}
             >
               <Mail className="w-4 h-4" />
-              <span>info@thryve.today</span>
+              <span>infor@thryve.today </span>
               <AnimatePresence>
                 {!copied ? (
                   <motion.div
@@ -300,7 +300,7 @@ const Navbar = () => {
                         </div>
                         <div className="flex flex-col">
                           <span className="text-sm font-medium">Email Us</span>
-                          <span className="text-xs">info@thryve.today</span>
+                          <span className="text-xs">infor@thryve.today</span>
                         </div>
                         {copied ? (
                           <Check className="w-5 h-5 text-green-500 ml-auto" />

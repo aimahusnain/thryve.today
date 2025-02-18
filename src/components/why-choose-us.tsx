@@ -15,9 +15,9 @@ const WhyChooseUsSection = () => {
     },
     {
       icon: <GraduationCap className="w-8 h-8 text-lime-500" />,
-      title: "Expert Educators",
+      title: "Expert Instructors",
       description:
-        "Learn directly from experienced and respected medical professionals who bring real-world expertise to your education. Our educators are committed to maintaining the highest standards of medical training.",
+        "Learn directly from experienced and respected medical professionals who bring real-world expertise to your education. Our instructors are committed to maintaining the highest standards of medical training.",
     },
     {
       icon: <BookOpen className="w-8 h-8 text-lime-500" />,

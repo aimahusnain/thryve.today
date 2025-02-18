@@ -161,7 +161,7 @@ export default function NurseAideTrainingProgram() {
               <br />
               Phone: (979) 4-Thryve (979-484-7983)
               <br />
-              Email: info@thryve.today
+              Email: infor@thryve.today 
             </CardDescription>
           </CardHeader>
         </Card>
@@ -865,7 +865,7 @@ export default function NurseAideTrainingProgram() {
                     Thryve.today by 3rd day of class will be given a full refund
                     of total minus a $150 administrative fee; Thryve.today must
                     receive notice of withdrawal from class in writing via email
-                    to info@thryve.today or submit to the administrative office
+                    to infor@thryve.today  or submit to the administrative office
                     personnel by close of business on the first day of class.
                     Thryve.today reserves the right to withhold an
                     administrative fee of $150 deposit and the listed fee for

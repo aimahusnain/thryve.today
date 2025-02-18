@@ -23,7 +23,7 @@ const Footer = () => {
                   href="mailto:hello@thryve.today"
                   className="text-[14px] text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors"
                 >
-                  info@thryve.today
+                  infor@thryve.today
                 </Link>
               </div>
               <div>
