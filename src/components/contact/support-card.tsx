@@ -4,7 +4,6 @@ import { Clock, Facebook, Instagram, Mail, MapPin, Phone } from 'lucide-react'
 import Link from 'next/link'
 
 export function SupportCard() {
-  
   return (
     <Card className="bg-background dark:bg-gray-950 flex flex-col w-full justify-between p-6 rounded-3xl border border-border">
       <CardHeader className="space-y-1 p-0">
