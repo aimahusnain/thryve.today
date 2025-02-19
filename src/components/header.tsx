@@ -201,7 +201,7 @@ const Navbar = () => {
                     </Button>
                   </Goy>
                   <Goy id="courses">
-                    <Button className="bg-[#2db188] hover:bg-[#35dba8] rounded-full">
+                    <Button className="bg-[#2db188] hover:bg-[#35dba8] text-white hover:text-black rounded-full">
                       Get Started
                     </Button>
                   </Goy>
@@ -225,7 +225,7 @@ const Navbar = () => {
               <Button variant="ghost" className="rounded-full duration-300">
                 Sign In
               </Button>
-              <Button className="bg-[#2db188] hover:bg-[#35dba8] rounded-full transition-all duration-300">
+              <Button className="bg-[#2db188] text-white hover:bg-[#35dba8] rounded-full transition-all duration-300">
                 Get Started Today
               </Button>
             </div>
@@ -345,7 +345,7 @@ const Navbar = () => {
                       <Goy id="contact">
                         <Button
                           onClick={() => setIsMenuOpen(false)}
-                          className="w-full rounded-full h-12 text-base bg-[#2db188] hover:bg-[#35dba8]"
+                          className="w-full rounded-full h-12 text-white text-base bg-[#2db188] hover:bg-[#35dba8]"
                         >
                           Get Started Today
                         </Button>
