@@ -119,10 +119,10 @@ const Navbar = () => {
               {/* Logo */}
               <Link href="/" className="flex items-center">
                 <Image
-                  src="/logo.svg"
+                  src="/Logo.svg"
                   alt="Thryve Logo"
-                  width={100}
-                  height={100}
+                  width={150} 
+                  height={150}
                 />
               </Link>
 
@@ -132,7 +132,7 @@ const Navbar = () => {
                   <Goy
                     key={link.href}
                     id={link.href}
-                    className="text-zinc-700 dark:text-zinc-200 hover:text-lime-500 transition-colors duration-200"
+                    className="text-zinc-700 dark:text-zinc-200 hover:text-[#2db188] transition-colors duration-200"
                   >
                     {link.title}
                   </Goy>
@@ -145,13 +145,13 @@ const Navbar = () => {
                   <Goy
                     key={link.href}
                     id={link.href}
-                    className="text-zinc-700 dark:text-zinc-200 hover:text-lime-500 transition-colors duration-200 text-sm"
+                    className="text-zinc-700 dark:text-zinc-200 hover:text-[#2db188] transition-colors duration-200 text-sm"
                   >
                     {link.title}
                   </Goy>
                 ))}
                 <button
-                  className="text-zinc-700 dark:text-zinc-200 hover:text-lime-500"
+                  className="text-zinc-700 dark:text-zinc-200 hover:text-[#2db188]"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
                 >
                   <Menu className="w-5 h-5" />
@@ -201,7 +201,7 @@ const Navbar = () => {
                     </Button>
                   </Goy>
                   <Goy id="courses">
-                    <Button className="bg-lime-500 hover:bg-lime-600 rounded-full">
+                    <Button className="bg-[#2db188] hover:bg-[#35dba8] rounded-full">
                       Get Started
                     </Button>
                   </Goy>
@@ -225,7 +225,7 @@ const Navbar = () => {
               <Button variant="ghost" className="rounded-full duration-300">
                 Sign In
               </Button>
-              <Button className="bg-lime-500 hover:bg-lime-600 rounded-full transition-all duration-300">
+              <Button className="bg-[#2db188] hover:bg-[#35dba8] rounded-full transition-all duration-300">
                 Get Started Today
               </Button>
             </div>
@@ -268,13 +268,13 @@ const Navbar = () => {
                             <span className="text-2xl font-medium text-zinc-800 dark:text-zinc-200">
                               {link.title}
                             </span>
-                            <span className="text-sm text-zinc-500 dark:text-zinc-400 group-hover:text-lime-500 transition-colors">
+                            <span className="text-sm text-zinc-500 dark:text-zinc-400 group-hover:text-[#2db188] transition-colors">
                               Explore {link.title.toLowerCase()}
                             </span>
                           </div>
                           <motion.div
                             whileHover={{ x: 5 }}
-                            className="text-lime-500"
+                            className="text-[#2db188]"
                           >
                             <ChevronRight />
                           </motion.div>
@@ -296,7 +296,7 @@ const Navbar = () => {
                         onClick={copyEmail}
                       >
                         <div className="w-10 h-10 rounded-full bg-lime-50 dark:bg-lime-900 flex items-center justify-center">
-                          <Mail className="w-5 h-5 text-lime-500" />
+                          <Mail className="w-5 h-5 text-[#2db188]" />
                         </div>
                         <div className="flex flex-col">
                           <span className="text-sm font-medium">Email Us</span>
@@ -317,7 +317,7 @@ const Navbar = () => {
                         className="flex items-center space-x-3 text-zinc-600 dark:text-zinc-300"
                       >
                         <div className="w-10 h-10 rounded-full bg-lime-50 dark:bg-lime-900 flex items-center justify-center">
-                          <PhoneCall className="w-5 h-5 text-lime-500" />
+                          <PhoneCall className="w-5 h-5 text-[#2db188]" />
                         </div>
                         <div className="flex flex-col">
                           <span className="text-sm font-medium">Phone No.</span>
@@ -345,7 +345,7 @@ const Navbar = () => {
                       <Goy id="contact">
                         <Button
                           onClick={() => setIsMenuOpen(false)}
-                          className="w-full rounded-full h-12 text-base bg-lime-500 hover:bg-lime-600"
+                          className="w-full rounded-full h-12 text-base bg-[#2db188] hover:bg-[#35dba8]"
                         >
                           Get Started Today
                         </Button>

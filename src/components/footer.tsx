@@ -7,14 +7,15 @@ const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="w-full pt-8 md:pt-12 pb-6 md:pb-[17px] px-10 sm:px-6 md:px-[72px] bg-white dark:bg-zinc-900 border-b-4 border-[#96F80F]">
+    <footer className="w-full pt-8 md:pt-12 pb-6 md:pb-[17px] px-10 sm:px-6 md:px-[72px] bg-white dark:bg-zinc-900 border-b-4 border-[#2eb88e]">
       <div className="max-w-[1296px] mx-auto">
         {/* Main Content */}
         <div className="flex flex-col md:flex-row justify-between items-start gap-8 md:gap-0 mb-8 md:mb-[64px]">
           {/* Left Section */}
           <div className="space-y-6 w-full md:w-auto">
             {/* Logo */}
-            <Image src="/logo.svg" alt="Thryve Logo" width={200} height={200} />
+            <Image                   src="/Logo.svg"
+ alt="Thryve Logo" width={140} height={140} />
             {/* Contact Info */}
             <div className="grid grid-cols-1 sm:grid-cols-2 items-start gap-4 sm:gap-6">
               <div>
@@ -59,7 +60,7 @@ const Footer = () => {
             <div className="flex flex-col sm:flex-row gap-3">
               <Goy
                 id="contact"
-                className="w-full sm:w-auto px-5 py-[10px] bg-[#96F80F] rounded-[100px] text-[#101828] dark:text-zinc-900 font-semibold text-[14px] hover:bg-[#85dc0e] transition-colors"
+                className="w-full sm:w-auto px-5 py-[10px] bg-[#2eb88e] rounded-[100px] text-[#101828] dark:text-zinc-900 font-semibold text-[14px] hover:bg-[#85dc0e] transition-colors"
               >
                 Apply Now
               </Goy>
@@ -84,7 +85,7 @@ const Footer = () => {
               <Link
                 href="https://devkins.dev/"
                 target="_blank"
-                className="border-b-[#96F80F] border-b hover:border-b-2 transition-colors"
+                className="border-b-[#2eb88e] border-b hover:border-b-2 transition-colors"
               >
                 devkins.dev
               </Link>

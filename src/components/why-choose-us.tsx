@@ -8,19 +8,19 @@ import Goy from "./goy";
 const WhyChooseUsSection = () => {
   const features = [
     {
-      icon: <Heart className="w-8 h-8 text-lime-500" />,
+      icon: <Heart className="w-8 h-8 text-[#2db188]" />,
       title: "Personalized Learning",
       description:
         "Experience one-on-one training delivered with love and compassion. Our personalized approach ensures that each student receives the attention and support they need to succeed in their medical education journey.",
     },
     {
-      icon: <GraduationCap className="w-8 h-8 text-lime-500" />,
+      icon: <GraduationCap className="w-8 h-8 text-[#2db188]" />,
       title: "Expert Instructors",
       description:
         "Learn directly from experienced and respected medical professionals who bring real-world expertise to your education. Our instructors are committed to maintaining the highest standards of medical training.",
     },
     {
-      icon: <BookOpen className="w-8 h-8 text-lime-500" />,
+      icon: <BookOpen className="w-8 h-8 text-[#2db188]" />,
       title: "Diverse Offerings",
       description:
         "Access comprehensive training programs tailored to various medical disciplines and skill levels. Whether you're starting your medical career or advancing your expertise, we have the right program for you.",
@@ -64,12 +64,12 @@ const WhyChooseUsSection = () => {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-sm uppercase tracking-wider text-lime-500 font-bold mb-3">
+          <h2 className="text-sm uppercase tracking-wider text-[#2db188] font-bold mb-3">
             WHY CHOOSE US?
           </h2>
           <h3 className="text-4xl md:text-5xl font-bold mb-6 text-zinc-900 dark:text-white">
             Why{" "}
-            <span className="ml-2 font-thryez text-lime-500">thryve.today</span>{" "}
+            <span className="ml-2 font-thryez text-[#2db188]">thryve.today</span>{" "}
             is The Right Choice for You
           </h3>
         </motion.div>
@@ -110,7 +110,7 @@ const WhyChooseUsSection = () => {
             <div className="bg-zinc-900 dark:bg-black text-white rounded-2xl p-8 h-full group">
               <div className="relative h-full flex flex-col">
                 <div className="mb-6">
-                  <Hand className="w-8 h-8 text-lime-500" />
+                  <Hand className="w-8 h-8 text-[#2db188]" />
                 </div>
                 <h4 className="text-xl font-bold mb-4">Community Impact</h4>
                 <p className="text-zinc-300 dark:text-zinc-400 leading-relaxed mb-6">
@@ -125,7 +125,7 @@ const WhyChooseUsSection = () => {
                 </p>
                 <Goy 
                   id='courses' 
-                  className="mt-auto w-full bg-lime-500 text-zinc-900 dark:text-zinc-900 px-8 py-4 rounded-xl font-semibold hover:bg-lime-400 transition-colors duration-300 flex items-center justify-center group/button"
+                  className="mt-auto w-full bg-[#2db188] text-zinc-900 dark:text-zinc-900 px-8 py-4 rounded-xl font-semibold hover:bg-[#2db188] transition-colors duration-300 flex items-center justify-center group/button"
                 >
                   Start Your Journey
                   <ArrowRight className="ml-2 w-5 h-5 group-hover/button:translate-x-1 transition-transform duration-300" />

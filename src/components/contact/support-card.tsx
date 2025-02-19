@@ -33,7 +33,7 @@ export function SupportCard() {
           </div>
           <div className="grid grid-cols-2 gap-1 text-sm">
             <p>Mon-Fri</p>
-            <p>09:00 am – 05:00 pm</p>
+            <p>09:00 am - 05:00 pm</p>
             <p>Sat-Sun</p>
             <p>Closed</p>
           </div>

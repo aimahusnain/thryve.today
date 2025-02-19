@@ -55,12 +55,12 @@ const BottomContactBar = () => {
           <Goy
             id="contact"
             className="flex-1 group flex items-center justify-center gap-2 px-4 py-2.5
-                     bg-gradient-to-r from-lime-500 to-lime-600
-                     hover:from-lime-600 hover:to-lime-700
+                     bg-gradient-to-r from-[#2db188] to-[#35dba8]
+                     hover:from-[#35dba8] hover:to-lime-700
                      text-white font-medium rounded-xl
                      transition-all duration-300 
-                     shadow-md shadow-lime-500/20 dark:shadow-lime-500/10
-                     border border-lime-400/50"
+                     shadow-md shadow-[#2db188]/20 dark:shadow-[#2db188]/10
+                     border border-[#2db188]/50"
           >
             <span className="text-sm">Contact Now</span>
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -109,13 +109,13 @@ const BottomContactBar = () => {
           <Goy
             id="contact"
             className="group flex items-center gap-2 px-6 py-2.5
-                     bg-gradient-to-r from-lime-500 to-lime-600
-                     hover:from-lime-600 hover:to-lime-700
+                     bg-gradient-to-r from-[#2db188] to-[#35dba8]
+                     hover:from-[#35dba8] hover:to-[#29a680]
                      text-white font-medium rounded-xl
-                     transition-all duration-300 
-                     shadow-lg shadow-lime-500/20 dark:shadow-lime-500/10
-                     hover:shadow-xl hover:shadow-lime-600/30 dark:hover:shadow-lime-600/20
-                     border border-lime-400/50"
+                     transition-all duration-500 
+                     shadow-lg shadow-[#2db188]/20 dark:shadow-[#2db188]/10
+                     hover:shadow-xl hover:shadow-[#35dba8]/30 dark:hover:shadow-[#35dba8]/20
+                     border border-[#2db188]/50"
           >
             <span className="text-sm">Contact Now</span>
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />

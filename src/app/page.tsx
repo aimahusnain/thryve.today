@@ -129,7 +129,7 @@ export default function Home() {
                 transition={{ delay: 0.3, duration: 0.3 }}
               >
                 Transform Your Life with Quality <br />{" "}
-                <span className="text-lime-500 font-bold">
+                <span className="text-[#2db188] font-bold">
                   - Medical Training
                 </span>
               </motion.h1>
@@ -201,7 +201,7 @@ export default function Home() {
                 <h3 className="font-semibold text-base sm:text-lg dark:text-white">Reviews</h3>
                 <Button
                   variant="link"
-                  className="text-primary dark:text-lime-500 text-sm sm:text-base hover:text-primary/80 dark:hover:text-lime-400 transition-colors duration-200"
+                  className="text-primary dark:text-[#2db188] text-sm sm:text-base hover:text-primary/80 dark:hover:text-[#2db188] transition-colors duration-200"
                 >
                   View all
                 </Button>
@@ -215,7 +215,7 @@ export default function Home() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.8 + i * 0.1, duration: 0.3 }}
                   >
-                    <Avatar className="w-10 h-10 sm:w-12 sm:h-12 border-2 border-primary/20 dark:border-lime-500/20">
+                    <Avatar className="w-10 h-10 sm:w-12 sm:h-12 border-2 border-primary/20 dark:border-[#2db188]/20">
                       <AvatarImage
                         src={`https://i.pravatar.cc/124?img=${i + 1}`}
                       />

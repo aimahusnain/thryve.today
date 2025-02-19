@@ -47,7 +47,7 @@ const TeamofEducators = () => {
         <span className="text-primary mb-4 inline-block">OUR TEAM</span>
         <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold tracking-tight mb-6">
           Our Team of{" "}
-          <span className="font-thryez text-lime-500">Instructors</span>
+          <span className="font-thryez text-[#2db188]">Instructors</span>
         </h2>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Goy id="contact">

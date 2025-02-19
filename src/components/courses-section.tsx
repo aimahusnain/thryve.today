@@ -70,11 +70,11 @@ const CourseCard: React.FC<CourseCardProps> = ({
         }`}
       >
         <div className="space-y-2">
-          <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white group-hover:text-lime-600 dark:group-hover:text-lime-400 transition-colors duration-300">
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white group-hover:text-[#35dba8] dark:group-hover:text-[#2db188] transition-colors duration-300">
             {title}
           </h3>
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-1.5 text-lime-600 dark:text-lime-400 bg-lime-50 dark:bg-lime-400/10 px-3 py-1.5 rounded-full">
+            <div className="flex items-center gap-1.5 text-[#35dba8] dark:text-[#2db188] bg-lime-50 dark:bg-[#2db188]/10 px-3 py-1.5 rounded-full">
               <DollarSign className="w-4 h-4" />
               <span className="font-semibold">{price}</span>
             </div>
@@ -90,7 +90,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
         </p>
 
         {variant === "row" && additionalInfo && (
-          <p className="text-sm text-lime-600 dark:text-lime-400 italic">
+          <p className="text-sm text-[#35dba8] dark:text-[#2db188] italic">
             {additionalInfo}
           </p>
         )}
@@ -121,7 +121,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
             {whoFor.length > 0 && (
               <div className="space-y-3">
                 <h4 className="text-sm md:text-base font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
-                  <Users className="w-4 h-4 md:w-5 md:h-5 text-lime-600 dark:text-lime-400" />
+                  <Users className="w-4 h-4 md:w-5 md:h-5 text-[#35dba8] dark:text-[#2db188]" />
                   Who Should Enroll?
                 </h4>
                 <ul className="grid gap-2">
@@ -130,7 +130,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
                       key={index}
                       className="flex items-start gap-2 text-sm md:text-base text-zinc-600 dark:text-zinc-300"
                     >
-                      <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-lime-600 dark:text-lime-400 shrink-0 mt-0.5" />
+                      <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-[#35dba8] dark:text-[#2db188] shrink-0 mt-0.5" />
                       <span>{item}</span>
                     </li>
                   ))}
@@ -140,7 +140,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
             <div className="space-y-3">
               <h4 className="text-sm font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
-                <GraduationCap className="w-4 h-4 text-lime-600 dark:text-lime-400" />
+                <GraduationCap className="w-4 h-4 text-[#35dba8] dark:text-[#2db188]" />
                 Program Highlights
               </h4>
               <ul className="grid gap-2">
@@ -149,7 +149,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
                     key={index}
                     className="flex items-start gap-2 text-sm md:text-base text-zinc-600 dark:text-zinc-300"
                   >
-                    <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-lime-600 dark:text-lime-400 shrink-0 mt-0.5" />
+                    <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-[#35dba8] dark:text-[#2db188] shrink-0 mt-0.5" />
                     <span className="line-clamp-2">{highlight}</span>
                   </li>
                 ))}
@@ -160,7 +160,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           <Link href={link} className="flex justify-end">
             <button
               className="flex items-center justify-center gap-2 px-6 py-3 md:py-4 
-                       bg-zinc-900 dark:bg-lime-400 hover:bg-lime-600 dark:hover:bg-lime-300 
+                       bg-zinc-900 dark:bg-[#2db188] hover:bg-[#35dba8] dark:hover:bg-lime-300 
                        text-white dark:text-zinc-900 font-medium text-sm md:text-base rounded-xl
                        transition-all duration-300 group-hover:shadow-lg"
             >
@@ -193,7 +193,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           {whoFor.length > 0 && (
             <div className="space-y-3 md:space-y-4 mt-4">
               <h4 className="text-sm md:text-base font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
-                <Users className="w-4 h-4 md:w-5 md:h-5 text-lime-600 dark:text-lime-400" />{" "}
+                <Users className="w-4 h-4 md:w-5 md:h-5 text-[#35dba8] dark:text-[#2db188]" />{" "}
                 Who Should Enroll?
               </h4>
               <ul
@@ -208,7 +208,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
                     key={index}
                     className="flex items-start gap-2 text-sm md:text-base text-zinc-600 dark:text-zinc-300"
                   >
-                    <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-lime-600 dark:text-lime-400 shrink-0 mt-0.5" />
+                    <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-[#35dba8] dark:text-[#2db188] shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>
                 ))}
@@ -218,7 +218,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
           <div className="space-y-3 mt-6 mb-1">
             <h4 className="text-sm font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
-              <GraduationCap className="w-4 h-4 text-lime-600 dark:text-lime-400" />{" "}
+              <GraduationCap className="w-4 h-4 text-[#35dba8] dark:text-[#2db188]" />{" "}
               Program Highlights
             </h4>
             <ul className="grid gap-2 md:gap-3">
@@ -227,7 +227,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
                   key={index}
                   className="flex items-start gap-2 text-sm md:text-base text-zinc-600 dark:text-zinc-300"
                 >
-                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-lime-600 dark:text-lime-400 shrink-0 mt-0.5" />
+                  <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-[#35dba8] dark:text-[#2db188] shrink-0 mt-0.5" />
                   <span className="line-clamp-2">{highlight}</span>
                 </li>
               ))}
@@ -235,7 +235,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           </div>
 
           {additionalInfo && (
-            <p className="text-sm text-lime-600 dark:text-lime-400 italic mt-5">
+            <p className="text-sm text-[#35dba8] dark:text-[#2db188] italic mt-5">
               {additionalInfo}
             </p>
           )}
@@ -243,7 +243,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           <Link href={link} className="mt-auto pt-6">
             <button
               className="w-full flex items-center justify-center gap-2 px-6 py-3 md:py-4 
-                       bg-zinc-900 dark:bg-lime-400 hover:bg-lime-600 dark:hover:bg-lime-300 
+                       bg-zinc-900 dark:bg-[#2db188] hover:bg-[#35dba8] dark:hover:bg-lime-300 
                        text-white dark:text-zinc-900 font-medium text-sm md:text-base rounded-xl
                        transition-all duration-300 group-hover:shadow-lg"
             >
@@ -437,7 +437,7 @@ const CoursesPage: React.FC = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 rounded-xl border border-zinc-200 dark:border-zinc-800 
                          bg-white dark:bg-zinc-900 text-zinc-900 dark:text-white
-                         focus:outline-none focus:ring-2 focus:ring-lime-500 dark:focus:ring-lime-400"
+                         focus:outline-none focus:ring-2 focus:ring-[#2db188] dark:focus:ring-[#2db188]"
               />
             </div>
 
@@ -453,7 +453,7 @@ const CoursesPage: React.FC = () => {
                       px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap
                       ${
                         selectedCategory === category.id
-                          ? "bg-lime-600 dark:bg-lime-400 text-white dark:text-zinc-900"
+                          ? "bg-[#35dba8] dark:bg-[#2db188] text-white dark:text-zinc-900"
                           : "bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800"
                       }
                       border border-zinc-200 dark:border-zinc-800
