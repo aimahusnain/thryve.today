@@ -127,6 +127,7 @@ const Navbar = () => {
                 />
               </Link>
 
+
               {/* Desktop Navigation Links */}
               <div className="hidden lg:flex items-center space-x-8 ml-8">
                 {navLinks.map((link) => (
