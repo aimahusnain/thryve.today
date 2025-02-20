@@ -160,7 +160,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           <Link href={link} className="flex justify-end">
             <button
               className="flex items-center justify-center gap-2 px-6 py-3 md:py-4 
-                       bg-zinc-900 dark:bg-[#2db188] hover:bg-[#35dba8] dark:hover:bg-lime-300 
+                       bg-zinc-900 dark:bg-[#2db188] h dark:hover:bg-lime-300 
                        text-white dark:text-zinc-900 font-medium text-sm md:text-base rounded-xl
                        transition-all duration-300 group-hover:shadow-lg"
             >
@@ -243,7 +243,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
           <Link href={link} className="mt-auto pt-6">
             <button
               className="w-full flex items-center justify-center gap-2 px-6 py-3 md:py-4 
-                       bg-zinc-900 dark:bg-[#2db188] hover:bg-[#35dba8] dark:hover:bg-lime-300 
+                       bg-zinc-900 dark:bg-[#2db188] h dark:hover:bg-lime-300 
                        text-white dark:text-zinc-900 font-medium text-sm md:text-base rounded-xl
                        transition-all duration-300 group-hover:shadow-lg"
             >

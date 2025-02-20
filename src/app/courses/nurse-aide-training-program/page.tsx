@@ -36,7 +36,9 @@ const formSchema = z.object({
   studentName: z
     .string()
     .min(2, { message: "Student name must be at least 2 characters." }),
-  dateOfBirth: z.date({ required_error: "A date of birth is required." }),
+  dateOfBirth: z
+  .string()
+  .min(5, { message: "Add your Birth Date" }),
   address: z
     .string()
     .min(5, { message: "Address must be at least 5 characters." }),
@@ -97,12 +99,12 @@ const formSchema = z.object({
     required_error: "Student signature date for lab agreement is required.",
   }),
 });
-
 export default function NurseAideTrainingProgram() {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       studentName: "",
+      dateOfBirth: undefined,
       address: "",
       cityStateZip: "",
       phoneHome: "",
@@ -113,12 +115,6 @@ export default function NurseAideTrainingProgram() {
       emergencyContact: "",
       emergencyRelationship: "",
       emergencyPhone: "",
-      programType: "",
-      classDays: [] as string[],
-      classTime: "",
-      classEndTime: "",
-      numberOfWeeks: 0,
-      totalClockHours: 0,
     },
   });
 
@@ -181,10 +177,11 @@ export default function NurseAideTrainingProgram() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Student Name
+                        Student Name <span className='text-red-500'>*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
+                        required
                           placeholder="John Doe"
                           {...field}
                           className="bg-background text-foreground"
@@ -194,59 +191,37 @@ export default function NurseAideTrainingProgram() {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="dateOfBirth"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel className="text-foreground font-medium">
-                        Date of Birth
-                      </FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                field.value.toLocaleDateString()
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) =>
-                              date > new Date() || date < new Date("1900-01-01")
-                            }
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+    <FormField
+  control={form.control}
+  name="dateOfBirth"
+  render={({ field }) => (
+    <FormItem className="flex flex-col">
+      <FormLabel className="text-foreground font-medium">
+        Date of Birth <span className="text-red-500">*</span>
+      </FormLabel>
+      <FormControl>
+        <Input
+          type="text"
+          placeholder="Enter date of birth (DD/MM/YYYY)"
+          className="w-full pl-3"
+          {...field}
+        />
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
                 <FormField
                   control={form.control}
                   name="address"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Address
+                        Address  <span className='text-red-500'>*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
+                        required
                           placeholder="123 Main St"
                           {...field}
                           className="bg-background text-foreground"
@@ -262,10 +237,11 @@ export default function NurseAideTrainingProgram() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        City/State/ZIP
+                        City/State/ZIP  <span className='text-red-500'>*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
+                        required
                           placeholder="Anytown, ST 12345"
                           {...field}
                           className="bg-background text-foreground"
@@ -281,10 +257,11 @@ export default function NurseAideTrainingProgram() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Phone (Home)
+                        Phone (Home)  <span className='text-red-500'>*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
+                        required
                           placeholder="(123) 456-7890"
                           {...field}
                           className="bg-background text-foreground"
@@ -300,10 +277,11 @@ export default function NurseAideTrainingProgram() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Phone (Cell)
+                        Phone (Cell)  <span className='text-red-500'>*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
+                        required
                           placeholder="(123) 456-7890"
                           {...field}
                           className="bg-background text-foreground"
@@ -319,10 +297,11 @@ export default function NurseAideTrainingProgram() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Email Address
+                        Email Address  <span className='text-red-500'>*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
+                        required
                           placeholder="johndoe@example.com"
                           {...field}
                           className="bg-background text-foreground"
@@ -338,10 +317,11 @@ export default function NurseAideTrainingProgram() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Social Security #
+                        Social Security #  <span className='text-red-500'>*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
+                        required
                           placeholder="123-45-6789"
                           {...field}
                           className="bg-background text-foreground"
@@ -357,10 +337,11 @@ export default function NurseAideTrainingProgram() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Student State ID #
+                        Student State ID #  <span className='text-red-500'>*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
+                        required
                           placeholder="Optional"
                           {...field}
                           className="bg-background text-foreground"
@@ -376,10 +357,11 @@ export default function NurseAideTrainingProgram() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Emergency Contact
+                        Emergency Contact  <span className='text-red-500'>*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input
+                        <Input  
+                        required
                           placeholder="Jane Doe"
                           {...field}
                           className="bg-background text-foreground"
@@ -399,6 +381,7 @@ export default function NurseAideTrainingProgram() {
                       </FormLabel>
                       <FormControl>
                         <Input
+                        required
                           placeholder="Spouse"
                           {...field}
                           className="bg-background text-foreground"
@@ -414,10 +397,11 @@ export default function NurseAideTrainingProgram() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Emergency Contact Phone
+                        Emergency Contact Phone  <span className='text-red-500'>*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
+                        required
                           placeholder="(123) 456-7890"
                           {...field}
                           className="bg-background text-foreground"
@@ -588,47 +572,7 @@ export default function NurseAideTrainingProgram() {
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name="programEndDate"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel className="text-foreground font-medium">
-                          Scheduled End Date
-                        </FormLabel>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <FormControl>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground"
-                                )}
-                              >
-                                {field.value ? (
-                                  field.value.toLocaleDateString()
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                              </Button>
-                            </FormControl>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              mode="single"
-                              selected={field.value}
-                              onSelect={field.onChange}
-                              disabled={(date) => date < new Date()}
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+              
                   <FormField
                     control={form.control}
                     name="programType"
@@ -739,88 +683,10 @@ export default function NurseAideTrainingProgram() {
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="classTime"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-foreground font-medium">
-                          Time Class Begins
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="time"
-                            {...field}
-                            className="bg-background text-foreground"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="classEndTime"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-foreground font-medium">
-                          Time Class Ends
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="time"
-                            {...field}
-                            className="bg-background text-foreground"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="numberOfWeeks"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-foreground font-medium">
-                          Number of Weeks
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) =>
-                              field.onChange(Number.parseInt(e.target.value))
-                            }
-                            className="bg-background text-foreground"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="totalClockHours"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-foreground font-medium">
-                          Total Clock Hours
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            onChange={(e) =>
-                              field.onChange(Number.parseInt(e.target.value))
-                            }
-                            className="bg-background text-foreground"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+            
+     
+             
+                 
                 </div>
               </CardContent>
             </Card>
@@ -889,13 +755,7 @@ export default function NurseAideTrainingProgram() {
               {/* <CardContent className="p-6"></CardHeader> */}
               <CardContent className="p-6">
                 <p className="text-foreground mb-6 leading-relaxed">
-                  The student acknowledges receiving a copy of this completed
-                  agreement and the school course catalog before signing this
-                  agreement. By signing this agreement, the student acknowledges
-                  that he/she has read this agreement, understands the terms and
-                  conditions, and agrees to the conditions outlined in this
-                  agreement. The student and the school will retain a copy of
-                  this agreement.
+                By submitting this form, I am providing my digital signature and agree to the terms and conditions outlined in this agreement.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormField
@@ -909,29 +769,12 @@ export default function NurseAideTrainingProgram() {
                         <FormControl>
                           <div className="flex items-center space-x-2">
                             <Input
-                              type="file"
+                            required
+                              type="text"
                               id="student-signature-upload"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  field.onChange(file);
-                                }
-                              }}
                               className="bg-background text-foreground"
                             />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              onClick={() =>
-                                document
-                                  .getElementById("student-signature-upload")
-                                  ?.click()
-                              }
-                            >
-                              <Upload className="h-4 w-4" />
-                            </Button>
+                    
                           </div>
                         </FormControl>
                         <FormMessage />
@@ -988,11 +831,12 @@ export default function NurseAideTrainingProgram() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-foreground font-medium">
-                          Program Coordinator Signature
+                        Program Director/Director 
                         </FormLabel>
                         <FormControl>
                           <div className="flex items-center space-x-2">
                             <Input
+                            required
                               type="file"
                               id="coordinator-signature-upload"
                               accept="image/*"
@@ -1079,6 +923,7 @@ export default function NurseAideTrainingProgram() {
                         <FormControl>
                           <div className="flex items-center space-x-2">
                             <Input
+                            required
                               type="file"
                               id="parent-guardian-signature-upload"
                               accept="image/*"

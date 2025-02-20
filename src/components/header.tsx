@@ -64,7 +64,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <div className={`fixed top-0 sm:top-4 left-0 right-0 z-[60] bg-transparent`}>
+    <div className={`fixed top-0  sm:top-4 left-0 right-0 z-20 bg-transparent`}>
       <div className="sm:mx-12 px-0 md:px-6 lg:px-0">
         <div className="flex justify-between items-center gap-4">
           {/* Email Group - Visible only on large screens */}
@@ -117,9 +117,10 @@ const Navbar = () => {
           >
             <div className="flex items-center justify-between h-full px-5">
               {/* Logo */}
-              <Link href="/" className="flex items-center">
+              <Link href="/" className="flex  items-center">
                 <Image
                   src="/logo.svg"
+                  className="z-30"
                   alt="Thryve Logo"
                   width={150} 
                   height={150}
@@ -195,11 +196,9 @@ const Navbar = () => {
                   }}
                 >
                   <ThemeToggle />
-                  <Goy id="contact">
-                    <Button variant="ghost" className="rounded-full">
+                    <Link href='/sign-in' className="rounded-full">
                       Sign In
-                    </Button>
-                  </Goy>
+                    </Link>
                   <Goy id="courses">
                     <Button className="bg-[#2db188] hover:bg-[#35dba8] text-white hover:text-black rounded-full">
                       Get Started
