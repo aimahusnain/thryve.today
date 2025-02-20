@@ -106,9 +106,9 @@ export default function PhlebotomyEnrollment() {
                   name="studentName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground font-medium">Student Name</FormLabel>
+                      <FormLabel className="text-foreground font-medium">Student Name  <span className="text-red-500">*</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="John Doe" {...field} className="bg-background text-foreground" />
+                        <Input required placeholder="John Doe" {...field} className="bg-background text-foreground" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -119,7 +119,7 @@ export default function PhlebotomyEnrollment() {
                   name="dateOfBirth"
                   render={({ field }) => (
                     <FormItem className="flex flex-col">
-                      <FormLabel className="text-foreground font-medium">Date of Birth</FormLabel>
+                      <FormLabel className="text-foreground font-medium">Date of Birth  <span className="text-red-500">*</span></FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>
                           <FormControl>
@@ -154,9 +154,9 @@ export default function PhlebotomyEnrollment() {
                   name="address"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground font-medium">Address</FormLabel>
+                      <FormLabel className="text-foreground font-medium">Address  <span className="text-red-500">*</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="123 Main St" {...field} className="bg-background text-foreground" />
+                        <Input required placeholder="123 Main St" {...field} className="bg-background text-foreground" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -167,9 +167,9 @@ export default function PhlebotomyEnrollment() {
                   name="cityStateZip"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground font-medium">City/State/ZIP</FormLabel>
+                      <FormLabel className="text-foreground font-medium">City/State/ZIP  <span className="text-red-500">*</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="Anytown, ST 12345" {...field} className="bg-background text-foreground" />
+                        <Input required placeholder="Anytown, ST 12345" {...field} className="bg-background text-foreground" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -180,9 +180,9 @@ export default function PhlebotomyEnrollment() {
                   name="phoneHome"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground font-medium">Phone (Home)</FormLabel>
+                      <FormLabel className="text-foreground font-medium">Phone (Home)  <span className="text-red-500">*</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="(123) 456-7890" {...field} className="bg-background text-foreground" />
+                        <Input required placeholder="(123) 456-7890" {...field} className="bg-background text-foreground" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -193,9 +193,9 @@ export default function PhlebotomyEnrollment() {
                   name="phoneCell"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground font-medium">Phone (Cell)</FormLabel>
+                      <FormLabel className="text-foreground font-medium">Phone (Cell)  <span className="text-red-500">*</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="(123) 456-7890" {...field} className="bg-background text-foreground" />
+                        <Input required placeholder="(123) 456-7890" {...field} className="bg-background text-foreground" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -206,9 +206,9 @@ export default function PhlebotomyEnrollment() {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground font-medium">Email Address</FormLabel>
+                      <FormLabel className="text-foreground font-medium">Email Address  <span className="text-red-500">*</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="johndoe@example.com" {...field} className="bg-background text-foreground" />
+                        <Input required placeholder="johndoe@example.com" {...field} className="bg-background text-foreground" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -219,9 +219,9 @@ export default function PhlebotomyEnrollment() {
                   name="socialSecurity"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground font-medium">Social Security #</FormLabel>
+                      <FormLabel className="text-foreground font-medium">Social Security #  <span className="text-red-500">*</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="123-45-6789" {...field} className="bg-background text-foreground" />
+                        <Input required placeholder="123-45-6789" {...field} className="bg-background text-foreground" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -232,9 +232,9 @@ export default function PhlebotomyEnrollment() {
                   name="studentStateId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground font-medium">Student State ID #</FormLabel>
+                      <FormLabel className="text-foreground font-medium">Student State ID # <span className="text-red-500">*</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="Optional" {...field} className="bg-background text-foreground" />
+                        <Input required placeholder="Optional" {...field} className="bg-background text-foreground" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -245,9 +245,9 @@ export default function PhlebotomyEnrollment() {
                   name="emergencyContact"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground font-medium">Emergency Contact</FormLabel>
+                      <FormLabel className="text-foreground font-medium">Emergency Contact <span className="text-red-500">*</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="Jane Doe" {...field} className="bg-background text-foreground" />
+                        <Input required placeholder="Jane Doe" {...field} className="bg-background text-foreground" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -258,9 +258,9 @@ export default function PhlebotomyEnrollment() {
                   name="emergencyRelationship"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground font-medium">Relationship</FormLabel>
+                      <FormLabel className="text-foreground font-medium">Relationship <span className="text-red-500">*</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="Spouse" {...field} className="bg-background text-foreground" />
+                        <Input required placeholder="Spouse" {...field} className="bg-background text-foreground" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -271,9 +271,9 @@ export default function PhlebotomyEnrollment() {
                   name="emergencyPhone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground font-medium">Emergency Contact Phone</FormLabel>
+                      <FormLabel className="text-foreground font-medium">Emergency Contact Phone  <span className="text-red-500">*</span></FormLabel>
                       <FormControl>
-                        <Input placeholder="(123) 456-7890" {...field} className="bg-background text-foreground" />
+                        <Input required placeholder="(123) 456-7890" {...field} className="bg-background text-foreground" />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -746,11 +746,7 @@ export default function PhlebotomyEnrollment() {
               {/* <CardContent className="p-6"></CardHeader> */}
               <CardContent className="p-6">
                 <p className="text-foreground mb-6 leading-relaxed">
-                  The student acknowledges receiving a copy of this completed agreement and the school course catalog
-                  prior to signing this agreement. By signing this agreement, the student acknowledges that he/she has
-                  read this agreement, understands the terms and conditions, and agrees to the conditions outlined in
-                  this agreement. The student and the school will retain a copy of this agreement.
-                </p>
+                By submitting this form, I am providing my digital signature and agree to the terms and conditions outlined in this agreement.                </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormField
                     control={form.control}
@@ -826,29 +822,16 @@ export default function PhlebotomyEnrollment() {
                     name="coordinatorSignature"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-foreground font-medium">Program Coordinator Signature</FormLabel>
+                        <FormLabel className="text-foreground font-medium">Program Director/Director </FormLabel>
                         <FormControl>
                           <div className="flex items-center space-x-2">
                             <Input
-                              type="file"
+                              type="text"
                               id="coordinator-signature-upload"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0]
-                                if (file) {
-                                  field.onChange(file)
-                                }
-                              }}
+                           
                               className="bg-background text-foreground"
                             />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              onClick={() => document.getElementById("coordinator-signature-upload")?.click()}
-                            >
-                              <Upload className="h-4 w-4" />
-                            </Button>
+                     
                           </div>
                         </FormControl>
                         <FormMessage />
