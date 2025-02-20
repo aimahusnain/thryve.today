@@ -822,21 +822,39 @@ export default function PhlebotomyEnrollment() {
                     name="coordinatorSignature"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-foreground font-medium">Program Director/Director </FormLabel>
+                        <FormLabel className="text-foreground font-medium">
+                          Program Director/Director
+                        </FormLabel>
                         <FormControl>
                           <div className="flex items-center space-x-2">
                             <Input
-                              type="text"
+                              type="file"
                               id="coordinator-signature-upload"
-                           
+                              accept="image/*"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  field.onChange(file);
+                                }
+                              }}
                               className="bg-background text-foreground"
                             />
-                     
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              onClick={() =>
+                                document.getElementById("coordinator-signature-upload")?.click()
+                              }
+                            >
+                              <Upload className="h-4 w-4" />
+                            </Button>
                           </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
+                    
                   />
                   <FormField
                     control={form.control}
