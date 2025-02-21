@@ -1019,25 +1019,12 @@ export default function PhlebotomyEnrollment() {
                         <FormControl>
                           <div className="flex items-center space-x-2">
                             <Input
-                              type="file"
+                             type='text'
                               id="student-signature-lab-upload"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0]
-                                if (file) {
-                                  field.onChange(file)
-                                }
-                              }}
+              
                               className="bg-background text-foreground"
                             />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              onClick={() => document.getElementById("student-signature-lab-upload")?.click()}
-                            >
-                              <Upload className="h-4 w-4" />
-                            </Button>
+
                           </div>
                         </FormControl>
                         <FormMessage />

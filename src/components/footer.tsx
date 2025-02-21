@@ -14,7 +14,7 @@ const Footer = () => {
           {/* Left Section */}
           <div className="space-y-6 w-full md:w-auto">
             {/* Logo */}
-            <Image src="/thryve-logo.png"
+            <Image src="/logo (2).png"
  alt="Thryve Logo" width={140} height={140} />
             {/* Contact Info */}
             <div className="grid grid-cols-1 sm:grid-cols-2 items-start gap-4 sm:gap-6">

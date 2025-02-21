@@ -838,31 +838,12 @@ export default function NurseAideTrainingProgram() {
                           <div className="flex items-center space-x-2">
                             <Input
                             required
-                              type="file"
+                              type="text"
                               id="coordinator-signature-upload"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  field.onChange(file);
-                                }
-                              }}
+                            
                               className="bg-background text-foreground"
                             />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              onClick={() =>
-                                document
-                                  .getElementById(
-                                    "coordinator-signature-upload"
-                                  )
-                                  ?.click()
-                              }
-                            >
-                              <Upload className="h-4 w-4" />
-                            </Button>
+                       
                           </div>
                         </FormControl>
                         <FormMessage />
@@ -916,7 +897,7 @@ export default function NurseAideTrainingProgram() {
                   <FormField
                     control={form.control}
                     name="parentGuardianSignature"
-                    render={({ field }) => (
+                    render={() => (
                       <FormItem>
                         <FormLabel className="text-foreground font-medium">
                           Parent/Guardian Signature (if applicable)
@@ -925,31 +906,10 @@ export default function NurseAideTrainingProgram() {
                           <div className="flex items-center space-x-2">
                             <Input
                             required
-                              type="file"
+                              type="text"
                               id="parent-guardian-signature-upload"
-                              accept="image/*"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  field.onChange(file);
-                                }
-                              }}
                               className="bg-background text-foreground"
                             />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="icon"
-                              onClick={() =>
-                                document
-                                  .getElementById(
-                                    "parent-guardian-signature-upload"
-                                  )
-                                  ?.click()
-                              }
-                            >
-                              <Upload className="h-4 w-4" />
-                            </Button>
                           </div>
                         </FormControl>
                         <FormMessage />
