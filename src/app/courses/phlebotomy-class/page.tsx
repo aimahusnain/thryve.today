@@ -1013,7 +1013,7 @@ export default function PhlebotomyEnrollment() {
                   <FormField
                     control={form.control}
                     name="studentSignatureLab"
-                    render={({ field }) => (
+                    render={() => (
                       <FormItem>
                         <FormLabel className="text-foreground font-medium">Student Signature</FormLabel>
                         <FormControl>

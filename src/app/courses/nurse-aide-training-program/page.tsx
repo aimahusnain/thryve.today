@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarIcon, Upload } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
@@ -829,7 +829,7 @@ export default function NurseAideTrainingProgram() {
                   <FormField
                     control={form.control}
                     name="coordinatorSignature"
-                    render={({ field }) => (
+                    render={() => (
                       <FormItem>
                         <FormLabel className="text-foreground font-medium">
                         Program Director/Director 
