@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { headers } from "next/headers";
+import { headers as getHeaders } from "next/headers";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2023-10-16",
-});
-
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+    apiVersion: "2023-10-16" as Stripe.LatestApiVersion,
+  });  
 export async function POST(req: Request) {
-  const sig = headers().get("stripe-signature");
+  const headersList = await getHeaders(); // Await headers
+  const sig = headersList.get("stripe-signature"); // Extract signature
   const body = await req.text(); // Read raw body
 
   if (!sig) {
@@ -16,16 +16,16 @@ export async function POST(req: Request) {
 
   let event;
   try {
-    event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!);
+    event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET as string);
   } catch (err: any) {
-    console.error("⚠️  Webhook signature verification failed.", err.message);
+    console.error("⚠️ Webhook signature verification failed.", err.message);
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  // Handle different event types
+  // Handle Stripe events
   if (event.type === "checkout.session.completed") {
     console.log("✅ Payment successful!", event.data.object);
-    // Handle successful payment (e.g., update DB, send email)
+    // Update database, send email, etc.
   } else {
     console.log(`Unhandled event type: ${event.type}`);
   }
@@ -33,7 +33,7 @@ export async function POST(req: Request) {
   return NextResponse.json({ received: true });
 }
 
-// Only allow POST requests
+// Restrict GET requests
 export async function GET() {
   return NextResponse.json({ error: "Method Not Allowed" }, { status: 405 });
 }
