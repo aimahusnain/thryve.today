@@ -11,26 +11,35 @@ datasource db {
 }
 
 model Enrollment {
-  id                    String   @id @default(auto()) @map("_id") @db.ObjectId
+  id                    String    @id @default(auto()) @map("_id") @db.ObjectId
   studentName           String
-  dateOfBirth           String
-  address               String
-  cityStateZip          String
-  phoneHome             String
-  phoneCell             String
-  email                 String
-  socialSecurity        String
-  stateId               String
-  emergencyContact      String
+  dateOfBirth          String
+  address              String
+  cityStateZip         String
+  phoneHome            String
+  phoneCell            String
+  email                String
+  socialSecurity       String
+  stateId              String
+  emergencyContact     String
   emergencyRelationship String
-  emergencyPhone        String
-  studentSignature      String
-  studentSignatureDate  DateTime
-  directorSignature     String
+  emergencyPhone       String
+  studentSignature     String
+  studentSignatureDate DateTime
+  directorSignature    String
   directorSignatureDate DateTime
-  guardianSignature     String?
+  guardianSignature    String?
   guardianSignatureDate DateTime?
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  paymentStatus        PaymentStatus @default(PENDING)
+  paymentId            String?       // To store Stripe payment ID
+  paymentAmount        Float?        // To store payment amount
+  paymentDate          DateTime?     // To store when payment was completed
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
 
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}

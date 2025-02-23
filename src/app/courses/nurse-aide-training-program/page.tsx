@@ -1,12 +1,5 @@
 'use client'
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { ArrowRight, CalendarIcon, CheckCircle, CreditCard } from "lucide-react";
-import { useState } from 'react';
-import { useForm } from "react-hook-form";
-import { Toaster, toast } from "sonner";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -31,8 +24,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
+import { format } from "date-fns";
+import { ArrowRight, CalendarIcon, CheckCircle, CreditCard } from "lucide-react";
 import Link from 'next/link';
+import { useState } from 'react';
+import { useForm } from "react-hook-form";
+import { Toaster, toast } from "sonner";
+import * as z from "zod";
 
 const formSchema = z.object({
   studentName: z
@@ -106,26 +107,37 @@ export default function NursingEnrollment() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       toast.loading("Submitting enrollment form...");
-
+  
       const formattedValues = {
         ...values,
         studentSignatureDate: values.studentSignatureDate?.toISOString(),
         directorSignatureDate: values.directorSignatureDate?.toISOString(),
         guardianSignatureDate: values.guardianSignatureDate?.toISOString(),
       };
-
+  
       const response = await axios.post("/api/enroll", formattedValues, {
         headers: {
           "Content-Type": "application/json",
         },
       });
-
+  
       if (response.status === 200 || response.status === 201) {
         toast.dismiss();
         toast.success("Enrollment form submitted successfully!");
-        console.log("Form submission response:", response.data);
         setIsSubmitted(true);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Redirect to Stripe checkout instead of the current success page
+        const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+        if (stripe) {
+          // Use the client secret from the response
+          const { error } = await stripe.redirectToCheckout({
+            sessionId: response.data.clientSecret
+          });
+          
+          if (error) {
+            toast.error("Payment initialization failed. Please try again.");
+          }
+        }
       }
     } catch (error) {
       toast.dismiss();
