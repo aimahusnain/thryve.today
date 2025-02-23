@@ -269,9 +269,9 @@ const CoursesPage: React.FC = () => {
       duration: "3.5 weeks",
       category: "certification",
       hours: [
-        { type: "Classroom", amount: "90 Hours" },
+        { type: "Classroom", amount: "84 Hours" },
         { type: "Lab", amount: "24 Hours" },
-        { type: "Clinical", amount: "24 Hours" },
+        { type: "Clinical", amount: "30 Hours" },
       ],
       whoFor: [
         "Individuals seeking a rewarding career in healthcare",

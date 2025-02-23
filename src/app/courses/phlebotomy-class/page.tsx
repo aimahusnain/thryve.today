@@ -282,7 +282,7 @@ export default function PhlebotomyEnrollment() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card">
+            {/* <Card className="bg-card">
               <CardHeader className="bg-muted p-6">
                 <CardTitle className="text-2xl font-bold text-primary">Program Information</CardTitle>
               </CardHeader>
@@ -563,9 +563,9 @@ export default function PhlebotomyEnrollment() {
                   />
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
-            <Card className="bg-card">
+            {/* <Card className="bg-card">
               <CardHeader className="bg-muted p-6">
                 <CardTitle className="text-2xl font-bold text-primary">Tuition & Fees</CardTitle>
               </CardHeader>
@@ -586,9 +586,9 @@ export default function PhlebotomyEnrollment() {
                   AVAILABLE UPON REQUEST.
                 </p>
               </CardContent>
-            </Card>
+            </Card> */}
 
-            <Card className="bg-card">
+            {/* <Card className="bg-card">
               <CardHeader className="bg-muted p-6">
                 <CardTitle className="text-2xl font-bold text-primary">Policies</CardTitle>
               </CardHeader>
@@ -737,7 +737,7 @@ export default function PhlebotomyEnrollment() {
                   </ol>
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
             <Card className="bg-card">
               <CardHeader className="bg-muted p-6">
@@ -966,7 +966,7 @@ export default function PhlebotomyEnrollment() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card">
+            {/* <Card className="bg-card">
               <CardHeader className="bg-muted p-6">
                 <CardTitle className="text-2xl font-bold text-primary">Laboratory Procedures Agreement</CardTitle>
               </CardHeader>
@@ -1068,7 +1068,7 @@ export default function PhlebotomyEnrollment() {
                   />
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
 
             <Button
               type="submit"
