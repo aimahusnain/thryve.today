@@ -7,7 +7,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 });
 
 export async function POST(req: Request) {
-  const headerList = await headers(); // Await the headers function
+  const headerList = await headers(); // Get headers
   const stripeSignature = headerList.get("stripe-signature");
 
   if (!stripeSignature) {
@@ -15,32 +15,19 @@ export async function POST(req: Request) {
   }
 
   let event;
-
   try {
-    const body = await req.text(); // Get raw request body
-    event = stripe.webhooks.constructEvent(body, stripeSignature, process.env.STRIPE_WEBHOOK_SECRET as string);
+    const rawBody = await req.text(); // Ensure RAW body
+    event = stripe.webhooks.constructEvent(
+      rawBody,
+      stripeSignature,
+      process.env.STRIPE_WEBHOOK_SECRET as string
+    );
   } catch (err) {
-    console.error("Webhook signature verification failed.", err);
-    return NextResponse.json({ error: "Webhook signature verification failed" }, { status: 400 });
+    console.error("❌ Webhook signature verification failed:", err);
+    return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  // Handle specific Stripe events
-  switch (event.type) {
-    case "payment_intent.succeeded":
-      console.log("💰 PaymentIntent was successful!", event.data.object);
-      break;
-
-    case "payment_intent.payment_failed":
-      console.log("❌ PaymentIntent failed!", event.data.object);
-      break;
-
-    case "charge.succeeded":
-      console.log("✅ Charge was successful!", event.data.object);
-      break;
-
-    default:
-      console.log(`Unhandled event type: ${event.type}`);
-  }
+  console.log(`✅ Received Stripe Event: ${event.type}`, event);
 
   return NextResponse.json({ received: true }, { status: 200 });
 }
