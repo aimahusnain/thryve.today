@@ -7,7 +7,6 @@ import { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { Toaster, toast } from "sonner";
 import * as z from "zod";
-
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -187,7 +186,7 @@ export default function NursingEnrollment() {
             <div className="bg-muted/30 p-6 mt-4">
               <h3 className="font-semibold mb-2">Important Note:</h3>
               <p className="text-sm text-muted-foreground">
-                Your enrollment will be finalized once the payment is processed. You'll receive a confirmation email with further instructions after successful payment.
+                Your enrollment will be finalized once the payment is processed. You&apos;ll receive a confirmation email with further instructions after successful payment.
               </p>
             </div>
           </div>
@@ -521,7 +520,7 @@ export default function NursingEnrollment() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-foreground font-medium">
-                          Student's Signature <span className="text-red-500">*</span>
+                          Student&apos;s Signature <span className="text-red-500">*</span>
                         </FormLabel>
                         <FormControl>
                           <Input
