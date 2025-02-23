@@ -1,8 +1,9 @@
-"use client";
+'use client'
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { ArrowRight, CalendarIcon, CheckCircle, CreditCard } from "lucide-react";
+import { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { Toaster, toast } from "sonner";
 import * as z from "zod";
@@ -32,15 +33,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import axios from "axios";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { useState } from "react";
+import Link from 'next/link';
 
 const formSchema = z.object({
   studentName: z
@@ -90,7 +83,7 @@ const formSchema = z.object({
 });
 
 export default function NursingEnrollment() {
-  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -110,11 +103,6 @@ export default function NursingEnrollment() {
       guardianSignature: "",
     },
   });
-
-  const handlePayment = () => {
-    // Handle payment logic here
-    window.location.href = "/payment"; // Replace with your payment page URL
-  };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -137,58 +125,80 @@ export default function NursingEnrollment() {
         toast.dismiss();
         toast.success("Enrollment form submitted successfully!");
         console.log("Form submission response:", response.data);
-        setShowPaymentDialog(true); // Show payment dialog after successful submission
-        form.reset();
+        setIsSubmitted(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     } catch (error) {
       toast.dismiss();
-
       if (axios.isAxiosError(error)) {
-        const errorMessage =
-          error.response?.data?.message || "Failed to submit enrollment form";
+        const errorMessage = error.response?.data?.message || "Failed to submit enrollment form";
         toast.error(errorMessage);
-        console.error("API Error:", error.response?.data);
       } else {
         toast.error("An unexpected error occurred. Please try again.");
-        console.error("Submission Error:", error);
       }
     }
   };
 
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-primary/5 to-background py-12 pt-32">
+        <Toaster />
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="text-center mb-12">
+            <div className="inline-block p-3 rounded-full bg-primary/10 mb-6">
+              <CheckCircle className="w-12 h-12 text-primary" />
+            </div>
+            <h1 className="text-4xl font-bold text-primary mb-4">
+              Enrollment Submitted Successfully!
+            </h1>
+            <p className="text-xl text-muted-foreground mb-8">
+              Complete your registration by proceeding with the payment
+            </p>
+          </div>
+
+          <div className="bg-card rounded-xl shadow-lg overflow-hidden">
+            <div className="p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-semibold">Nursing Assistant Program</h2>
+                  <p className="text-muted-foreground">Thryve.Today Training</p>
+                </div>
+                <CreditCard className="w-8 h-8 text-primary" />
+              </div>
+
+              <div className="space-y-4 mb-8">
+                <div className="flex justify-between items-center py-2 border-b">
+                  <span className="text-muted-foreground">Program Fee</span>
+                  <span className="font-semibold">$999.00</span>
+                </div>
+              </div>
+
+              <Link
+                href="https://buy.stripe.com/00g8z8a3K1AF0M08wD"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-6 py-4 text-lg font-semibold transition-colors"
+              >
+                Proceed to Payment
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Link>
+            </div>
+
+            <div className="bg-muted/30 p-6 mt-4">
+              <h3 className="font-semibold mb-2">Important Note:</h3>
+              <p className="text-sm text-muted-foreground">
+                Your enrollment will be finalized once the payment is processed. You'll receive a confirmation email with further instructions after successful payment.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={cn("min-h-screen transition-colors duration-300")}>
       <Toaster />
-
-      {/* Payment Success Dialog */}
-      <Dialog open={showPaymentDialog} onOpenChange={setShowPaymentDialog}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-semibold">
-              Enrollment Successful!
-            </DialogTitle>
-            <DialogDescription className="text-base mt-2">
-              Your enrollment form has been submitted successfully. Please
-              proceed with the payment to complete your registration.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-0">
-            <Button
-              variant="outline"
-              onClick={() => setShowPaymentDialog(false)}
-              className="w-full sm:w-auto"
-            >
-              Pay Later
-            </Button>
-            <Button
-              onClick={handlePayment}
-              className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              Proceed to Payment
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
       <div className="container mx-auto py-12 px-6 sm:px-8 lg:px-12 max-w-6xl mt-20">
         <div className="flex justify-between items-center sm:flex-row flex-col mb-8">
           <h1 className="text-4xl font-extrabold text-primary mb-2">
@@ -387,7 +397,7 @@ export default function NursingEnrollment() {
                       </FormControl>
                       <FormMessage />
                     </FormItem>
-                  )}
+                    )}
                 />
 
                 <FormField
@@ -396,8 +406,7 @@ export default function NursingEnrollment() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Social Security #{" "}
-                        <span className="text-red-500">*</span>
+                        Social Security # <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -417,8 +426,7 @@ export default function NursingEnrollment() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Student State ID #{" "}
-                        <span className="text-red-500">*</span>
+                        Student State ID # <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -438,8 +446,7 @@ export default function NursingEnrollment() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Emergency Contact{" "}
-                        <span className="text-red-500">*</span>
+                        Emergency Contact <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -479,8 +486,7 @@ export default function NursingEnrollment() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Emergency Contact Phone{" "}
-                        <span className="text-red-500">*</span>
+                        Emergency Contact Phone <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -515,8 +521,7 @@ export default function NursingEnrollment() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-foreground font-medium">
-                          Student's Signature{" "}
-                          <span className="text-red-500">*</span>
+                          Student's Signature <span className="text-red-500">*</span>
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -562,8 +567,7 @@ export default function NursingEnrollment() {
                               selected={field.value}
                               onSelect={field.onChange}
                               disabled={(date) =>
-                                date > new Date() ||
-                                date < new Date("1900-01-01")
+                                date > new Date() || date < new Date("1900-01-01")
                               }
                               initialFocus
                             />
@@ -580,8 +584,7 @@ export default function NursingEnrollment() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-foreground font-medium">
-                          Program Director/Director{" "}
-                          <span className="text-red-500">*</span>
+                          Program Director/Director <span className="text-red-500">*</span>
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -627,8 +630,7 @@ export default function NursingEnrollment() {
                               selected={field.value}
                               onSelect={field.onChange}
                               disabled={(date) =>
-                                date > new Date() ||
-                                date < new Date("1900-01-01")
+                                date > new Date() || date < new Date("1900-01-01")
                               }
                               initialFocus
                             />
@@ -691,8 +693,7 @@ export default function NursingEnrollment() {
                               selected={field.value}
                               onSelect={field.onChange}
                               disabled={(date) =>
-                                date > new Date() ||
-                                date < new Date("1900-01-01")
+                                date > new Date() || date < new Date("1900-01-01")
                               }
                               initialFocus
                             />

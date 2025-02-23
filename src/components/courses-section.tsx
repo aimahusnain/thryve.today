@@ -164,7 +164,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
                        text-white dark:text-zinc-900 font-medium text-sm md:text-base rounded-xl
                        transition-all duration-300 group-hover:shadow-lg"
             >
-              Learn More
+              Enroll Now
               <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform duration-300" />
             </button>
           </Link>
@@ -247,7 +247,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
                        text-white dark:text-zinc-900 font-medium text-sm md:text-base rounded-xl
                        transition-all duration-300 group-hover:shadow-lg"
             >
-              Learn More
+              Enroll Now
               <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform duration-300" />
             </button>
           </Link>
