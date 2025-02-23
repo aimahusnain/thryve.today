@@ -33,12 +33,9 @@ export async function POST(req: Request) {
       stripeSignature,
       process.env.STRIPE_WEBHOOK_SECRET as string
     );
-    // @ts-nocheck
-  } catch (err: any) {
-    // @ts-nocheck
-    console.error(`❌ Webhook signature verification failed: ${err.message}`);
-    // @ts-nocheck
-    return NextResponse.json({ error: err.message }, { status: 400 });
+  } catch (err) {
+    console.error(`❌ Webhook signature verification failed: ${err}`);
+    return NextResponse.json({ error: err }, { status: 400 });
   }
 
   try {
@@ -55,8 +52,8 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ received: true }, { status: 200 });
-  } catch (err: any) {
-    console.error("❌ Error processing webhook:", err.message);
+  } catch (err) {
+    console.error("❌ Error processing webhook:", err);
     return NextResponse.json(
       { error: "Webhook processing failed" },
       { status: 500 }
