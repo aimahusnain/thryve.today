@@ -1,70 +1,44 @@
-import { NextResponse } from "next/server";
-import { headers } from "next/headers";
 import Stripe from "stripe";
-import { PrismaClient } from "@prisma/client";
+import { NextResponse, NextRequest } from "next/server";
 
-const prisma = new PrismaClient();
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-    apiVersion: "2023-10-16" as Stripe.LatestApiVersion,
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+export async function POST(req: NextRequest) {
+  const payload = await req.text();
+  const res = JSON.parse(payload);
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+  const sig = req.headers.get("Stripe-Signature");
 
-export async function POST(req: Request) {
-  const headerList = await headers();
-  const stripeSignature = headerList.get("stripe-signature");
+  const dateTime = new Date(res?.created * 1000).toLocaleDateString();
+  const timeString = new Date(res?.created * 1000).toLocaleDateString();
 
-  if (!stripeSignature) {
-    return NextResponse.json({ error: "Missing Stripe Signature" }, { status: 400 });
-  }
-
-  let event: Stripe.Event;
   try {
-    const rawBody = await req.text();
-    event = stripe.webhooks.constructEvent(
-      rawBody,
-      stripeSignature,
-      process.env.STRIPE_WEBHOOK_SECRET as string
+    let event = stripe.webhooks.constructEvent(
+      payload,
+      sig!,
+      process.env.STRIPE_WEBHOOK_SECRET!
     );
-  } catch (err) {
-    console.error(`❌ Webhook signature verification failed: ${err}`);
-    return NextResponse.json({ error: err }, { status: 400 });
-  }
 
-  try {
-    if (event.type === 'charge.succeeded') {
-      const charge = event.data.object as Stripe.Charge;
-      
-      // Extract the enrollment ID from metadata (you'll need to add this when creating the payment)
-      const enrollmentId = charge.metadata.enrollmentId;
-      
-      if (enrollmentId) {
-        // Update the enrollment record
-        await prisma.enrollment.update({
-          where: {
-            id: enrollmentId
-          },
-          data: {
-            paymentStatus: 'COMPLETED',
-            paymentId: charge.id,
-            paymentAmount: charge.amount / 100, // Convert from cents to dollars
-            paymentDate: new Date()
-          }
-        });
-        
-        console.log(`✅ Payment recorded for enrollment ${enrollmentId}`);
-      }
-    }
+    console.log("Event", event?.type);
+    // charge.succeeded
+    // payment_intent.succeeded
+    // payment_intent.created
 
-    return NextResponse.json({ received: true }, { status: 200 });
-  } catch (err) {
-    console.error('❌ Error processing webhook:', err);
-    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 });
-  } finally {
-    await prisma.$disconnect();
+    console.log(
+      res?.data?.object?.billing_details?.email, // email
+      res?.data?.object?.amount, // amount
+      JSON.stringify(res), // payment info
+      res?.type, // type
+      String(timeString), // time
+      String(dateTime), // date
+      res?.data?.object?.receipt_email, // email
+      res?.data?.object?.receipt_url, // url
+      JSON.stringify(res?.data?.object?.payment_method_details), // Payment method details
+      JSON.stringify(res?.data?.object?.billing_details), // Billing details
+      res?.data?.object?.currency // Currency
+    );
+
+    return NextResponse.json({ status: "success", event: event.type, response: res });
+  } catch (error) {
+    return NextResponse.json({ status: "Failed", error });
   }
 }
