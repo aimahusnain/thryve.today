@@ -16,7 +16,10 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <main id="home" className="overflow-hidden min-h-screen p-4 sm:p-6 md:p-8 lg:p-12 bg-gradient-to-br from-zinc-50 to-white dark:from-zinc-950 dark:to-black">
+    <main
+      id="home"
+      className="overflow-hidden min-h-screen p-4 sm:p-6 md:p-8 lg:p-12 bg-gradient-to-br from-zinc-50 to-white dark:from-zinc-950 dark:to-black"
+    >
       <div className="max-w-7xl mx-auto mt-14">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 items-center lg:p-0 p-5">
           {/* Left Column - Image and Mentors */}
@@ -27,7 +30,7 @@ export default function Home() {
             transition={{ duration: 0.5 }}
           >
             {/* Video Call Card */}
-            <motion.div
+            {/* <motion.div
               className="absolute top-4 left-4 z-10 w-1/3 sm:w-1/4 lg:w-48 max-w-[200px]"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -44,7 +47,7 @@ export default function Home() {
                   />
                 </div>
               </Card>
-            </motion.div>
+            </motion.div> */}
 
             {/* Experience Badge */}
             <motion.div
@@ -63,7 +66,7 @@ export default function Home() {
             </motion.div>
 
             {/* Main Image */}
-            <div className="relative h-[400px] sm:h-[500px] md:h-[600px] lg:h-[750px]">
+            {/* <div className="relative h-[400px] sm:h-[500px] md:h-[600px] lg:h-[750px]">
               <Image
                 src="/nursing-herosection-image-transparent.png"
                 alt="Nursing Herosection Image"
@@ -73,10 +76,32 @@ export default function Home() {
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
               />
+            </div> */}
+
+{/* Heroimages */}
+            <div className="mb-12 flex w-full h-fit sm:h-[450px] md:mb-16 relative">
+              <div className="relative left-2 top-12 z-10 overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800 shadow-lg md:left-12 md:top-12">
+                <Image
+                  src="/nursing-herosection-image-2.webp"
+                  alt="Nursing Herosection Image 1"
+                  className="h-full w-full object-cover object-center"
+                  width={1200}
+                  height={500}
+                />
+              </div>
+              <div className="overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800 shadow-lg">
+                <Image
+                  src="/nursing-herosection-image-transparent.png"
+                  alt="Nursing Herosection Image 2"
+                  className="h-full w-full object-cover object-center"
+                  width={1200}
+                  height={500}
+                />
+              </div>
             </div>
 
             {/* Mentors Card */}
-            <motion.div
+            {/* <motion.div
               className="absolute bottom-4 left-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -99,11 +124,13 @@ export default function Home() {
                   </div>
                   <div className="text-xs sm:text-sm">
                     <p className="font-semibold dark:text-white">99+</p>
-                    <p className="text-zinc-600 dark:text-zinc-400">Certified Mentor</p>
+                    <p className="text-zinc-600 dark:text-zinc-400">
+                      Certified Mentor
+                    </p>
                   </div>
                 </div>
               </Card>
-            </motion.div>
+            </motion.div> */}
           </motion.div>
 
           {/* Right Column - Content */}
@@ -198,7 +225,9 @@ export default function Home() {
               className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm rounded-2xl shadow-lg p-4 sm:p-6"
             >
               <div className="flex justify-between items-center mb-4">
-                <h3 className="font-semibold text-base sm:text-lg dark:text-white">Reviews</h3>
+                <h3 className="font-semibold text-base sm:text-lg dark:text-white">
+                  Reviews
+                </h3>
                 <Button
                   variant="link"
                   className="text-primary dark:text-[#2db188] text-sm sm:text-base hover:text-primary/80 dark:hover:text-[#2db188] transition-colors duration-200"
