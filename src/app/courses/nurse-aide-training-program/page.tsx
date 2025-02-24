@@ -136,7 +136,7 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
   } catch (error) {
     toast.dismiss();
     if (axios.isAxiosError(error)) {
-      const errorMessage = error.response?.data?.message || "Failed to submit enrollment form";
+      const errorMessage = error.response?.data?.message;
       toast.error(errorMessage);
     } else {
       toast.error("An unexpected error occurred. Please try again.");
