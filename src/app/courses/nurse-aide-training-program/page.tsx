@@ -103,52 +103,47 @@ export default function NursingEnrollment() {
       guardianSignature: "",
     },
   });
+// In your NursingEnrollment.tsx component
+const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  try {
+    toast.loading("Submitting enrollment form...");
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      toast.loading("Submitting enrollment form...");
-  
-      const formattedValues = {
-        ...values,
-        studentSignatureDate: values.studentSignatureDate?.toISOString(),
-        directorSignatureDate: values.directorSignatureDate?.toISOString(),
-        guardianSignatureDate: values.guardianSignatureDate?.toISOString(),
-      };
-  
-      const response = await axios.post("/api/enroll", formattedValues, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-  
-      if (response.status === 200 || response.status === 201) {
-        toast.dismiss();
-        toast.success("Enrollment form submitted successfully!");
-        setIsSubmitted(true);
-        
-        // Redirect to Stripe checkout instead of the current success page
-        const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
-        if (stripe) {
-          // Use the client secret from the response
-          const { error } = await stripe.redirectToCheckout({
-            sessionId: response.data.clientSecret
-          });
-          
-          if (error) {
-            toast.error("Payment initialization failed. Please try again.");
-          }
-        }
-      }
-    } catch (error) {
+    const formattedValues = {
+      ...values,
+      dateOfBirth: values.dateOfBirth?.toISOString(),
+      studentSignatureDate: values.studentSignatureDate?.toISOString(),
+      directorSignatureDate: values.directorSignatureDate?.toISOString(),
+      guardianSignatureDate: values.guardianSignatureDate?.toISOString(),
+    };
+
+    const response = await axios.post("/api/enroll", formattedValues, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.status === 200 || response.status === 201) {
       toast.dismiss();
-      if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message || "Failed to submit enrollment form";
-        toast.error(errorMessage);
+      toast.success("Enrollment form submitted successfully!");
+      setIsSubmitted(true);
+      
+      // Redirect to Stripe checkout
+      if (response.data.checkoutUrl) {
+        window.location.href = response.data.checkoutUrl;
       } else {
-        toast.error("An unexpected error occurred. Please try again.");
+        toast.error("Payment processing unavailable. Please try again later.");
       }
     }
-  };
+  } catch (error) {
+    toast.dismiss();
+    if (axios.isAxiosError(error)) {
+      const errorMessage = error.response?.data?.message || "Failed to submit enrollment form";
+      toast.error(errorMessage);
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+  }
+};
 
   if (isSubmitted) {
     return (
