@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { stripe } from "@/lib/stripe"
 
-export const maxDuration = 300 // Set max duration to 5 minutes
+// export const maxDuration = 300 // Set max duration to 5 minutes
 export const dynamic = "force-dynamic"
 
 export async function POST(request: Request) {
