@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import { format } from "date-fns";
 import { ArrowRight, CalendarIcon, CheckCircle, CreditCard } from "lucide-react";
