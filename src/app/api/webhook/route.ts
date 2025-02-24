@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   const timeString = new Date(res?.created * 1000).toLocaleDateString();
 
   try {
-    let event = stripe.webhooks.constructEvent(
+    const event = stripe.webhooks.constructEvent(
       payload,
       sig!,
       process.env.STRIPE_WEBHOOK_SECRET!
