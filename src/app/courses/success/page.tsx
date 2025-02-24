@@ -15,6 +15,9 @@ function SuccessContent() {
   const [verifying, setVerifying] = useState(true);
   const [verified, setVerified] = useState(false);
 
+  console.log("verifying", verifying)
+  console.log("verified", verified)
+
   useEffect(() => {
     if (sessionId) {
       // Verify the session
