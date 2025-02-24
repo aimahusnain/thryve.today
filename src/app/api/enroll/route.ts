@@ -88,7 +88,7 @@ export async function POST(request: Request) {
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
-    return NextResponse.json({ error: "Failed to submit enrollment" }, { status: 500 })
+    return NextResponse.json({ error: `Failed to submit enrollment - ${error}` }, { status: 500 })
   }
 }
 
