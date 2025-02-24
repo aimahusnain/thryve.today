@@ -1,4 +1,3 @@
-// app/enrollment/success/page.tsx
 "use client";
 
 import { CheckCircle } from "lucide-react";
@@ -8,7 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function SuccessPage() {
+const SuccessPage = () => {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const [verifying, setVerifying] = useState(true);
@@ -65,3 +64,5 @@ export default function SuccessPage() {
     </div>
   );
 }
+
+export default SuccessPage
