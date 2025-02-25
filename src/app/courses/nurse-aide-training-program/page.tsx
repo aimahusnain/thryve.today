@@ -27,9 +27,14 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { format } from "date-fns";
-import { ArrowRight, CalendarIcon, CheckCircle, CreditCard } from "lucide-react";
-import Link from 'next/link';
-import { useState } from 'react';
+import {
+  ArrowRight,
+  CalendarIcon,
+  CheckCircle,
+  CreditCard,
+} from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Toaster, toast } from "sonner";
 import * as z from "zod";
