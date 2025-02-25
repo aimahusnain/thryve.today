@@ -77,12 +77,12 @@ export default function Home() {
               />
             </div> */}
 
-{/* Heroimages */}
+            {/* Heroimages */}
             <div className="mb-12 flex w-full h-fit sm:h-[450px] md:mb-16 relative">
-              <div className="relative left-2 top-12 z-10 overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800 shadow-lg md:left-12 md:top-12">
+              <div className="relative left-2 top-12 z-10 overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800 shadow-lg md:left-12 md:top-12 -ml-16">
                 <Image
-                  src="/nursing-herosection-image-2.webp"
-                  alt="Nursing Herosection Image 1"
+                  src="/nursing-herosection-image-transparent.png"
+                  alt="Nursing Herosection Image 2"
                   className="h-full w-full object-cover object-center"
                   width={1200}
                   height={500}
@@ -90,8 +90,8 @@ export default function Home() {
               </div>
               <div className="overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800 shadow-lg">
                 <Image
-                  src="/nursing-herosection-image-transparent.png"
-                  alt="Nursing Herosection Image 2"
+                  src="/nursing-herosection-image-2.webp"
+                  alt="Nursing Herosection Image 1"
                   className="h-full w-full object-cover object-center"
                   width={1200}
                   height={500}
