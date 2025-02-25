@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -107,47 +107,49 @@ export default function NursingEnrollment() {
       guardianSignature: "",
     },
   });
-// In your NursingEnrollment.tsx component
-const onSubmit = async (values: z.infer<typeof formSchema>) => {
-  try {
-    toast.loading("Submitting enrollment form...");
+  // In your NursingEnrollment.tsx component
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      toast.loading("Submitting enrollment form...");
 
-    const formattedValues = {
-      ...values,
-      dateOfBirth: values.dateOfBirth?.toISOString(),
-      studentSignatureDate: values.studentSignatureDate?.toISOString(),
-      directorSignatureDate: values.directorSignatureDate?.toISOString(),
-      guardianSignatureDate: values.guardianSignatureDate?.toISOString(),
-    };
+      const formattedValues = {
+        ...values,
+        dateOfBirth: values.dateOfBirth?.toISOString(),
+        studentSignatureDate: values.studentSignatureDate?.toISOString(),
+        directorSignatureDate: values.directorSignatureDate?.toISOString(),
+        guardianSignatureDate: values.guardianSignatureDate?.toISOString(),
+      };
 
-    const response = await axios.post("/api/enroll", formattedValues, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+      const response = await axios.post("/api/enroll", formattedValues, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    if (response.status === 200 || response.status === 201) {
+      if (response.status === 200 || response.status === 201) {
+        toast.dismiss();
+        toast.success("Enrollment form submitted successfully!");
+        setIsSubmitted(true);
+
+        // Redirect to Stripe checkout
+        if (response.data.checkoutUrl) {
+          window.location.href = response.data.checkoutUrl;
+        } else {
+          toast.error(
+            "Payment processing unavailable. Please try again later."
+          );
+        }
+      }
+    } catch (error) {
       toast.dismiss();
-      toast.success("Enrollment form submitted successfully!");
-      setIsSubmitted(true);
-      
-      // Redirect to Stripe checkout
-      if (response.data.checkoutUrl) {
-        window.location.href = response.data.checkoutUrl;
+      if (axios.isAxiosError(error)) {
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage);
       } else {
-        toast.error("Payment processing unavailable. Please try again later.");
+        toast.error("An unexpected error occurred. Please try again.");
       }
     }
-  } catch (error) {
-    toast.dismiss();
-    if (axios.isAxiosError(error)) {
-      const errorMessage = error.response?.data?.message;
-      toast.error(errorMessage);
-    } else {
-      toast.error("An unexpected error occurred. Please try again.");
-    }
-  }
-};
+  };
 
   if (isSubmitted) {
     return (
@@ -170,7 +172,9 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
             <div className="p-8">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-2xl font-semibold">Nursing Assistant Program</h2>
+                  <h2 className="text-2xl font-semibold">
+                    Nursing Assistant Program
+                  </h2>
                   <p className="text-muted-foreground">Thryve.Today Training</p>
                 </div>
                 <CreditCard className="w-8 h-8 text-primary" />
@@ -197,7 +201,9 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
             <div className="bg-muted/30 p-6 mt-4">
               <h3 className="font-semibold mb-2">Important Note:</h3>
               <p className="text-sm text-muted-foreground">
-                Your enrollment will be finalized once the payment is processed. You&apos;ll receive a confirmation email with further instructions after successful payment.
+                Your enrollment will be finalized once the payment is processed.
+                You&apos;ll receive a confirmation email with further
+                instructions after successful payment.
               </p>
             </div>
           </div>
@@ -407,7 +413,7 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
                       </FormControl>
                       <FormMessage />
                     </FormItem>
-                    )}
+                  )}
                 />
 
                 <FormField
@@ -416,7 +422,8 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Social Security # <span className="text-red-500">*</span>
+                        Social Security #{" "}
+                        <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -436,7 +443,8 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Student State ID # <span className="text-red-500">*</span>
+                        Student State ID #{" "}
+                        <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -456,7 +464,8 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Emergency Contact <span className="text-red-500">*</span>
+                        Emergency Contact{" "}
+                        <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -496,7 +505,8 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Emergency Contact Phone <span className="text-red-500">*</span>
+                        Emergency Contact Phone{" "}
+                        <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -531,7 +541,8 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-foreground font-medium">
-                          Student&apos;s Signature <span className="text-red-500">*</span>
+                          Student&apos;s Signature{" "}
+                          <span className="text-red-500">*</span>
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -577,7 +588,8 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
                               selected={field.value}
                               onSelect={field.onChange}
                               disabled={(date) =>
-                                date > new Date() || date < new Date("1900-01-01")
+                                date > new Date() ||
+                                date < new Date("1900-01-01")
                               }
                               initialFocus
                             />
@@ -594,7 +606,8 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-foreground font-medium">
-                          Program Director/Director <span className="text-red-500">*</span>
+                          Program Director/Director{" "}
+                          <span className="text-red-500">*</span>
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -640,7 +653,8 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
                               selected={field.value}
                               onSelect={field.onChange}
                               disabled={(date) =>
-                                date > new Date() || date < new Date("1900-01-01")
+                                date > new Date() ||
+                                date < new Date("1900-01-01")
                               }
                               initialFocus
                             />
@@ -703,7 +717,8 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
                               selected={field.value}
                               onSelect={field.onChange}
                               disabled={(date) =>
-                                date > new Date() || date < new Date("1900-01-01")
+                                date > new Date() ||
+                                date < new Date("1900-01-01")
                               }
                               initialFocus
                             />
