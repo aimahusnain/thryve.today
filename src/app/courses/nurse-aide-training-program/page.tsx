@@ -80,7 +80,7 @@ export default function NursingEnrollment() {
         guardianSignatureDate: values.guardianSignatureDate?.toISOString(),
       }
 
-      const response = await axios.post("/api/enroll", formattedValues, {
+      const response = await axios.post("/api/enrollment", formattedValues, {
         headers: {
           "Content-Type": "application/json",
         },
