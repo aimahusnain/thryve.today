@@ -2,8 +2,6 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { stripe } from "@/lib/stripe"
 
-export const maxDuration = 300 // Set max duration to 5 minutes
-
 export const config = {
   runtime: "nodejs",
   regions: ["iad1"], // Use the region closest to your database
