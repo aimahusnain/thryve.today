@@ -84,8 +84,6 @@ export default function NursingEnrollment() {
         headers: {
           "Content-Type": "application/json",
         },
-        timeout: 30000, // 30 second timeout
-        timeoutErrorMessage: "Request took too long - please try again",
       })
 
       if (response.status === 200 || response.status === 201) {
