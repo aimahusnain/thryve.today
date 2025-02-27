@@ -1,17 +1,17 @@
-import { NextResponse } from "next/server"
-import { prisma } from "@/lib/prisma"
-import { stripe } from "@/lib/stripe"
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { stripe } from "@/lib/stripe";
 
 // export const maxDuration = 300 // Set max duration to 5 minutes
-export const dynamic = "force-dynamic"
+export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json()
+    const body = await request.json();
 
-    const host = request.headers.get("host") || "thryve-today.vercel.app"
-    const protocol = host.includes("localhost") ? "http" : "https"
-    const baseUrl = `${protocol}://${host}`
+    const host = request.headers.get("host") || "thryve-today.vercel.app";
+    const protocol = host.includes("localhost") ? "http" : "https";
+    const baseUrl = `${protocol}://${host}`;
 
     // Create enrollment and Stripe session in parallel
     const [enrollment, session] = await Promise.all([
@@ -34,7 +34,9 @@ export async function POST(request: Request) {
           directorSignature: body.directorSignature,
           directorSignatureDate: new Date(body.directorSignatureDate),
           guardianSignature: body.guardianSignature || null,
-          guardianSignatureDate: body.guardianSignatureDate ? new Date(body.guardianSignatureDate) : null,
+          guardianSignatureDate: body.guardianSignatureDate
+            ? new Date(body.guardianSignatureDate)
+            : null,
           paymentStatus: "PENDING",
           paymentId: null,
           paymentAmount: null,
@@ -50,7 +52,8 @@ export async function POST(request: Request) {
               currency: "usd",
               product_data: {
                 name: "Nursing Assistant Program Enrollment",
-                description: "Enrollment fee for Nursing Assistant Training Program",
+                description:
+                  "Enrollment fee for Nursing Assistant Training Program",
               },
               unit_amount: 99900,
             },
@@ -66,14 +69,14 @@ export async function POST(request: Request) {
           studentName: body.studentName,
         },
       }),
-    ])
+    ]);
 
     // Update session metadata with enrollment ID
     await stripe.checkout.sessions.update(session.id, {
       metadata: {
         enrollmentId: enrollment.id,
       },
-    })
+    });
 
     return NextResponse.json(
       {
@@ -81,14 +84,16 @@ export async function POST(request: Request) {
         enrollment,
         checkoutUrl: session.url,
       },
-      { status: 201 },
-    )
+      { status: 201 }
+    );
   } catch (error) {
-    console.error("Error submitting enrollment:", error)
+    console.error("Error submitting enrollment:", error);
     if (error instanceof Error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
-    return NextResponse.json({ error: `Failed to submit enrollment - ${error}` }, { status: 500 })
+    return NextResponse.json(
+      { error: `Failed to submit enrollment - ${error}` },
+      { status: 504 }
+    );
   }
 }
-
