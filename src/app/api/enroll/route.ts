@@ -53,9 +53,9 @@ export async function POST(request: Request) {
         },
       },
     )
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error submitting enrollment:", error)
-    return NextResponse.json({ message: error.message }, { status: 500 })
+    return NextResponse.json({ message: error }, { status: 500 })
   }
 }
 
