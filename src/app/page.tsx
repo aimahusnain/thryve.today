@@ -58,7 +58,7 @@ export default function Home() {
               <SpinningText
                 radius={6}
                 fontSize={1}
-                className="font-medium leading-none text-primary text-[#2db188] dark:text-[#2db188]"
+                className="font-bold leading-none text-primary text-black dark:text-black"
               >
                 {`THRYVE.TODAY TRAINING CENTER • `}
               </SpinningText>
