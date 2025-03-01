@@ -203,13 +203,15 @@ export default function Navbar() {
                     delay: showCTAInNav ? 0.2 : 0,
                   }}
                 >
-                  <Link href="/dashboard">
-                    <Button variant="default">Dashboard</Button>
-                  </Link>
                   {isLoading ? (
                     <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
                   ) : session ? (
+                  <>
+                  <Link href="/dashboard">
+                    <Button variant="default">Dashboard</Button>
+                  </Link>
                     <UserNav />
+                  </>
                   ) : (
                     <>
                       <Link
@@ -247,7 +249,12 @@ export default function Navbar() {
               {isLoading ? (
                 <div className="h-9 w-20 rounded-full bg-muted animate-pulse" />
               ) : session ? (
+                <>
                 <UserNav />
+                <Link href="/dashboard">
+                <Button variant="default">Dashboard</Button>
+              </Link>
+                </>
               ) : (
                 <>
                   <Goy id="courses">
@@ -262,10 +269,6 @@ export default function Navbar() {
                   </Link>
                 </>
               )}
-
-              <Link href="/dashboard">
-                <Button variant="default">Dashboard</Button>
-              </Link>
             </div>
           </motion.div>
         </div>

@@ -155,7 +155,7 @@ export default function AdminDashboard() {
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex-1 overflow-auto p-6">
+        <div className="flex-1 overflow-auto">
             <Card
               className="mb-6 bg-cover bg-center bg-no-repeat"
               style={{
@@ -203,7 +203,7 @@ export default function AdminDashboard() {
                 period="vs last month"
                 chartData={[7, 9, 8, 10, 9, 11, 10, 12, 11, 13]}
               />
-            </div>
+              </div>
 
             <div className="grid gap-6 md:grid-cols-3 mb-6">
               <Card className="md:col-span-2">
@@ -258,7 +258,7 @@ export default function AdminDashboard() {
                     lessons="122 lessons"
                     price="$9125.00"
                     icon="🎨"
-                    color="bg-blue-100"
+                    color="#2DB188"
                   />
                   <TopCourseCard
                     title="Prototyping"
