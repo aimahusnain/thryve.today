@@ -15,9 +15,11 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import Goy from "./goy";
-import { ThemeToggle } from "./theme-toggler";
+import Goy from "../goy";
+import { ThemeToggle } from "../theme-toggler";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { UserNav } from "./user-nav";
 
 interface NavLink {
   title: string;
@@ -37,6 +39,8 @@ const Navbar = () => {
   const [showCTAInNav, setShowCTAInNav] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { data: session, status } = useSession();
+  const isLoading = status === "loading";
 
   const copyEmail = async () => {
     const email = "infor@thryve.today";
@@ -128,11 +132,10 @@ const Navbar = () => {
                   src="/logo (2).png"
                   className="z-30"
                   alt="Thryve Logo"
-                  width={90} 
+                  width={90}
                   height={90}
                 />
               </Link>
-
 
               {/* Desktop Navigation Links */}
               <div className="hidden lg:flex items-center space-x-8 ml-8">
@@ -202,15 +205,24 @@ const Navbar = () => {
                     delay: showCTAInNav ? 0.2 : 0,
                   }}
                 >
+                  {isLoading ? (
+                    <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
+                  ) : session ? (
+                    <UserNav />
+                  ) : (
+                    <>
+                      <Link href="/log-in" className="rounded-full">
+                        Sign In
+                      </Link>
+                      <Goy id="courses">
+                        <Button className="bg-[#2db188] hover:bg-[#35dba8] text-white hover:text-black rounded-full">
+                          Get Started
+                        </Button>
+                      </Goy>
+                    </>
+                  )}
+
                   <ThemeToggle />
-                    <Link href='/log-in' className="rounded-full">
-                      Sign In
-                    </Link>
-                  <Goy id="courses">
-                    <Button className="bg-[#2db188] hover:bg-[#35dba8] text-white hover:text-black rounded-full">
-                      Get Started
-                    </Button>
-                  </Goy>
                 </motion.div>
               </motion.div>
             </div>
