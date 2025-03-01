@@ -63,22 +63,30 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account }) {
       if (account?.provider === "google") {
         if (!user.email) return false
-
+  
         try {
           // Check if user exists
           const existingUser = await prisma.user.findUnique({
             where: { email: user.email },
           })
-
+  
           if (!existingUser) {
-            // Create new user if they don't exist
+            // Create new user if they don't exist, including the image
             await prisma.user.create({
               data: {
                 email: user.email,
                 name: user.name || "",
+                // Add the user's image from Google if available
+                image: user.image || null,
                 // Set a random password for OAuth users
                 password: await bcrypt.hash(Math.random().toString(36).slice(-8), 10),
               },
+            })
+          } else if (user.image && (!existingUser.image || existingUser.image !== user.image)) {
+            // Update existing user's image if it changed or wasn't set before
+            await prisma.user.update({
+              where: { email: user.email },
+              data: { image: user.image }
             })
           }
           return true
