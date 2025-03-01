@@ -7,15 +7,9 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function Page() {
-  return (
-    <section className="h-screen flex items-center justify-center bg-gray-100">
-      <SuccessContent />
-    </section>
-  );
-}
+import React from "react";
 
-function SuccessContent() {
+const SuccessContent = () => {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const [verifying, setVerifying] = useState(true);
@@ -88,26 +82,30 @@ function SuccessContent() {
   }
 
   return (
-    <div className="text-center mb-12">
-      <div className="inline-block p-3 rounded-full bg-primary/10 mb-6">
-        <CheckCircle className="w-12 h-12 text-primary" />
+    <section className="h-screen flex items-center justify-center bg-gray-100">
+      <div className="text-center mb-12">
+        <div className="inline-block p-3 rounded-full bg-primary/10 mb-6">
+          <CheckCircle className="w-12 h-12 text-primary" />
+        </div>
+        <h1 className="text-4xl font-bold text-primary mb-4">
+          Payment Successful!
+        </h1>
+        <p className="text-xl text-muted-foreground mb-8">
+          Thank you for enrolling in our Nursing Assistant Program. Your payment
+          has been processed successfully.
+        </p>
+        <p className="text-muted-foreground mb-8">
+          You will receive a confirmation email shortly with further details
+          about your enrollment.
+        </p>
+        <Link href="/">
+          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3">
+            Return to Home
+          </Button>
+        </Link>
       </div>
-      <h1 className="text-4xl font-bold text-primary mb-4">
-        Payment Successful!
-      </h1>
-      <p className="text-xl text-muted-foreground mb-8">
-        Thank you for enrolling in our Nursing Assistant Program. Your payment
-        has been processed successfully.
-      </p>
-      <p className="text-muted-foreground mb-8">
-        You will receive a confirmation email shortly with further details about
-        your enrollment.
-      </p>
-      <Link href="/">
-        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3">
-          Return to Home
-        </Button>
-      </Link>
-    </div>
+    </section>
   );
-}
+};
+
+export default SuccessContent;
