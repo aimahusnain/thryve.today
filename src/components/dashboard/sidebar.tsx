@@ -1,25 +1,22 @@
 "use client";
 
-import type * as React from "react";
-import { signOut, useSession } from "next-auth/react";
 import {
   BarChart3,
   ClipboardList,
-  Command,
   GraduationCap,
-  HelpCircle,
   LayoutDashboard,
   LogOut,
   Moon,
   Settings,
   ShoppingCart,
   Sun,
-  Wallet,
+  Wallet
 } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
+import type * as React from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,

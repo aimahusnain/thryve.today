@@ -42,7 +42,7 @@ export function HelpSupportDialog() {
               </div>
               <h2 className="mt-6 text-3xl font-bold tracking-tight">Support Center</h2>
               <p className="mt-2 text-primary-foreground/80">
-                We're here to help with any questions you might have
+                We&apos;re here to help with any questions you might have
               </p>
             </DialogHeader>
           </div>
