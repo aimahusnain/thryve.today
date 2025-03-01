@@ -3,22 +3,24 @@
 import { CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 import React from "react";
 
 const SuccessContent = () => {
-  const searchParams = useSearchParams();
-  const sessionId = searchParams.get("session_id");
   const [verifying, setVerifying] = useState(true);
   const [verified, setVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  console.log("Isvverified", verified);
-
+  console.log(verified)
+  
   useEffect(() => {
+    // Get the session ID from URL without using useSearchParams
+    const sessionId = typeof window !== 'undefined' 
+      ? new URLSearchParams(window.location.search).get("session_id")
+      : null;
+    
     if (sessionId) {
       // Verify the session
       const verifyPayment = async () => {
@@ -44,7 +46,7 @@ const SuccessContent = () => {
       setVerifying(false);
       setError("No payment session found. Please contact support.");
     }
-  }, [sessionId]);
+  }, []);
 
   if (verifying) {
     return (
