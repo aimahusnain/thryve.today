@@ -38,7 +38,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Toaster, toast } from "sonner";
 import * as z from "zod";
-import Navbar from "@/components/header";
 
 const formSchema = z.object({
   studentName: z
@@ -217,8 +216,6 @@ export default function NursingEnrollment() {
   }
 
   return (
-    <>
-      <Navbar />
       <div className={cn("min-h-screen transition-colors duration-300")}>
         <Toaster />
         <div className="container mx-auto py-12 px-6 sm:px-8 lg:px-12 max-w-6xl mt-20">
@@ -733,6 +730,5 @@ export default function NursingEnrollment() {
           </Form>
         </div>
       </div>
-    </>
   );
 }

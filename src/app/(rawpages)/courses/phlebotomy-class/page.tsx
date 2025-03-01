@@ -12,7 +12,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
-import Navbar from "@/components/header";
 
 const formSchema = z.object({
   studentName: z.string().min(2, { message: "Student name must be at least 2 characters." }),
@@ -71,8 +70,6 @@ export default function PhlebotomyEnrollment() {
   }
 
   return (
- <>
- <Navbar />
     <div className={cn("min-h-screen transition-colors duration-300")}>
       <div className="container mx-auto py-12 px-6 sm:px-8 lg:px-12 max-w-6xl mt-20">
         <div className="flex justify-between items-center sm:flex-row flex-col mb-8">
@@ -1083,7 +1080,5 @@ export default function PhlebotomyEnrollment() {
         </Form>
       </div>
     </div>
- </>
   )
 }
-

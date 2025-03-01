@@ -1,83 +1,73 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { AnimatePresence, motion } from "framer-motion";
-import {
-  Check,
-  ChevronRight,
-  Copy,
-  Mail,
-  Menu,
-  PhoneCall,
-  X,
-} from "lucide-react";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import Goy from "../goy";
-import { ThemeToggle } from "../theme-toggler";
-import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { UserNav } from "./user-nav";
+import { useState, useEffect } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useSession } from "next-auth/react"
+import { AnimatePresence, motion } from "framer-motion"
+import { Menu, X, Mail, Copy, Check, ChevronRight, PhoneCall } from "lucide-react"
+import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme-toggler"
+import { UserNav } from "./user-nav"
+import Goy from "@/components/goy"
 
 interface NavLink {
-  title: string;
-  href: string;
+  title: string
+  href: string
 }
 
 const navLinks: NavLink[] = [
   { title: "Home", href: "home" },
   { title: "Courses", href: "courses" },
-  { title: "Whyus", href: "why-us" },
+  { title: "Why Us", href: "why-us" },
   { title: "Instructors", href: "instructors" },
   { title: "Contact", href: "contact" },
-];
+]
 
-const Navbar = () => {
-  const [scrollPosition, setScrollPosition] = useState(0);
-  const [showCTAInNav, setShowCTAInNav] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { data: session, status } = useSession();
-  const isLoading = status === "loading";
+export default function Navbar() {
+  const [scrollPosition, setScrollPosition] = useState(0)
+  const [showCTAInNav, setShowCTAInNav] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { data: session, status } = useSession()
+  const isLoading = status === "loading"
+  const pathname = usePathname()
+
+  // Hide navbar on /dashboard/* routes
+  if (pathname.startsWith("/dashboard")) return null
 
   const copyEmail = async () => {
-    const email = "infor@thryve.today";
-    await navigator.clipboard.writeText(email);
-    setCopied(true);
+    const email = "infor@thryve.today"
+    await navigator.clipboard.writeText(email)
+    setCopied(true)
     toast.success("Email copied to clipboard!", {
       duration: 2000,
       position: "top-right",
-    });
-    setTimeout(() => setCopied(false), 2000);
-  };
+    })
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   useEffect(() => {
     const handleScroll = () => {
-      const position = window.scrollY;
-      const pageHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const scrollPercentage = (position / pageHeight) * 100;
+      const position = window.scrollY
+      const pageHeight = document.documentElement.scrollHeight - window.innerHeight
+      const scrollPercentage = (position / pageHeight) * 100
 
-      setScrollPosition(position);
-      setShowCTAInNav(scrollPercentage > 7.2);
-    };
+      setScrollPosition(position)
+      setShowCTAInNav(scrollPercentage > 7.2)
+    }
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const pathname = usePathname();
-
-  // Hide navbar on /dashboard/* routes
-  if (pathname.startsWith("/dashboard")) return null;
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   return (
-    <div className={`fixed top-0  sm:top-4 left-0 right-0 z-20 bg-transparent`}>
-      <div className="sm:mx-12 px-0 md:px-6 lg:px-0">
+    <div className="fixed top-0 sm:top-4 left-0 right-0 z-[60]">
+      <div className="container px-4 mx-auto">
         <div className="flex justify-between items-center gap-4">
-          {/* Email Group - Visible only on large screens */}
+          {/* Email Contact - Desktop Only */}
           <motion.div
             initial={{ y: 0, opacity: 1 }}
             animate={{
@@ -85,29 +75,18 @@ const Navbar = () => {
               opacity: scrollPosition > 20 ? 0 : 1,
             }}
             transition={{ duration: 0.3 }}
-            className="hidden lg:flex bg-white dark:bg-zinc-900 rounded-full px-6 py-2.5 shadow-sm transition-shadow duration-300"
+            className="hidden lg:flex bg-background rounded-full px-6 py-2.5 shadow-sm"
           >
-            <div
-              className="flex items-center space-x-2 text-zinc-700 dark:text-zinc-200 cursor-pointer"
-              onClick={copyEmail}
-            >
+            <div className="flex items-center space-x-2 text-foreground cursor-pointer" onClick={copyEmail}>
               <Mail className="w-4 h-4" />
-              <span>infor@thryve.today </span>
+              <span>infor@thryve.today</span>
               <AnimatePresence>
                 {!copied ? (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                  >
-                    <Copy className="w-4 h-4 text-zinc-400" />
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                    <Copy className="w-4 h-4 text-muted-foreground" />
                   </motion.div>
                 ) : (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                  >
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
                     <Check className="w-4 h-4 text-green-500" />
                   </motion.div>
                 )}
@@ -119,22 +98,13 @@ const Navbar = () => {
           <motion.div
             initial={{ y: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-white dark:bg-zinc-900 rounded-none sm:rounded-full px-4 sm:px-0 shadow-sm relative flex-1 lg:flex-none w-full sm:w-auto"
-            style={{
-              height: "64px",
-              borderRadius: undefined,
-            }}
+            className="bg-background rounded-none sm:rounded-full px-4 sm:px-6 shadow-sm relative flex-1 lg:flex-none w-full sm:w-auto"
+            style={{ height: "64px" }}
           >
-            <div className="flex items-center justify-between h-full px-5">
+            <div className="flex items-center justify-between h-full">
               {/* Logo */}
-              <Link href="/" className="flex  items-center">
-                <Image
-                  src="/logo (2).png"
-                  className="z-30"
-                  alt="Thryve Logo"
-                  width={90}
-                  height={90}
-                />
+              <Link href="/" className="flex items-center">
+                <Image src="/logo (2).png" className="z-30" alt="Thryve Logo" width={90} height={90} />
               </Link>
 
               {/* Desktop Navigation Links */}
@@ -143,7 +113,7 @@ const Navbar = () => {
                   <Goy
                     key={link.href}
                     id={link.href}
-                    className="text-zinc-700 dark:text-zinc-200 hover:text-[#2db188] transition-colors duration-200"
+                    className="text-foreground hover:text-[#2db188] transition-colors duration-200"
                   >
                     {link.title}
                   </Goy>
@@ -156,34 +126,28 @@ const Navbar = () => {
                   <Goy
                     key={link.href}
                     id={link.href}
-                    className="text-zinc-700 dark:text-zinc-200 hover:text-[#2db188] transition-colors duration-200 text-sm"
+                    className="text-foreground hover:text-[#2db188] transition-colors duration-200 text-sm"
                   >
                     {link.title}
                   </Goy>
                 ))}
-                <button
-                  className="text-zinc-700 dark:text-zinc-200 hover:text-[#2db188]"
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                >
+                <button className="text-foreground hover:text-[#2db188]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                   <Menu className="w-5 h-5" />
                 </button>
               </div>
 
               {/* Mobile Menu Button */}
               <button
-                className="md:hidden flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                className="md:hidden flex items-center justify-center w-10 h-10 rounded-full hover:bg-accent"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               >
-                {isMenuOpen ? (
-                  <X className="w-5 h-5 text-zinc-700 dark:text-zinc-200" />
-                ) : (
-                  <Menu className="w-5 h-5 text-zinc-700 dark:text-zinc-200" />
-                )}
+                {isMenuOpen ? <X className="w-5 h-5 text-foreground" /> : <Menu className="w-5 h-5 text-foreground" />}
               </button>
 
-              {/* Desktop CTA Container */}
+              {/* Desktop CTA Container - Appears on scroll */}
               <motion.div
-                className="hidden lg:flex items-center space-x-4 pl-2 border-l border-zinc-200 dark:border-zinc-700"
+                className="hidden lg:flex items-center space-x-4 pl-4 border-l border-border"
                 animate={{
                   width: showCTAInNav ? "auto" : 0,
                   opacity: showCTAInNav ? 1 : 0,
@@ -211,7 +175,7 @@ const Navbar = () => {
                     <UserNav />
                   ) : (
                     <>
-                      <Link href="/log-in" className="rounded-full">
+                      <Link href="/log-in" className="text-foreground mx-2 hover:text-[#2db188] transition-colors">
                         Sign In
                       </Link>
                       <Goy id="courses">
@@ -221,14 +185,13 @@ const Navbar = () => {
                       </Goy>
                     </>
                   )}
-
                   <ThemeToggle />
                 </motion.div>
               </motion.div>
             </div>
           </motion.div>
 
-          {/* Desktop Original CTA Buttons */}
+          {/* Desktop Original CTA Buttons - Visible before scroll */}
           <motion.div
             initial={{ y: 0, opacity: 1 }}
             animate={{
@@ -236,21 +199,32 @@ const Navbar = () => {
               opacity: scrollPosition > 20 ? 0 : 1,
             }}
             transition={{ duration: 0.3 }}
-            className="hidden lg:flex bg-white dark:bg-zinc-900 rounded-full px-2 py-1 shadow-sm transition-shadow duration-300 pl-2"
+            className="hidden lg:flex bg-background rounded-full px-4 py-2 shadow-sm"
           >
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-3">
               <ThemeToggle />
-              <Button variant="ghost" className="rounded-full duration-300">
-                Sign In
-              </Button>
-              <Button className="bg-[#2db188] text-white hover:bg-[#35dba8] rounded-full transition-all duration-300">
-                Get Started Today
-              </Button>
+
+              {isLoading ? (
+                <div className="h-9 w-20 rounded-full bg-muted animate-pulse" />
+              ) : session ? (
+                <UserNav />
+              ) : (
+                <>
+                  <Goy id="courses">
+                    <Button className="bg-[#2db188] text-white hover:bg-[#35dba8] rounded-full">Get Started</Button>
+                  </Goy>
+                  <Link href="/log-in">
+                    <Button variant="ghost" className="rounded-full">
+                      Sign In
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </motion.div>
         </div>
 
-        {/* Enhanced Mobile/Tablet Menu */}
+        {/* Mobile/Tablet Menu */}
         <AnimatePresence>
           {isMenuOpen && (
             <motion.div
@@ -258,7 +232,7 @@ const Navbar = () => {
               animate={{ opacity: 1, height: "90vh" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="fixed inset-0 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md md:hidden"
+              className="fixed inset-0 bg-background/95 backdrop-blur-md md:hidden"
               style={{ top: "64px" }}
             >
               <motion.div
@@ -283,17 +257,12 @@ const Navbar = () => {
                           onClick={() => setIsMenuOpen(false)}
                         >
                           <div className="flex flex-col items-start">
-                            <span className="text-2xl font-medium text-zinc-800 dark:text-zinc-200">
-                              {link.title}
-                            </span>
-                            <span className="text-sm text-zinc-500 dark:text-zinc-400 group-hover:text-[#2db188] transition-colors">
+                            <span className="text-2xl font-medium text-foreground">{link.title}</span>
+                            <span className="text-sm text-muted-foreground group-hover:text-[#2db188] transition-colors">
                               Explore {link.title.toLowerCase()}
                             </span>
                           </div>
-                          <motion.div
-                            whileHover={{ x: 5 }}
-                            className="text-[#2db188]"
-                          >
+                          <motion.div whileHover={{ x: 5 }} className="text-[#2db188]">
                             <ChevronRight />
                           </motion.div>
                         </div>
@@ -303,17 +272,17 @@ const Navbar = () => {
                 </div>
 
                 {/* Bottom Actions Section */}
-                <div className="absolute bottom-0 left-0 right-0 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border-t border-zinc-100 dark:border-zinc-800">
+                <div className="absolute bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t border-border">
                   <div className="px-6 py-8 grid grid-cols-2 gap-5">
                     <div className="flex flex-col w-full items-start justify-center gap-3">
                       {/* Contact Info */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center space-x-3 text-zinc-600 dark:text-zinc-300"
+                        className="flex items-center space-x-3 text-foreground"
                         onClick={copyEmail}
                       >
-                        <div className="w-10 h-10 rounded-full bg-lime-50 dark:bg-lime-900 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                           <Mail className="w-5 h-5 text-[#2db188]" />
                         </div>
                         <div className="flex flex-col">
@@ -323,22 +292,22 @@ const Navbar = () => {
                         {copied ? (
                           <Check className="w-5 h-5 text-green-500 ml-auto" />
                         ) : (
-                          <Copy className="w-5 h-5 text-zinc-400 ml-auto" />
+                          <Copy className="w-5 h-5 text-muted-foreground ml-auto" />
                         )}
                       </motion.div>
 
-                      {/* Contact Info */}
+                      {/* Phone Contact */}
                       <motion.a
                         href="tel:+19794847983"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center space-x-3 text-zinc-600 dark:text-zinc-300"
+                        className="flex items-center space-x-3 text-foreground"
                       >
-                        <div className="w-10 h-10 rounded-full bg-lime-50 dark:bg-lime-900 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                           <PhoneCall className="w-5 h-5 text-[#2db188]" />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-sm font-medium">Phone No.</span>
+                          <span className="text-sm font-medium">Phone</span>
                           <span className="text-xs">+1 (979) 484-7983</span>
                         </div>
                       </motion.a>
@@ -351,23 +320,37 @@ const Navbar = () => {
                       transition={{ delay: 0.2 }}
                       className="flex flex-col w-full items-center justify-center gap-3"
                     >
-                      <Goy id="courses">
-                        <Button
-                          onClick={() => setIsMenuOpen(false)}
-                          variant="ghost"
-                          className="w-full rounded-full h-12 text-base"
-                        >
-                          Sign In
-                        </Button>
-                      </Goy>
-                      <Goy id="contact">
-                        <Button
-                          onClick={() => setIsMenuOpen(false)}
-                          className="w-full rounded-full h-12 text-white text-base bg-[#2db188] hover:bg-[#35dba8]"
-                        >
-                          Get Started Today
-                        </Button>
-                      </Goy>
+                      {isLoading ? (
+                        <div className="h-12 w-full rounded-full bg-muted animate-pulse" />
+                      ) : session ? (
+                        <div className="flex items-center justify-center w-full">
+                          <Link href="/dashboard">
+                            <Button className="w-full rounded-full h-12 text-base bg-[#2db188] hover:bg-[#35dba8] text-white">
+                              Dashboard
+                            </Button>
+                          </Link>
+                        </div>
+                      ) : (
+                        <>
+                          <Link href="/log-in" className="w-full">
+                            <Button
+                              onClick={() => setIsMenuOpen(false)}
+                              variant="ghost"
+                              className="w-full rounded-full h-12 text-base"
+                            >
+                              Sign In
+                            </Button>
+                          </Link>
+                          <Goy id="courses" className="w-full">
+                            <Button
+                              onClick={() => setIsMenuOpen(false)}
+                              className="w-full rounded-full h-12 text-white text-base bg-[#2db188] hover:bg-[#35dba8]"
+                            >
+                              Get Started
+                            </Button>
+                          </Goy>
+                        </>
+                      )}
                     </motion.div>
                   </div>
                 </div>
@@ -377,7 +360,6 @@ const Navbar = () => {
         </AnimatePresence>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Navbar;
