@@ -1,109 +1,25 @@
 "use client"
 
-import * as React from "react"
-import { useState } from "react"
-import { Area, AreaChart, Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
-import { BarChartIcon, Book, Calendar, ChevronDown, Filter, Info, PanelLeft, Settings, UsersIcon } from "lucide-react"
+import { AppSidebar } from "@/components/dashboard/sidebar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Separator } from "@/components/ui/separator"
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
-import { useSession } from "next-auth/react"
-
-// Sidebar Context
-type SidebarContextType = {
-  isOpen: boolean
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-const SidebarContext = React.createContext<SidebarContextType | undefined>(undefined)
-
-function SidebarProvider({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  const [isOpen, setIsOpen] = React.useState(true)
-
-  return (
-    <SidebarContext.Provider value={{ isOpen, setIsOpen }}>
-      <div className="flex h-full" {...props}>
-        {children}
-      </div>
-    </SidebarContext.Provider>
-  )
-}
-
-function useSidebar() {
-  const context = React.useContext(SidebarContext)
-  if (!context) {
-    throw new Error("useSidebar must be used within a SidebarProvider")
-  }
-  return context
-}
-
-function Sidebar({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  const { isOpen } = useSidebar()
-
-  return (
-    <div
-      className={cn(
-        "h-screen w-64 transition-all duration-300 ease-in-out",
-        isOpen ? "translate-x-0" : "-translate-x-full",
-        className,
-      )}
-      {...props}
-    />
-  )
-}
-
-function SidebarTrigger() {
-  const { setIsOpen } = useSidebar()
-
-  return (
-    <Button variant="ghost" size="icon" onClick={() => setIsOpen((prev) => !prev)}>
-      <PanelLeft className="h-5 w-5" />
-      <span className="sr-only">Toggle Sidebar</span>
-    </Button>
-  )
-}
-
-function SidebarHeader({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("", className)} {...props} />
-}
-
-function SidebarContent({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("p-4", className)} {...props} />
-}
-
-// function SidebarFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-//   return <div className={cn("mt-auto p-4", className)} {...props} />
-// }
-
-function SidebarMenu({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) {
-  return <ul className={cn("space-y-2", className)} {...props} />
-}
-
-function SidebarMenuItem({ className, ...props }: React.HTMLAttributes<HTMLLIElement>) {
-  return <li className={cn("", className)} {...props} />
-}
-
-function SidebarMenuButton({
-  className,
-  isActive = false,
-  ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & { isActive?: boolean }) {
-  return (
-    <button
-      className={cn(
-        "flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-        isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted hover:text-foreground",
-        className,
-      )}
-      {...props}
-    />
-  )
-}
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ChevronDown, Filter, Info } from "lucide-react"
+import { Area, AreaChart, Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 
 // Stat Card Component
 interface StatCardProps {
@@ -218,79 +134,41 @@ function EarningsChart() {
 
 // Main Dashboard Component
 export default function AdminDashboard() {
-  const [activeView, setActiveView] = useState<"dashboard" | "users" | "courses">("dashboard")
-  const { data: session } = useSession();
-
   return (
     <SidebarProvider>
-      <div className="flex h-screen w-full bg-background">
-        <Sidebar className="border-r">
-          <SidebarHeader className="flex h-14 items-center border-b px-4">
-            <Avatar className="h-8 w-8 mr-2 bg-primary">
-              <AvatarFallback>FN</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col">
-              <h1 className="text-sm font-semibold capitalize">{session?.user?.name}</h1>
-              <p className="text-xs text-muted-foreground lowercase">{session?.user?.email}</p>
-            </div>
-          </SidebarHeader>
-          <SidebarContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton isActive={activeView === "dashboard"} onClick={() => setActiveView("dashboard")}>
-                  <BarChartIcon className="h-4 w-4" />
-                  <span>Dashboard</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton isActive={activeView === "courses"} onClick={() => setActiveView("courses")}>
-                  <Book className="h-4 w-4" />
-                  <span>My Courses</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <Calendar className="h-4 w-4" />
-                  <span>Private Class</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton>
-                  <Settings className="h-4 w-4" />
-                  <span>Quiz</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton isActive={activeView === "users"} onClick={() => setActiveView("users")}>
-                  <UsersIcon className="h-4 w-4" />
-                  <span>Students</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarContent>
-        </Sidebar>
-
-        <div className="flex-1 overflow-auto">
-          <header className="flex h-14 items-center justify-between border-b px-6">
-            <div className="flex items-center gap-2">
-              <SidebarTrigger />
-              <h1 className="text-lg font-semibold">Dashboard</h1>
-            </div>
-            <Button variant="outline">
-              <span>Add Courses</span>
-            </Button>
-          </header>
-
-          <main className="p-6">
-          <Card className="mb-6 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/Background-Design-Wallpaper-HD-16247.jpg')" }}>
-  <CardContent className="p-6 bg-black/20 rounded-lg">
-    <div className="text-white">
-      <h2 className="text-2xl font-bold">Welcome Back, Keira!</h2>
-      <p className="text-white/80">See what happened with your courses and students!</p>
-    </div>
-  </CardContent>
-</Card>
-
+      <AppSidebar />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b">
+          <div className="flex items-center gap-2 px-3">
+            <SidebarTrigger />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="#">Building Your Application</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+        </header>
+        <div className="flex-1 overflow-auto p-6">
+            <Card
+              className="mb-6 bg-cover bg-center bg-no-repeat"
+              style={{
+                backgroundImage: "url('/Background-Design-Wallpaper-HD-16247.jpg')",
+              }}
+            >
+              <CardContent className="p-6 bg-black/20 rounded-lg">
+                <div className="text-white">
+                  <h2 className="text-2xl font-bold">Welcome Back, Keira!</h2>
+                  <p className="text-white/80">See what happened with your courses and students!</p>
+                </div>
+              </CardContent>
+            </Card>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-6">
               <StatCard
@@ -510,9 +388,8 @@ export default function AdminDashboard() {
                 </Tabs>
               </CardContent>
             </Card>
-          </main>
         </div>
-      </div>
+      </SidebarInset>
     </SidebarProvider>
   )
 }

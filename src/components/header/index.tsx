@@ -60,6 +60,7 @@ export default function Navbar() {
 
   // Hide navbar on /dashboard/* routes
   if (pathname.startsWith("/dashboard")) return null;
+  if (pathname.startsWith("/admin-dashboard")) return null;
 
   const copyEmail = async () => {
     const email = "infor@thryve.today";

@@ -10,6 +10,7 @@ const Footer = () => {
   const year = new Date().getFullYear();
   const pathname = usePathname();
   if (pathname.startsWith("/dashboard")) return null;
+  if (pathname.startsWith("/admin-dashboard")) return null;
 
   return (
     <footer className="w-full pt-8 md:pt-12 pb-6 md:pb-[17px] px-10 sm:px-6 md:px-[72px] bg-white dark:bg-zinc-900 border-b-4 border-[#2eb88e]">
