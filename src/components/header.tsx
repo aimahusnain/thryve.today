@@ -197,7 +197,7 @@ const Navbar = () => {
                   }}
                 >
                   <ThemeToggle />
-                    <Link href='/sign-in' className="rounded-full">
+                    <Link href='/log-in' className="rounded-full">
                       Sign In
                     </Link>
                   <Goy id="courses">

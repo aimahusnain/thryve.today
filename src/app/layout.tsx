@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import BottomContactBar from "@/components/bottom-contact-bar";
 import Navbar from "@/components/header";
 import ThemeContextProvider from "@/context/ThemeContext";
+import { AuthProvider } from "@/provider/auth-provider";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -25,13 +26,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${spaceGrotesk.variable} font-sans`}>
-        <ThemeContextProvider>
-          <Toaster />
-          <Navbar />
-          <BottomContactBar />
-          {children}
-          <Footer />
-        </ThemeContextProvider>
+        <AuthProvider>
+          <ThemeContextProvider>
+            <Toaster />
+            <Navbar />
+            <BottomContactBar />
+            {children}
+            <Footer />
+          </ThemeContextProvider>
+        </AuthProvider>
       </body>
     </html>
   );
