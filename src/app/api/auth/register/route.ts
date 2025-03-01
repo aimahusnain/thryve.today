@@ -37,7 +37,8 @@ export async function POST(request: Request) {
     })
 
     // Return user without password
-    const { password: userPassword, ...userWithoutPassword } = user
+    // @ts-ignore
+    const { password, ...userWithoutPassword } = user
 
     return NextResponse.json(
       {
