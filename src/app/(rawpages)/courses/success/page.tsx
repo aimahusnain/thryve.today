@@ -13,7 +13,7 @@ const SuccessContent = () => {
   const [error, setError] = useState<string | null>(null);
   
   console.log(verified)
-
+  
   useEffect(() => {
     // Get the session ID from URL without using useSearchParams
     const sessionId = typeof window !== 'undefined' 

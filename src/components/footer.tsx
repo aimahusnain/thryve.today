@@ -1,10 +1,15 @@
+'use client'
+
 import Link from "next/link";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import Goy from "./goy";
+import { usePathname } from "next/navigation";
 
 const Footer = () => {
   const year = new Date().getFullYear();
+  const pathname = usePathname();
+  if (pathname.startsWith("/dashboard")) return null;
 
   return (
     <footer className="w-full pt-8 md:pt-12 pb-6 md:pb-[17px] px-10 sm:px-6 md:px-[72px] bg-white dark:bg-zinc-900 border-b-4 border-[#2eb88e]">
@@ -14,12 +19,18 @@ const Footer = () => {
           {/* Left Section */}
           <div className="space-y-6 w-full md:w-auto">
             {/* Logo */}
-            <Image src="/logo (2).png"
- alt="Thryve Logo" width={140} height={140} />
+            <Image
+              src="/logo (2).png"
+              alt="Thryve Logo"
+              width={140}
+              height={140}
+            />
             {/* Contact Info */}
             <div className="grid grid-cols-1 sm:grid-cols-2 items-start gap-4 sm:gap-6">
               <div>
-                <p className="text-[14px] text-zinc-900 dark:text-zinc-100 mb-1">Email</p>
+                <p className="text-[14px] text-zinc-900 dark:text-zinc-100 mb-1">
+                  Email
+                </p>
                 <Link
                   href="mailto:hello@thryve.today"
                   className="text-[14px] text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors"
@@ -28,7 +39,9 @@ const Footer = () => {
                 </Link>
               </div>
               <div>
-                <p className="text-[14px] text-zinc-900 dark:text-zinc-100 mb-1">Phone Number</p>
+                <p className="text-[14px] text-zinc-900 dark:text-zinc-100 mb-1">
+                  Phone Number
+                </p>
                 <Link
                   href="tel:9794847983"
                   className="text-[14px] text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors"
@@ -39,7 +52,9 @@ const Footer = () => {
             </div>
 
             <div>
-              <p className="text-[14px] text-zinc-900 dark:text-zinc-100 mb-1">Address</p>
+              <p className="text-[14px] text-zinc-900 dark:text-zinc-100 mb-1">
+                Address
+              </p>
               <Link
                 href="https://maps.app.goo.gl/mxPw5STmLyFV6qtv6"
                 target="_blank"
@@ -104,7 +119,10 @@ const Footer = () => {
                 key={platform.name}
                 className="rounded-[100px] flex items-center gap-2 text-[14px] text-[#101828] dark:text-zinc-300"
               >
-                <Button variant="link" className="m-0 dark:text-zinc-300 dark:hover:text-white">
+                <Button
+                  variant="link"
+                  className="m-0 dark:text-zinc-300 dark:hover:text-white"
+                >
                   <span className="whitespace-nowrap">{platform.name}</span>
                 </Button>
               </Goy>
@@ -114,7 +132,10 @@ const Footer = () => {
               key="Enrollment"
               className="rounded-[100px] flex items-center gap-2 text-[14px] text-[#101828] dark:text-zinc-300"
             >
-              <Button variant="link" className="m-0 dark:text-zinc-300 dark:hover:text-white">
+              <Button
+                variant="link"
+                className="m-0 dark:text-zinc-300 dark:hover:text-white"
+              >
                 <span className="whitespace-nowrap">Enrollment</span>
               </Button>
             </Link>

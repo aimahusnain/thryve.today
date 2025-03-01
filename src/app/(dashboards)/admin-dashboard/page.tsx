@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+import { useSession } from "next-auth/react"
 
 // Sidebar Context
 type SidebarContextType = {
@@ -199,7 +200,7 @@ function EarningsChart() {
   ]
 
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer width="100%" height={200}>
       <BarChart data={data}>
         <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
         <YAxis
@@ -216,8 +217,9 @@ function EarningsChart() {
 }
 
 // Main Dashboard Component
-export default function Dashboard() {
+export default function AdminDashboard() {
   const [activeView, setActiveView] = useState<"dashboard" | "users" | "courses">("dashboard")
+  const { data: session } = useSession();
 
   return (
     <SidebarProvider>
@@ -228,8 +230,8 @@ export default function Dashboard() {
               <AvatarFallback>FN</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <h1 className="text-sm font-semibold">Fakhri Naufal</h1>
-              <p className="text-xs text-muted-foreground">fakhri@gmail.com</p>
+              <h1 className="text-sm font-semibold capitalize">{session?.user?.name}</h1>
+              <p className="text-xs text-muted-foreground lowercase">{session?.user?.email}</p>
             </div>
           </SidebarHeader>
           <SidebarContent>
@@ -280,14 +282,15 @@ export default function Dashboard() {
           </header>
 
           <main className="p-6">
-            <Card className="mb-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
-              <CardContent className="p-6">
-                <div className="text-white">
-                  <h2 className="text-2xl font-bold">Welcome Back, Fakhri Naufal!</h2>
-                  <p className="text-white/80">See what happened with your courses and students!</p>
-                </div>
-              </CardContent>
-            </Card>
+          <Card className="mb-6 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/Background-Design-Wallpaper-HD-16247.jpg')" }}>
+  <CardContent className="p-6 bg-black/20 rounded-lg">
+    <div className="text-white">
+      <h2 className="text-2xl font-bold">Welcome Back, Keira!</h2>
+      <p className="text-white/80">See what happened with your courses and students!</p>
+    </div>
+  </CardContent>
+</Card>
+
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-6">
               <StatCard

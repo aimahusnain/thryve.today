@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Goy from "./goy";
 import { ThemeToggle } from "./theme-toggler";
+import { usePathname } from "next/navigation";
 
 interface NavLink {
   title: string;
@@ -62,6 +63,11 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const pathname = usePathname();
+
+  // Hide navbar on /dashboard/* routes
+  if (pathname.startsWith("/dashboard")) return null;
 
   return (
     <div className={`fixed top-0  sm:top-4 left-0 right-0 z-20 bg-transparent`}>
