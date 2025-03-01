@@ -1,21 +1,29 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useSession } from "next-auth/react"
-import { AnimatePresence, motion } from "framer-motion"
-import { Menu, X, Mail, Copy, Check, ChevronRight, PhoneCall } from "lucide-react"
-import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/theme-toggler"
-import { UserNav } from "./user-nav"
-import Goy from "@/components/goy"
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  Menu,
+  X,
+  Mail,
+  Copy,
+  Check,
+  ChevronRight,
+  PhoneCall,
+} from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggler";
+import { UserNav } from "./user-nav";
+import Goy from "@/components/goy";
 
 interface NavLink {
-  title: string
-  href: string
+  title: string;
+  href: string;
 }
 
 const navLinks: NavLink[] = [
@@ -24,44 +32,45 @@ const navLinks: NavLink[] = [
   { title: "Why Us", href: "why-us" },
   { title: "Instructors", href: "instructors" },
   { title: "Contact", href: "contact" },
-]
+];
 
 export default function Navbar() {
-  const [scrollPosition, setScrollPosition] = useState(0)
-  const [showCTAInNav, setShowCTAInNav] = useState(false)
-  const [copied, setCopied] = useState(false)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { data: session, status } = useSession()
-  const isLoading = status === "loading"
-  const pathname = usePathname()
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [showCTAInNav, setShowCTAInNav] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { data: session, status } = useSession();
+  const isLoading = status === "loading";
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
-      const position = window.scrollY
-      const pageHeight = document.documentElement.scrollHeight - window.innerHeight
-      const scrollPercentage = (position / pageHeight) * 100
+      const position = window.scrollY;
+      const pageHeight =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercentage = (position / pageHeight) * 100;
 
-      setScrollPosition(position)
-      setShowCTAInNav(scrollPercentage > 7.2)
-    }
+      setScrollPosition(position);
+      setShowCTAInNav(scrollPercentage > 7.2);
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Hide navbar on /dashboard/* routes
-  if (pathname.startsWith("/dashboard")) return null
+  if (pathname.startsWith("/dashboard")) return null;
 
   const copyEmail = async () => {
-    const email = "infor@thryve.today"
-    await navigator.clipboard.writeText(email)
-    setCopied(true)
+    const email = "infor@thryve.today";
+    await navigator.clipboard.writeText(email);
+    setCopied(true);
     toast.success("Email copied to clipboard!", {
       duration: 2000,
       position: "top-right",
-    })
-    setTimeout(() => setCopied(false), 2000)
-  }
+    });
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
     <div className="fixed top-0 sm:top-4 left-0 right-0 z-[60]">
@@ -77,16 +86,27 @@ export default function Navbar() {
             transition={{ duration: 0.3 }}
             className="hidden lg:flex bg-background rounded-full px-6 py-2.5 shadow-sm"
           >
-            <div className="flex items-center space-x-2 text-foreground cursor-pointer" onClick={copyEmail}>
+            <div
+              className="flex items-center space-x-2 text-foreground cursor-pointer"
+              onClick={copyEmail}
+            >
               <Mail className="w-4 h-4" />
               <span>infor@thryve.today</span>
               <AnimatePresence>
                 {!copied ? (
-                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                  >
                     <Copy className="w-4 h-4 text-muted-foreground" />
                   </motion.div>
                 ) : (
-                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                  >
                     <Check className="w-4 h-4 text-green-500" />
                   </motion.div>
                 )}
@@ -104,7 +124,13 @@ export default function Navbar() {
             <div className="flex items-center justify-between h-full">
               {/* Logo */}
               <Link href="/" className="flex items-center">
-                <Image src="/logo (2).png" className="z-30" alt="Thryve Logo" width={90} height={90} />
+                <Image
+                  src="/logo (2).png"
+                  className="z-30"
+                  alt="Thryve Logo"
+                  width={90}
+                  height={90}
+                />
               </Link>
 
               {/* Desktop Navigation Links */}
@@ -131,7 +157,10 @@ export default function Navbar() {
                     {link.title}
                   </Goy>
                 ))}
-                <button className="text-foreground hover:text-[#2db188]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                <button
+                  className="text-foreground hover:text-[#2db188]"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+                >
                   <Menu className="w-5 h-5" />
                 </button>
               </div>
@@ -142,7 +171,11 @@ export default function Navbar() {
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               >
-                {isMenuOpen ? <X className="w-5 h-5 text-foreground" /> : <Menu className="w-5 h-5 text-foreground" />}
+                {isMenuOpen ? (
+                  <X className="w-5 h-5 text-foreground" />
+                ) : (
+                  <Menu className="w-5 h-5 text-foreground" />
+                )}
               </button>
 
               {/* Desktop CTA Container - Appears on scroll */}
@@ -169,13 +202,19 @@ export default function Navbar() {
                     delay: showCTAInNav ? 0.2 : 0,
                   }}
                 >
+                  <Link href="/dashboard">
+                    <Button variant="default">Dashboard</Button>
+                  </Link>
                   {isLoading ? (
                     <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
                   ) : session ? (
                     <UserNav />
                   ) : (
                     <>
-                      <Link href="/log-in" className="text-foreground mx-2 hover:text-[#2db188] transition-colors">
+                      <Link
+                        href="/log-in"
+                        className="text-foreground mx-2 hover:text-[#2db188] transition-colors"
+                      >
                         Sign In
                       </Link>
                       <Goy id="courses">
@@ -211,7 +250,9 @@ export default function Navbar() {
               ) : (
                 <>
                   <Goy id="courses">
-                    <Button className="bg-[#2db188] text-white hover:bg-[#35dba8] rounded-full">Get Started</Button>
+                    <Button className="bg-[#2db188] text-white hover:bg-[#35dba8] rounded-full">
+                      Get Started
+                    </Button>
                   </Goy>
                   <Link href="/log-in">
                     <Button variant="ghost" className="rounded-full">
@@ -220,6 +261,10 @@ export default function Navbar() {
                   </Link>
                 </>
               )}
+
+              <Link href="/dashboard">
+                <Button variant="default">Dashboard</Button>
+              </Link>
             </div>
           </motion.div>
         </div>
@@ -257,12 +302,17 @@ export default function Navbar() {
                           onClick={() => setIsMenuOpen(false)}
                         >
                           <div className="flex flex-col items-start">
-                            <span className="text-2xl font-medium text-foreground">{link.title}</span>
+                            <span className="text-2xl font-medium text-foreground">
+                              {link.title}
+                            </span>
                             <span className="text-sm text-muted-foreground group-hover:text-[#2db188] transition-colors">
                               Explore {link.title.toLowerCase()}
                             </span>
                           </div>
-                          <motion.div whileHover={{ x: 5 }} className="text-[#2db188]">
+                          <motion.div
+                            whileHover={{ x: 5 }}
+                            className="text-[#2db188]"
+                          >
                             <ChevronRight />
                           </motion.div>
                         </div>
@@ -325,9 +375,7 @@ export default function Navbar() {
                       ) : session ? (
                         <div className="flex items-center justify-center w-full">
                           <Link href="/dashboard">
-                            <Button className="w-full rounded-full h-12 text-base bg-[#2db188] hover:bg-[#35dba8] text-white">
-                              Dashboard
-                            </Button>
+                            <Button>Dashboard</Button>
                           </Link>
                         </div>
                       ) : (
@@ -360,5 +408,5 @@ export default function Navbar() {
         </AnimatePresence>
       </div>
     </div>
-  )
+  );
 }
