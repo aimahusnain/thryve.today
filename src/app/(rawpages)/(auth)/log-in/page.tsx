@@ -1,5 +1,4 @@
 import { LoginForm } from "@/components/authentication/login-form";
-import Navbar from "@/components/header";
 
 export default function LoginPage() {
   return (
