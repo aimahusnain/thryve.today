@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
+import { signIn } from "next-auth/react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
@@ -57,24 +58,18 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
       toast.success("Account created successfully!")
 
       // Sign in the user after successful registration
-      const signInResponse = await fetch("/api/auth/callback/credentials", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          redirect: false,
-        }),
+      const signInResponse = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
       })
 
-      if (signInResponse.ok) {
+      if (signInResponse?.ok) {
         router.push("/dashboard")
         router.refresh()
       } else {
         // If auto sign-in fails, redirect to login page
-        router.push("/log-in")
+        router.push("/login")
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to create account")
@@ -97,7 +92,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
             <h1 className="text-xl font-bold">Create your account</h1>
             <div className="text-center text-sm">
               Already have an account?{" "}
-              <Link href="/log-in" className="underline underline-offset-4">
+              <Link href="/login" className="underline underline-offset-4">
                 Sign in
               </Link>
             </div>
@@ -146,8 +141,8 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
             <Button
               variant="outline"
               className="w-full"
-              // onClick={handleGoogleLogin}
-              // disabled={loading}
+              onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+              disabled={loading}
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path
