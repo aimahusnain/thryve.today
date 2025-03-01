@@ -15,7 +15,7 @@ export default async function DashboardPage() {
       <h1 className="mb-6 text-3xl font-bold">Dashboard</h1>
       <div className="rounded-lg border p-6">
         <h2 className="mb-4 text-xl font-semibold">Welcome, {session?.user?.name}!</h2>
-        <p>You've successfully logged in with Google.</p>
+        <p>You&apos;ve successfully logged in with Google.</p>
         <div className="mt-4">
           <h3 className="text-lg font-medium">Your Profile:</h3>
           <ul className="mt-2 space-y-2">
