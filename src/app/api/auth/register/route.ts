@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 
 export async function POST(request: Request) {
   try {
-    const { name, email, password } = await request.json()
+    const { name, email, password } = await request.json();
 
     // Validate input
     if (!name || !email || !password) {
@@ -37,8 +37,7 @@ export async function POST(request: Request) {
     })
 
     // Return user without password
-// @ts-ignore
-const { password: _, ...userWithoutPassword } = user;
+const { ...userWithoutPassword } = user;
 
     return NextResponse.json(
       {
