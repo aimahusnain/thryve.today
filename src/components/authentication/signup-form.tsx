@@ -69,7 +69,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
         router.refresh()
       } else {
         // If auto sign-in fails, redirect to login page
-        router.push("/login")
+        router.push("/log-in")
       }
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Failed to create account")
@@ -92,7 +92,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
             <h1 className="text-xl font-bold">Create your account</h1>
             <div className="text-center text-sm">
               Already have an account?{" "}
-              <Link href="/login" className="underline underline-offset-4">
+              <Link href="/log-in" className="underline underline-offset-4">
                 Sign in
               </Link>
             </div>

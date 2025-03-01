@@ -12,13 +12,15 @@ import WhyChooseUsSection from "@/components/why-choose-us";
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import Image from "next/image";
-
+import Navbar from "@/components/header";
 export default function Home() {
   return (
+    <>
+            <Navbar />
     <main
       id="home"
       className="overflow-hidden min-h-screen p-4 sm:p-6 md:p-8 lg:p-12 bg-gradient-to-br from-zinc-50 to-white dark:from-zinc-950 dark:to-black"
-    >
+      >
       <div className="max-w-7xl mx-auto mt-14">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 items-center lg:p-0 p-5">
           {/* Left Column - Image and Mentors */}
@@ -27,7 +29,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-          >
+            >
             {/* Video Call Card */}
             {/* <motion.div
               className="absolute top-4 left-4 z-10 w-1/3 sm:w-1/4 lg:w-48 max-w-[200px]"
@@ -35,10 +37,10 @@ export default function Home() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.3 }}
             >
-              <Card className="p-2 shadow-lg hover:shadow-xl transition-shadow duration-300 dark:bg-zinc-900">
+            <Card className="p-2 shadow-lg hover:shadow-xl transition-shadow duration-300 dark:bg-zinc-900">
                 <div className="aspect-video relative bg-zinc-100 dark:bg-zinc-800 rounded-lg overflow-hidden">
                   <Image
-                    draggable={false}
+                  draggable={false}
                     src="/nursing-herosection-image-2.webp"
                     alt="Medical training session with healthcare professionals"
                     fill
@@ -59,7 +61,7 @@ export default function Home() {
                 radius={6}
                 fontSize={1}
                 className="font-bold leading-none text-primary text-black dark:text-black"
-              >
+                >
                 {`THRYVE.TODAY TRAINING CENTER • `}
               </SpinningText>
             </motion.div>
@@ -67,13 +69,13 @@ export default function Home() {
             {/* Main Image */}
             {/* <div className="relative h-[400px] sm:h-[500px] md:h-[600px] lg:h-[750px]">
               <Image
-                src="/nursing-herosection-image-transparent.png"
-                alt="Nursing Herosection Image"
-                draggable={false}
-                fill
-                className="object-contain lg:object-cover rounded-2xl rounded-br-[5.25rem]"
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
+              src="/nursing-herosection-image-transparent.png"
+              alt="Nursing Herosection Image"
+              draggable={false}
+              fill
+              className="object-contain lg:object-cover rounded-2xl rounded-br-[5.25rem]"
+              priority
+              sizes="(max-width: 1024px) 100vw, 50vw"
               />
             </div> */}
 
@@ -120,8 +122,8 @@ export default function Home() {
                         <AvatarFallback>M{i}</AvatarFallback>
                       </Avatar>
                     ))}
-                  </div>
-                  <div className="text-xs sm:text-sm">
+                    </div>
+                    <div className="text-xs sm:text-sm">
                     <p className="font-semibold dark:text-white">99+</p>
                     <p className="text-zinc-600 dark:text-zinc-400">
                       Certified Mentor
@@ -129,7 +131,7 @@ export default function Home() {
                   </div>
                 </div>
               </Card>
-            </motion.div> */}
+              </motion.div> */}
           </motion.div>
 
           {/* Right Column - Content */}
@@ -153,7 +155,7 @@ export default function Home() {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3, duration: 0.3 }}
-              >
+                >
                 Transform Your Life with Quality <br />{" "}
                 <span className="text-[#2db188] font-bold">
                   - Medical Training
@@ -237,8 +239,8 @@ export default function Home() {
               <ScrollArea className="h-[200px] sm:h-[250px] pr-4">
                 {[1, 2, 3, 4, 5].map((i) => (
                   <motion.div
-                    key={i}
-                    className="flex items-start gap-3 sm:gap-4 mb-4 last:mb-0 bg-white/50 dark:bg-zinc-800/50 p-3 rounded-lg"
+                  key={i}
+                  className="flex items-start gap-3 sm:gap-4 mb-4 last:mb-0 bg-white/50 dark:bg-zinc-800/50 p-3 rounded-lg"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.8 + i * 0.1, duration: 0.3 }}
@@ -259,7 +261,7 @@ export default function Home() {
                             <Star
                               key={index}
                               className="w-4 h-4 fill-yellow-400 text-yellow-400"
-                            />
+                              />
                           ))}
                         </div>
                       </div>
@@ -281,5 +283,6 @@ export default function Home() {
       <TeamofEducators />
       <ContactSection />
     </main>
+                </>
   );
 }

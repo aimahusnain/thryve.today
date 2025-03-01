@@ -49,33 +49,76 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  jwt: {
+    maxAge: 60 * 60 * 24 * 30, // 30 days
   },
   pages: {
-    signIn: "/login",
+    signIn: "/log-in",
+    error: "/log-in",
+    signOut: "/log-in",
   },
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === "google") {
         if (!user.email) return false
 
-        // Check if user exists
-        const existingUser = await prisma.user.findUnique({
-          where: { email: user.email },
-        })
-
-        if (!existingUser) {
-          // Create new user if they don't exist
-          await prisma.user.create({
-            data: {
-              email: user.email,
-              name: user.name || "",
-              // Set a random password for OAuth users
-              password: await bcrypt.hash(Math.random().toString(36).slice(-8), 10),
-            },
+        try {
+          // Check if user exists
+          const existingUser = await prisma.user.findUnique({
+            where: { email: user.email },
           })
+
+          if (!existingUser) {
+            // Create new user if they don't exist
+            await prisma.user.create({
+              data: {
+                email: user.email,
+                name: user.name || "",
+                // Set a random password for OAuth users
+                password: await bcrypt.hash(Math.random().toString(36).slice(-8), 10),
+              },
+            })
+          }
+          return true
+        } catch (error) {
+          console.error("Error in signIn callback:", error)
+          return false
         }
       }
       return true
+    },
+    async redirect({ url, baseUrl }) {
+      // Handle the URLs based on your routing structure
+      if (url.startsWith(baseUrl)) return url
+      if (url.startsWith("/")) return `${baseUrl}${url}`
+      return baseUrl
+    },
+    async jwt({ token, user, account }) {
+      if (account && user) {
+        return {
+          ...token,
+          accessToken: account.access_token,
+          id: user.id,
+        }
+      }
+
+      // If the token hasn't expired, return it
+      if (Date.now() < (typeof token.exp === 'number' ? token.exp : 0) * 1000) {
+        return token
+      }
+
+      // Otherwise, refresh the token
+      try {
+        return {
+          ...token,
+          exp: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60, // 30 days
+        }
+      } catch (error) {
+        console.error("Error refreshing access token:", error)
+        return { ...token, error: "RefreshAccessTokenError" }
+      }
     },
     session: ({ session, token }) => {
       return {
@@ -85,16 +128,6 @@ export const authOptions: NextAuthOptions = {
           id: token.id,
         },
       }
-    },
-    jwt: ({ token, user }) => {
-      if (user) {
-        const u = user
-        return {
-          ...token,
-          id: u.id,
-        }
-      }
-      return token
     },
   },
 }

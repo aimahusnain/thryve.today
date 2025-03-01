@@ -1,19 +1,16 @@
 "use client";
 
-import { CheckCircle, XCircle } from "lucide-react";
+import { CheckCircle, XCircle, ArrowLeft, Loader2, Home } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
-
-import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const SuccessContent = () => {
   const [verifying, setVerifying] = useState(true);
   const [verified, setVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  console.log(verified)
   
   useEffect(() => {
     // Get the session ID from URL without using useSearchParams
@@ -48,66 +45,228 @@ const SuccessContent = () => {
     }
   }, []);
 
-  if (verifying) {
-    return (
-      <div className="text-center mb-12">
-        <div className="inline-block p-3 rounded-full bg-primary/10 mb-6">
-          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-        </div>
-        <h1 className="text-4xl font-bold text-primary mb-4">
-          Verifying Payment...
-        </h1>
-        <p className="text-xl text-muted-foreground mb-8">
-          Please wait while we verify your payment.
-        </p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center mb-12">
-        <div className="inline-block p-3 rounded-full bg-destructive/10 mb-6">
-          <XCircle className="w-12 h-12 text-destructive" />
-        </div>
-        <h1 className="text-4xl font-bold text-destructive mb-4">
-          Payment Verification Failed
-        </h1>
-        <p className="text-xl text-muted-foreground mb-8">{error}</p>
-        <Link href="/">
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3">
-            Return to Home
-          </Button>
-        </Link>
-      </div>
-    );
-  }
-
   return (
-    <section className="h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center mb-12">
-        <div className="inline-block p-3 rounded-full bg-primary/10 mb-6">
-          <CheckCircle className="w-12 h-12 text-primary" />
-        </div>
-        <h1 className="text-4xl font-bold text-primary mb-4">
-          Payment Successful!
-        </h1>
-        <p className="text-xl text-muted-foreground mb-8">
-          Thank you for enrolling in our Nursing Assistant Program. Your payment
-          has been processed successfully.
-        </p>
-        <p className="text-muted-foreground mb-8">
-          You will receive a confirmation email shortly with further details
-          about your enrollment.
-        </p>
-        <Link href="/">
-          <Button className="bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-3">
-            Return to Home
-          </Button>
-        </Link>
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-background via-background/95 to-background/90 p-4">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-[40%] -left-[20%] w-[70%] h-[70%] rounded-full bg-primary/5 blur-[120px]" />
+        <div className="absolute -bottom-[30%] -right-[20%] w-[60%] h-[60%] rounded-full bg-primary/5 blur-[100px]" />
       </div>
-    </section>
+      
+      <AnimatePresence mode="wait" >
+        {verifying ? (
+          <VerifyingState key="verifying" />
+        ) : error ? (
+          <ErrorState key="error" error={error} />
+        ) : (
+          <SuccessState key="success" />
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
+
+const VerifyingState = () => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -20 }}
+    transition={{ duration: 0.5 }}
+    className="w-full max-w-md"
+  >
+    <div className="backdrop-blur-xl my-[50px] bg-white/10 dark:bg-black/10 border border-white/20 dark:border-white/10 rounded-3xl shadow-xl p-8 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-50" />
+      
+      <div className="relative z-10">
+        <div className="flex flex-col items-center">
+          <div className="relative mb-8">
+            <div className="absolute inset-0 rounded-full bg-primary/20 blur-md" />
+            <div className="relative bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-sm p-5 rounded-full border border-white/20">
+              <Loader2 className="w-10 h-10 text-primary animate-spin" />
+            </div>
+          </div>
+          
+          <h2 className="text-2xl font-bold text-center mb-3 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">
+            Verifying Payment
+          </h2>
+          
+          <p className="text-muted-foreground text-center mb-8">
+            Please wait while we process your transaction
+          </p>
+          
+          <div className="w-full h-1.5 bg-background/30 rounded-full overflow-hidden mb-6">
+            <motion.div 
+              className="h-full bg-gradient-to-r from-primary/60 via-primary to-primary/60"
+              initial={{ width: "0%" }}
+              animate={{ 
+                width: "100%",
+                transition: { 
+                  repeat: Infinity, 
+                  duration: 2,
+                  ease: "easeInOut"
+                }
+              }}
+            />
+          </div>
+          
+          <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground/80">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            <span>Secure verification in progress</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </motion.div>
+);
+
+const ErrorState = ({ error }: { error: string }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -20 }}
+    transition={{ duration: 0.5 }}
+    className="w-full max-w-md"
+  >
+    <div className="backdrop-blur-xl  my-[50px] bg-white/10 dark:bg-black/10 border border-white/20 dark:border-white/10 rounded-3xl shadow-xl p-8 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-destructive/5 to-transparent opacity-50" />
+      
+      <div className="relative z-10">
+        <div className="flex flex-col items-center">
+          <div className="relative mb-8">
+            <div className="absolute inset-0 rounded-full bg-destructive/20 blur-md" />
+            <div className="relative bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-sm p-5 rounded-full border border-white/20">
+              <XCircle className="w-10 h-10 text-destructive" />
+            </div>
+          </div>
+          
+          <h2 className="text-2xl font-bold text-center mb-3 bg-clip-text text-transparent bg-gradient-to-r from-destructive to-destructive/80">
+            Verification Failed
+          </h2>
+          
+          <p className="text-muted-foreground text-center mb-6">
+            {error}
+          </p>
+          
+          <div className="w-full bg-background/20 backdrop-blur-md rounded-2xl p-5 mb-8 border border-white/10">
+            <h3 className="font-medium mb-3 text-foreground/90">Need assistance?</h3>
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <div className="flex items-start">
+                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-background/30 flex items-center justify-center mr-3">
+                  <span className="text-xs">1</span>
+                </div>
+                <p>Check your email for payment details</p>
+              </div>
+              <div className="flex items-start">
+                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-background/30 flex items-center justify-center mr-3">
+                  <span className="text-xs">2</span>
+                </div>
+                <p>Contact our support team at <a href="mailto:support@example.com" className="text-primary underline">support@example.com</a></p>
+              </div>
+              <div className="flex items-start">
+                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-background/30 flex items-center justify-center mr-3">
+                  <span className="text-xs">3</span>
+                </div>
+                <p>Try the payment process again</p>
+              </div>
+            </div>
+          </div>
+          
+          <Link href="/" className="w-full">
+            <Button className="w-full rounded-xl h-12 bg-gradient-to-r from-background/80 to-background/60 hover:from-background/90 hover:to-background/70 backdrop-blur-sm border border-white/20 text-foreground shadow-lg transition-all duration-300 hover:shadow-xl">
+              <Home className="mr-2 h-4 w-4" />
+              Return to Home
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  </motion.div>
+);
+
+const SuccessState = () => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -20 }}
+    transition={{ duration: 0.5 }}
+    className="w-full max-w-md"
+  >
+    <div className="backdrop-blur-xl  my-[50px] bg-white/10 dark:bg-black/10 border border-white/20 dark:border-white/10 rounded-3xl shadow-xl p-8 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-50" />
+      
+      <div className="relative z-10">
+        <div className="flex flex-col items-center">
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="relative mb-8"
+          >
+            <div className="absolute inset-0 rounded-full bg-primary/20 blur-md" />
+            <div className="relative bg-gradient-to-br from-background/80 to-background/40 backdrop-blur-sm p-5 rounded-full border border-white/20">
+              <CheckCircle className="w-10 h-10 text-primary" />
+            </div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <h2 className="text-2xl font-bold text-center mb-3 bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">
+              Payment Successful
+            </h2>
+            
+            <p className="text-muted-foreground text-center mb-6">
+              Thank you for enrolling in our Nursing Assistant Program
+            </p>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="w-full bg-background/20 backdrop-blur-md rounded-2xl p-5 mb-8 border border-white/10"
+          >
+            <h3 className="font-medium mb-4 text-foreground/90">Your enrollment is confirmed</h3>
+            <div className="space-y-4">
+              {[
+                { text: "Confirmation email sent", delay: 0.5 },
+                { text: "Course access within 24 hours", delay: 0.6 },
+                { text: "Instructor will contact you soon", delay: 0.7 }
+              ].map((item, index) => (
+                <motion.div 
+                  key={index}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: item.delay }}
+                  className="flex items-center"
+                >
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center mr-3">
+                    <CheckCircle className="h-3.5 w-3.5 text-primary" />
+                  </div>
+                  <p className="text-sm text-muted-foreground">{item.text}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
+            className="w-full"
+          >
+            <Link href="/" className="w-full">
+              <Button className="w-full rounded-xl h-12 bg-gradient-to-r from-primary/80 to-primary/60 hover:from-primary/90 hover:to-primary/70 text-primary-foreground shadow-lg transition-all duration-300 hover:shadow-xl">
+                <Home className="mr-2 h-4 w-4" />
+                Return to Home
+              </Button>
+            </Link>
+          </motion.div>
+        </div>
+      </div>
+    </div>
+  </motion.div>
+);
 
 export default SuccessContent;

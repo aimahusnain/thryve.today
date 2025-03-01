@@ -38,12 +38,15 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Toaster, toast } from "sonner";
 import * as z from "zod";
+import Navbar from "@/components/header";
 
 const formSchema = z.object({
   studentName: z
     .string()
     .min(2, { message: "Name must be at least 2 characters." }),
-  dateOfBirth: z.date({ required_error: "Date of birth is required." }),
+    dateOfBirth:z
+   .string()
+  .min(5, { message: "Date of birth must be at least 5 characters." }),
   address: z
     .string()
     .min(5, { message: "Address must be at least 5 characters." }),
@@ -93,6 +96,7 @@ export default function NursingEnrollment() {
     defaultValues: {
       studentName: "",
       address: "",
+      dateOfBirth: "",
       cityStateZip: "",
       phoneHome: "",
       phoneCell: "",
@@ -114,8 +118,8 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
 
     const formattedValues = {
       ...values,
-      dateOfBirth: values.dateOfBirth?.toISOString(),
       studentSignatureDate: values.studentSignatureDate?.toISOString(),
+      dateOfBirth: values.dateOfBirth?.toString(),
       directorSignatureDate: values.directorSignatureDate?.toISOString(),
       guardianSignatureDate: values.guardianSignatureDate?.toISOString(),
     };
@@ -207,6 +211,8 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
   }
 
   return (
+   <>
+<Navbar />
     <div className={cn("min-h-screen transition-colors duration-300")}>
       <Toaster />
       <div className="container mx-auto py-12 px-6 sm:px-8 lg:px-12 max-w-6xl mt-20">
@@ -266,45 +272,21 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
                   )}
                 />
 
-                <FormField
+<FormField
                   control={form.control}
                   name="dateOfBirth"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col">
+                    <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Date of Birth <span className="text-red-500">*</span>
+                        Date Of Birth <span className="text-red-500">*</span>
                       </FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full pl-3 text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={field.value}
-                            onSelect={field.onChange}
-                            disabled={(date) =>
-                              date > new Date() || date < new Date("1900-01-01")
-                            }
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
+                      <FormControl>
+                       <Input
+                          placeholder="mm/dd/yyyy"
+                          {...field}
+                          className="bg-background text-foreground"
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -727,5 +709,6 @@ const onSubmit = async (values: z.infer<typeof formSchema>) => {
         </Form>
       </div>
     </div>
+   </>
   );
 }

@@ -4,7 +4,6 @@ import "./globals.css";
 import Footer from "@/components/footer";
 import { Toaster } from "sonner";
 import BottomContactBar from "@/components/bottom-contact-bar";
-import Navbar from "@/components/header";
 import ThemeContextProvider from "@/context/ThemeContext";
 import { AuthProvider } from "@/provider/auth-provider";
 
@@ -29,7 +28,6 @@ export default function RootLayout({
         <AuthProvider>
           <ThemeContextProvider>
             <Toaster />
-            <Navbar />
             <BottomContactBar />
             {children}
             <Footer />
