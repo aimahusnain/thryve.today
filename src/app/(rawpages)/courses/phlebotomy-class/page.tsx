@@ -87,7 +87,7 @@ export default function PhlebotomyEnrollment() {
               <br />
               1800 Roswell Road Suite 2100, Marietta, GA
               <br />
-              Phone: (979) 4-Thryve (979-484-7983)
+              Phone: (979-484-7983)
               <br />
               Email: infor@thryve.today 
             </CardDescription>

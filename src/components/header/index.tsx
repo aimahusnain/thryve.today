@@ -35,20 +35,6 @@ export default function Navbar() {
   const isLoading = status === "loading"
   const pathname = usePathname()
 
-  // Hide navbar on /dashboard/* routes
-  if (pathname.startsWith("/dashboard")) return null
-
-  const copyEmail = async () => {
-    const email = "infor@thryve.today"
-    await navigator.clipboard.writeText(email)
-    setCopied(true)
-    toast.success("Email copied to clipboard!", {
-      duration: 2000,
-      position: "top-right",
-    })
-    setTimeout(() => setCopied(false), 2000)
-  }
-
   useEffect(() => {
     const handleScroll = () => {
       const position = window.scrollY
@@ -62,6 +48,20 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  // Hide navbar on /dashboard/* routes
+  if (pathname.startsWith("/dashboard")) return null
+
+  const copyEmail = async () => {
+    const email = "infor@thryve.today"
+    await navigator.clipboard.writeText(email)
+    setCopied(true)
+    toast.success("Email copied to clipboard!", {
+      duration: 2000,
+      position: "top-right",
+    })
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   return (
     <div className="fixed top-0 sm:top-4 left-0 right-0 z-[60]">
@@ -362,4 +362,3 @@ export default function Navbar() {
     </div>
   )
 }
-
