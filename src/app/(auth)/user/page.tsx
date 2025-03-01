@@ -30,7 +30,7 @@ export default function ProfilePage() {
           <CardContent className="flex flex-col items-center space-y-4">
             <Avatar
               className="w-24 h-24 rounded-full border-4 border-blue-500"
-              src={session.user?.image || "https://via.placeholder.com/150"}
+            //   src={session.user?.image || "https://via.placeholder.com/150"}
             />
             <h2 className="text-2xl font-semibold text-gray-800">
               {session.user?.name}

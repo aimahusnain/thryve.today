@@ -6,7 +6,7 @@ import { Area, AreaChart, Bar, BarChart, ResponsiveContainer, XAxis, YAxis } fro
 import { BarChartIcon, Book, Calendar, ChevronDown, Filter, Info, PanelLeft, Settings, UsersIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -75,9 +75,9 @@ function SidebarContent({ className, ...props }: React.HTMLAttributes<HTMLDivEle
   return <div className={cn("p-4", className)} {...props} />
 }
 
-function SidebarFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("mt-auto p-4", className)} {...props} />
-}
+// function SidebarFooter({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+//   return <div className={cn("mt-auto p-4", className)} {...props} />
+// }
 
 function SidebarMenu({ className, ...props }: React.HTMLAttributes<HTMLUListElement>) {
   return <ul className={cn("space-y-2", className)} {...props} />
@@ -115,7 +115,7 @@ interface StatCardProps {
 }
 
 function StatCard({ title, value, change, trend, period, chartData }: StatCardProps) {
-  const data = chartData.map((value, i) => ({ value }))
+  const data = chartData.map((value) => ({ value }))
 
   return (
     <Card>
@@ -207,7 +207,7 @@ function EarningsChart() {
           fontSize={12}
           tickLine={false}
           axisLine={false}
-          tickFormatter={(value: any) => `${value}k`}
+          tickFormatter={(value) => `${value}k`}
         />
         <Bar dataKey="value" fill="#8884d8" radius={[4, 4, 0, 0]} className="fill-primary" />
       </BarChart>
@@ -421,7 +421,7 @@ export default function Dashboard() {
                 </Tabs>
               </CardHeader>
               <CardContent>
-                <TabsContent value="all-course" className="m-0">
+                <Tabs value="all-course" className="m-0">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -471,8 +471,8 @@ export default function Dashboard() {
                       </TableRow>
                     </TableBody>
                   </Table>
-                </TabsContent>
-                <TabsContent value="students" className="m-0">
+                </Tabs>
+                <Tabs value="students" className="m-0">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -504,7 +504,7 @@ export default function Dashboard() {
                       </TableRow>
                     </TableBody>
                   </Table>
-                </TabsContent>
+                </Tabs>
               </CardContent>
             </Card>
           </main>

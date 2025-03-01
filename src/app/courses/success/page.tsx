@@ -1,17 +1,19 @@
 "use client";
 
-import { CheckCircle, XCircle, ArrowLeft, Loader2, Home } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { AnimatePresence, motion } from "framer-motion";
+import { CheckCircle, Home, Loader2, XCircle } from 'lucide-react';
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { motion, AnimatePresence } from "framer-motion";
 
 const SuccessContent = () => {
   const [verifying, setVerifying] = useState(true);
   const [verified, setVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
+  console.log(verified)
+
   useEffect(() => {
     // Get the session ID from URL without using useSearchParams
     const sessionId = typeof window !== 'undefined' 
