@@ -38,11 +38,11 @@ const navItems = [
     url: "/dashboard",
     isActive: true,
   },
-  { title: "Forms", icon: ClipboardList, url: "/forms" },
-  { title: "Orders", icon: ShoppingCart, url: "/orders" },
-  { title: "Users", icon: GraduationCap, url: "/students" },
-  { title: "Courses", icon: BarChart3, url: "/courses" },
-  { title: "Payout", icon: Wallet, url: "/payout" },
+  { title: "Forms", icon: ClipboardList, url: "/admin-dashboard/forms" },
+  { title: "Orders", icon: ShoppingCart, url: "/admin-dashboard/orders" },
+  { title: "Users", icon: GraduationCap, url: "/admin-dashboard/students" },
+  { title: "Courses", icon: BarChart3, url: "/admin-dashboard/courses" },
+  { title: "Payout", icon: Wallet, url: "/admin-dashboard/payout" },
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
