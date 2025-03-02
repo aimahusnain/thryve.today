@@ -6,10 +6,12 @@ const Goy = ({
   id,
   children,
   className,
+  key
 }: {
   id: string;
   children: React.ReactNode;
   className?: string;
+  key?: any
 }) => {
 //   console.log(scrollMargin);
 
@@ -28,6 +30,7 @@ const Goy = ({
 
   return (
     <button
+    key={key}
       aria-label="Go Button"
       className={className}
       onClick={(e) => handleButtonClick(e, `${id}`)}
