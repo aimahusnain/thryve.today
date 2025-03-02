@@ -68,7 +68,7 @@ export function SignUpForm({
       });
 
       if (signInResponse?.ok) {
-        router.push("/dashboard");
+        router.push("/admin-dashboard");
         router.refresh();
       } else {
         // If auto sign-in fails, redirect to login page
@@ -159,7 +159,7 @@ export function SignUpForm({
       <Button
         variant="outline"
         className="w-full"
-        onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+        onClick={() => signIn("google", { callbackUrl: "/admin-dashboard" })}
         disabled={loading}
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

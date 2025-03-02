@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 const Footer = () => {
   const year = new Date().getFullYear();
   const pathname = usePathname();
+  
   if (pathname.startsWith("/dashboard")) return null;
   if (pathname.startsWith("/admin-dashboard")) return null;
 

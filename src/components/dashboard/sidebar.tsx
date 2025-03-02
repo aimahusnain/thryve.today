@@ -36,7 +36,7 @@ const navItems = [
   {
     title: "Dashboard",
     icon: LayoutDashboard,
-    url: "/dashboard",
+    url: "/admin-dashboard",
   },
   { title: "Forms", icon: ClipboardList, url: "/admin-dashboard/forms" },
   { title: "Orders", icon: ShoppingCart, url: "/admin-dashboard/orders" },

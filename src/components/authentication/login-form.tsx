@@ -39,7 +39,7 @@ export function LoginForm({
     }
 
     toast.success("Logged in successfully!");
-    router.push("/dashboard");
+    router.push("/admin-dashboard");
     router.refresh();
     setLoading(false);
   };
@@ -101,7 +101,7 @@ export function LoginForm({
         <Button
           variant="outline"
           className="w-full"
-          onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+          onClick={() => signIn("google", { callbackUrl: "/admin-dashboard" })}
           disabled={loading}
         >
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
