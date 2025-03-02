@@ -15,7 +15,6 @@ import {
 import { signOut, useSession } from "next-auth/react";
 import { useTheme } from "next-themes";
 import type * as React from "react";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sidebar,
@@ -41,7 +40,7 @@ const navItems = [
   },
   { title: "Forms", icon: ClipboardList, url: "/forms" },
   { title: "Orders", icon: ShoppingCart, url: "/orders" },
-  { title: "Students", icon: GraduationCap, url: "/students" },
+  { title: "Users", icon: GraduationCap, url: "/students" },
   { title: "Courses", icon: BarChart3, url: "/courses" },
   { title: "Payout", icon: Wallet, url: "/payout" },
 ];
