@@ -42,7 +42,7 @@ export default function AdminDashboard() {
           </div>
         </header>
         <div className="flex-1 overflow-auto">
-          <h1>Hi, Admin I'm working in it - Developer</h1>
+          <h1>Hi, Admin I&apos;m working in it - Developer</h1>
         </div>
       </SidebarInset>
     </SidebarProvider>

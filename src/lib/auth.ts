@@ -1,8 +1,32 @@
+import { DefaultSession } from "next-auth"
 import type { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 import { PrismaClient } from "@prisma/client"
 import bcrypt from "bcrypt"
+
+// Extend the built-in types
+declare module "next-auth" {
+  interface User {
+    role?: string
+    id: string
+  }
+  
+  interface Session extends DefaultSession {
+    user: {
+      id: string
+      role?: string
+    } & DefaultSession["user"]
+  }
+}
+
+// Also extend the JWT type
+declare module "next-auth/jwt" {
+  interface JWT {
+    role?: string
+    id: string
+  }
+}
 
 const prisma = new PrismaClient()
 
@@ -171,7 +195,7 @@ export const authOptions: NextAuthOptions = {
           ...token,
           accessToken: account.access_token,
           id: user.id,
-          role: (user as any).role, // Add user role to the token
+          role: (user).role, // Add user role to the token
         }
       }
 
