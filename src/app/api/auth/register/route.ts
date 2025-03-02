@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server"
-import { hash } from "bcrypt"
-import { PrismaClient } from "@prisma/client"
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
   try {
@@ -10,22 +10,26 @@ export async function POST(request: Request) {
 
     // Validate input
     if (!name || !email || !password) {
-      return NextResponse.json({ message: "Missing required fields" }, { status: 400 })
+      return NextResponse.json(
+        { message: "Missing required fields" },
+        { status: 400 }
+      );
     }
 
-    // Check if user already exists
+    // Check if user exists
     const existingUser = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    })
+      where: { email },
+    });
 
     if (existingUser) {
-      return NextResponse.json({ message: "User with this email already exists" }, { status: 409 })
+      return NextResponse.json(
+        { message: "User with this email already exists" },
+        { status: 409 }
+      );
     }
 
     // Hash password
-    const hashedPassword = await hash(password, 10)
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create user
     const user = await prisma.user.create({
@@ -33,23 +37,25 @@ export async function POST(request: Request) {
         name,
         email,
         password: hashedPassword,
+        role: "USER", // Default role for new users
       },
-    })
+    });
 
     // Return user without password
-const { ...userWithoutPassword } = user;
-
     return NextResponse.json(
       {
-        message: "User created successfully",
-        user: userWithoutPassword,
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
       },
-      { status: 201 },
-    )
+      { status: 201 }
+    );
   } catch (error) {
-    console.error("Registration error:", error)
-    return NextResponse.json({ message: "Something went wrong" }, { status: 500 })
-  } finally {
-    await prisma.$disconnect()
+    console.error("Registration error:", error);
+    return NextResponse.json(
+      { message: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }

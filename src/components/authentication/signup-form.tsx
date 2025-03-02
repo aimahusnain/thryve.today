@@ -8,10 +8,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+
+// Add type declarations at the top of your file
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      role?: string;
+    }
+  }
+}
 
 export function SignUpForm({
   className,
@@ -20,6 +33,18 @@ export function SignUpForm({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [passwordError, setPasswordError] = useState("");
+  const { data: session } = useSession();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (session) {
+      if (session?.user?.role === "ADMIN") {
+        router.push("/admin-dashboard");
+      } else {
+        router.push("/dashboard");
+      }
+    }
+  }, [session, router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -68,7 +93,16 @@ export function SignUpForm({
       });
 
       if (signInResponse?.ok) {
-        router.push("/admin-dashboard");
+        // Get the session to check user role
+        const sessionRes = await fetch("/api/auth/session");
+        const sessionData = await sessionRes.json();
+        
+        // Redirect based on user role
+        if (sessionData?.user?.role === "ADMIN") {
+          router.push("/admin-dashboard");
+        } else {
+          router.push("/dashboard");
+        }
         router.refresh();
       } else {
         // If auto sign-in fails, redirect to login page
@@ -81,6 +115,43 @@ export function SignUpForm({
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleSignIn = () => {
+    setLoading(true);
+    signIn("google", { redirect: false })
+      .then((response) => {
+        if (response?.error) {
+          toast.error("Failed to sign in with Google");
+          setLoading(false);
+          return;
+        }
+        
+        // Get the session to check user role
+        fetch("/api/auth/session")
+          .then(res => res.json())
+          .then(sessionData => {
+            if (sessionData?.user?.role === "ADMIN") {
+              router.push("/admin-dashboard");
+            } else {
+              router.push("/dashboard");
+            }
+            router.refresh();
+          })
+          .catch(error => {
+            console.error("Error fetching session:", error);
+            // Default redirect if something goes wrong
+            router.push("/dashboard");
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      })
+      .catch(error => {
+        console.error("Google sign-in error:", error);
+        toast.error("Failed to sign in with Google");
+        setLoading(false);
+      });
   };
 
   return (
@@ -159,7 +230,7 @@ export function SignUpForm({
       <Button
         variant="outline"
         className="w-full"
-        onClick={() => signIn("google", { callbackUrl: "/admin-dashboard" })}
+        onClick={handleGoogleSignIn}
         disabled={loading}
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

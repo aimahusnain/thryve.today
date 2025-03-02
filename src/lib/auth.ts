@@ -52,6 +52,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
+          role: user.role, // Include role in the return value
         }
       },
     }),
@@ -92,6 +93,8 @@ export const authOptions: NextAuthOptions = {
                 image: user.image || null,
                 // Set a placeholder password or null depending on your schema
                 password: await bcrypt.hash(Math.random().toString(36).slice(-8), 10),
+                // Default new users to USER role
+                role: "USER",
               },
             })
 
@@ -152,10 +155,15 @@ export const authOptions: NextAuthOptions = {
       return true
     },
     async redirect({ url, baseUrl }) {
+      // Special handling for post-authentication redirection
+      if (url.startsWith("/admin-dashboard") || url.startsWith("/dashboard")) {
+        return url;
+      }
+      
       // Handle the URLs based on your routing structure
-      if (url.startsWith(baseUrl)) return url
-      if (url.startsWith("/")) return `${baseUrl}${url}`
-      return baseUrl
+      if (url.startsWith(baseUrl)) return url;
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      return baseUrl;
     },
     async jwt({ token, user, account }) {
       if (account && user) {
@@ -163,6 +171,7 @@ export const authOptions: NextAuthOptions = {
           ...token,
           accessToken: account.access_token,
           id: user.id,
+          role: (user as any).role, // Add user role to the token
         }
       }
 
@@ -188,6 +197,7 @@ export const authOptions: NextAuthOptions = {
         user: {
           ...session.user,
           id: token.id,
+          role: token.role, // Add role to the session
         },
       }
     },
