@@ -13,7 +13,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-// Add type declarations at the top of your file
 declare module "next-auth" {
   interface Session {
     user: {
