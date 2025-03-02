@@ -23,15 +23,23 @@ export const authOptions: NextAuthOptions = {
           where: {
             email: credentials.email,
           },
+          include: {
+            accounts: true,  // Include the accounts to check auth providers
+          }
         })
 
         if (!user) {
           return null
         }
 
-        // Check if the user has a valid password set
-        if (!user.password) {
-          return null
+        // Check if this user has a Google account
+        const hasGoogleAccount = user.accounts?.some(
+          account => account.provider === "google"
+        )
+
+        // If user originally signed up with Google and has no valid password
+        if (hasGoogleAccount) {
+          throw new Error("Please sign in with Google for this account")
         }
 
         const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
@@ -77,15 +85,30 @@ export const authOptions: NextAuthOptions = {
   
           if (!existingUser) {
             // Create new user if they don't exist
-            await prisma.user.create({
+            const newUser = await prisma.user.create({
               data: {
                 email: user.email,
                 name: user.name || "",
                 image: user.image || null,
-                // Set a placeholder password - this won't be used for login
-                // but ensures the password field is not null
+                // Set a placeholder password or null depending on your schema
                 password: await bcrypt.hash(Math.random().toString(36).slice(-8), 10),
               },
+            })
+
+            // Now create the account record to track the auth provider
+            await prisma.account.create({
+              data: {
+                userId: newUser.id,
+                type: account.type,
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+                access_token: account.access_token,
+                refresh_token: account.refresh_token,
+                expires_at: account.expires_at,
+                token_type: account.token_type,
+                scope: account.scope,
+                id_token: account.id_token,
+              }
             })
           } else if (user.image && (!existingUser.image || existingUser.image !== user.image)) {
             // Update existing user's image if it changed or wasn't set before
@@ -93,6 +116,32 @@ export const authOptions: NextAuthOptions = {
               where: { email: user.email },
               data: { image: user.image }
             })
+            
+            // Check if an account record already exists
+            const existingAccount = await prisma.account.findFirst({
+              where: {
+                userId: existingUser.id,
+                provider: account.provider,
+              }
+            })
+            
+            // Create account record if it doesn't exist
+            if (!existingAccount) {
+              await prisma.account.create({
+                data: {
+                  userId: existingUser.id,
+                  type: account.type,
+                  provider: account.provider,
+                  providerAccountId: account.providerAccountId,
+                  access_token: account.access_token,
+                  refresh_token: account.refresh_token,
+                  expires_at: account.expires_at,
+                  token_type: account.token_type,
+                  scope: account.scope,
+                  id_token: account.id_token,
+                }
+              })
+            }
           }
           return true
         } catch (error) {
