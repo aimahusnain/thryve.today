@@ -11,7 +11,7 @@ const Goy = ({
   id: string;
   children: React.ReactNode;
   className?: string;
-  key?: any
+  key?: string
 }) => {
 //   console.log(scrollMargin);
 
