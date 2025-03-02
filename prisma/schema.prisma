@@ -78,8 +78,22 @@ model User {
   password      String
   image         String?
 
-  role         UserRole  @default(USER)
+  role UserRole @default(USER)
 
   accounts Account[]
   session  Session[]
+}
+
+model Courses {
+  id                String   @id @default(uuid()) @map("_id") @db.Uuid
+  name              String
+  duration          String
+  price             Float
+  description       String
+  classroom         String
+  Lab               String?
+  Clinic            String?
+  WhoShouldAttend   String[]
+  ProgramHighlights String[]
+  Note              String?
 }
