@@ -72,7 +72,7 @@ export default function Navbar() {
     });
     setTimeout(() => setCopied(false), 2000);
   };
-
+  
   return (
     <div className="fixed top-0 sm:top-4 left-0 right-0 z-[60]">
       <div className="container px-4 mx-auto">
@@ -137,13 +137,19 @@ export default function Navbar() {
               {/* Desktop Navigation Links */}
               <div className="hidden lg:flex items-center space-x-8 ml-8">
                 {navLinks.map((link) => (
-                  <Goy id={link.href} key={link.href} className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-[#2DB188] after:transition-transform after:duration-300 after:ease-&lsqb;cubic-bezier(0.65_0.05_0.36_1)&rsqb; hover:after:origin-bottom-left hover:after:scale-x-100">{link.title}</Goy>
+                  <Goy
+                    id={link.href}
+                    key={link.href}
+                    className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-[#2DB188] after:transition-transform after:duration-300 after:ease-&lsqb;cubic-bezier(0.65_0.05_0.36_1)&rsqb; hover:after:origin-bottom-left hover:after:scale-x-100"
+                  >
+                    {link.title}
+                  </Goy>
                   // <Goy
                   //   key={link.href}
-                    
+
                   //   className="text-foreground hover:text-[#2db188] transition-colors duration-200"
                   // >
-                    
+
                   // </Goy>
                 ))}
               </div>
@@ -207,10 +213,10 @@ export default function Navbar() {
                   {isLoading ? (
                     <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
                   ) : session ? (
-                  <>
-                  <Link href="/dashboard">
-                    <Button variant="default">Dashboard</Button>
-                  </Link>
+                    <>
+                    <Link href={session.user.role === "ADMIN" ? "/admin-dashboard" : "/dashboard"}>
+                      <Button variant="default">Dashboard</Button>
+                    </Link>
                     <UserNav />
                   </>
                   ) : (
@@ -252,10 +258,10 @@ export default function Navbar() {
               ) : session ? (
                 <>
                 <UserNav />
-                <Link href="/dashboard">
-                <Button variant="default">Dashboard</Button>
-              </Link>
-                </>
+                <Link href={session.user.role === "ADMIN" ? "/admin-dashboard" : "/dashboard"}>
+                  <Button variant="default">Dashboard</Button>
+                </Link>
+              </>
               ) : (
                 <>
                   <Goy id="courses">
@@ -379,10 +385,10 @@ export default function Navbar() {
                         <div className="h-12 w-full rounded-full bg-muted animate-pulse" />
                       ) : session ? (
                         <div className="flex items-center justify-center w-full">
-                          <Link href="/dashboard">
-                            <Button>Dashboard</Button>
-                          </Link>
-                        </div>
+                        <Link href={session.user.role === "ADMIN" ? "/admin-dashboard" : "/dashboard"}>
+                          <Button>Dashboard</Button>
+                        </Link>
+                      </div>
                       ) : (
                         <>
                           <Link href="/log-in" className="w-full">

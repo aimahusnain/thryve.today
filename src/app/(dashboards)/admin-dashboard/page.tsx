@@ -15,8 +15,8 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { SalesPerformanceDashboard } from "@/components/dashboard/sales-performance";
 
-// Main Dashboard Component
 export default function AdminDashboard() {
   return (
     <SidebarProvider>
@@ -29,21 +29,19 @@ export default function AdminDashboard() {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
+                  <BreadcrumbLink href="#">Thryve.today</BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                  <BreadcrumbPage>Sales Performance</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
         <div className="flex-1 overflow-auto">
-          <h1>Hi, Admin I&apos;m working in it - Developer</h1>
-        </div>
+          <SalesPerformanceDashboard />
+      </div>
       </SidebarInset>
     </SidebarProvider>
   );
