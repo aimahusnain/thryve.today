@@ -97,5 +97,11 @@ model Courses {
   Clinic            String?
   WhoShouldAttend   String[]
   ProgramHighlights String[]
+  status            Status @default(DRAFT)
   Note              String?
+}
+
+enum Status {
+  DRAFT
+  ACTIVE
 }

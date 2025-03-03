@@ -4,9 +4,11 @@ import React, { useState, useEffect } from "react";
 import { Phone, ArrowRight, BookOpen } from "lucide-react";
 import Link from "next/link";
 import Goy from "./goy";
+import { usePathname } from "next/navigation";
 
 const BottomContactBar = () => {
   const [isVisible, setIsVisible] = useState(true);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +21,9 @@ const BottomContactBar = () => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  if (pathname.startsWith("/dashboard")) return null;
+  if (pathname.startsWith("/admin-dashboard")) return null;
 
   return (
     <div
