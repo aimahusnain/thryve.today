@@ -132,7 +132,7 @@ export default function OrdersDashboard() {
         <Calendar
           mode="range"
           selected={date}
-          onSelect={() => setDate}
+          // onSelect={setDate}
           initialFocus
         />
       </PopoverContent>
