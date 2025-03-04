@@ -10,6 +10,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ChevronLeft, ChevronRight, Download, Filter, Search } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Popover, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
+import { Calendar } from "@/components/ui/calendar"; // ShadCN Calendar ka component
+import { format } from "date-fns";
 
 // Sample data based on the image
 const orders = [
@@ -80,8 +83,11 @@ const orders = [
 
 export default function OrdersDashboard() {
   const [currentPage, setCurrentPage] = useState(1)
-  const totalPages = 20
-
+  // const totalPages = 20
+  const [date, setDate] = useState<{ from: Date | undefined; to: Date | undefined }>({
+    from: undefined,
+    to: undefined,
+  });
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -114,9 +120,23 @@ export default function OrdersDashboard() {
                 <Filter className="mr-2 h-4 w-4" />
                 Filter
               </Button>
-              <Button variant="outline" size="sm" className="h-9">
-                01 Dec - 15 Dec
-              </Button>
+              <Popover>
+      <PopoverTrigger asChild >
+        <Button variant="outline" size="sm" className="h-9">
+          {date.from && date.to
+            ? `${format(date.from, "dd MMM")} - ${format(date.to, "dd MMM")}`
+            : "Select Date"}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto z-10 p-2 bg-white border rounded-md shadow-md">
+        <Calendar
+          mode="range"
+          selected={date}
+          onSelect={() => setDate}
+          initialFocus
+        />
+      </PopoverContent>
+    </Popover>
             </div>
             <div className="flex items-center gap-2">
              
