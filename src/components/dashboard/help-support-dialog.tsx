@@ -17,8 +17,8 @@ export function HelpSupportDialog() {
 
   return (
     <>
-      <div className="flex w-full items-center">
-        <HelpCircle className="h-4 w-4 transition-transform group-hover:scale-110" />
+      <div className="flex w-fit items-center">
+        <HelpCircle className="h-5 bg-blue-400 w-5 transition-transform group-hover:scale-110" />
         <span className="ml-5 sidebar-expanded-only" onClick={() => setOpen(true)}>
           Help & Support
         </span>
