@@ -52,7 +52,7 @@ export async function POST() {
     return NextResponse.json({ checkoutUrl: stripeSession.url })
   } catch (error) {
     console.error("Checkout error:", error)
-    return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 })
+    return NextResponse.json({ error: `Failed to create checkout session - ${error}` }, { status: 500 })
   }
 }
 
