@@ -8,6 +8,7 @@ interface CoursePageProps {
   params: {
     id: string
   }
+  searchParams?: Record<string, string | string[]>
 }
 
 export default async function CoursePage({ params }: CoursePageProps) {
