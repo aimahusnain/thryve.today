@@ -4,11 +4,13 @@ import { NursingEnrollmentForm } from "@/components/nursing-enrollment-form"
 
 const prisma = new PrismaClient()
 
-export default async function CoursePage({
-  params,
-}: {
-  params: { id: string }
-}) {
+interface CoursePageProps {
+  params: {
+    id: string
+  }
+}
+
+export default async function CoursePage({ params }: CoursePageProps) {
   const course = await prisma.courses.findUnique({
     where: { id: params.id },
   })
@@ -19,11 +21,11 @@ export default async function CoursePage({
 
   return (
     <div className="container mx-auto py-10">
-      <NursingEnrollmentForm 
-        courseId={course.id} 
-        courseName={course.name} 
-        coursePrice={course.price} 
-        courseDuration={course.duration} 
+      <NursingEnrollmentForm
+        courseId={course.id}
+        courseName={course.name}
+        coursePrice={course.price}
+        courseDuration={course.duration}
       />
     </div>
   )
