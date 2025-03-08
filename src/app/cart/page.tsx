@@ -56,7 +56,7 @@ export default async function CartPage() {
               </div>
               <h2 className="text-2xl font-bold">Your cart is empty</h2>
               <p className="text-muted-foreground max-w-md">
-                Looks like you haven't added any courses to your cart yet. Discover our top-rated courses and start
+                Looks like you haven&apos;t added any courses to your cart yet. Discover our top-rated courses and start
                 learning today!
               </p>
               <Link href="/courses">
@@ -88,7 +88,6 @@ export default async function CartPage() {
                       id={item.id}
                       name={item.course.name}
                       price={item.course.price}
-                      quantity={item.quantity}
                       duration={item.course.duration}
                     />
                   ))}

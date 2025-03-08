@@ -1,10 +1,9 @@
 "use client"
 
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { CreditCard } from "lucide-react"
+import { useState } from "react"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
 
 interface CheckoutButtonProps {
   total: number
@@ -12,7 +11,6 @@ interface CheckoutButtonProps {
 
 export function CheckoutButton({ total }: CheckoutButtonProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
 
   const handleCheckout = async () => {
     try {

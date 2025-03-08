@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { ArrowDown, ArrowUp, Download, Search, Users, BookOpen, ShoppingCart, DollarSign } from "lucide-react"
 import { getDashboardData } from "@/components/actions/ashboard-actions"
+import Link from "next/link"
 
 export default function Dashboard() {
   const [data, setData] = useState<any>(null)
@@ -66,10 +67,9 @@ export default function Dashboard() {
               <h1 className="text-2xl font-bold">Good morning, Admin!</h1>
               <p className="text-muted-foreground">Explore enrollment data and course statistics</p>
             </div>
-            <Button className="gap-2">
-              <Download className="h-4 w-4" />
-              Download Report
-            </Button>
+            <Link href='/dashboard' className="bg-white text-black rounded-lg px-3 py-2  gap-2">
+              Refresh
+            </Link>
           </div>
 
           {loading ? (

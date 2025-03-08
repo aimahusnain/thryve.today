@@ -67,7 +67,7 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
         <DialogHeader>
           <DialogTitle>Edit team member</DialogTitle>
           <DialogDescription className="text-zinc-400">
-            Make changes to the user's profile here.
+            Make changes to the user&apos;s profile here.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>

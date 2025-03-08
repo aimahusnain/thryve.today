@@ -40,7 +40,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         if (response.ok) {
           const cart = await response.json()
           setItems(cart.items || [])
-          setItemCount(cart.items?.reduce((total: number, item: any) => total + item.quantity, 0) || 0)
+          setItemCount(cart.items?.reduce((total: number, item: {quantity: number}) => total + item.quantity, 0) || 0)
         }
       } catch (error) {
         console.error("Error fetching cart:", error)

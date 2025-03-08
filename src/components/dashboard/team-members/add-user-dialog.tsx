@@ -45,7 +45,7 @@ export function AddUserDialog({ children, onAddUser }: AddUserDialogProps) {
         throw new Error("Failed to add user")
       }
 
-      const newUser = await response.json()
+      // const newUser = await response.json()
       
       onAddUser?.({ name, email })
       toast.success("User added successfully")

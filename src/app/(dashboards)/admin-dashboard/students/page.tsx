@@ -93,21 +93,6 @@ export default function TeamMembersPage() {
 
   const filteredUsers = filterUsers(users)
 
-  // Get user status badge
-  const getUserStatusBadge = (user: User) => {
-    if (user.emailVerified) {
-      return (
-        <Badge variant="outline" className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30">
-          Active
-        </Badge>
-      )
-    }
-    return (
-      <Badge variant="outline" className="bg-amber-500/10 text-amber-300 border-amber-500/30">
-        Pending
-      </Badge>
-    )
-  }
 
   return (
     <SidebarProvider>

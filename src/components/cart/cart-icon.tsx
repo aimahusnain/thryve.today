@@ -22,9 +22,10 @@ export function CartIcon() {
         }
 
         const cart = await response.json()
-        const count = cart.items?.reduce((total: number, item: any) => total + item.quantity, 0) || 0
+        const count = cart.items?.reduce((total: number, item: { quantity: number }) => total + item.quantity, 0) || 0;
         setItemCount(count)
       } catch (error) {
+        console.log(error)
         // Silently fail and set count to 0
         setItemCount(0)
       } finally {
@@ -37,7 +38,7 @@ export function CartIcon() {
 
   return (
     <Link href="/cart">
-      <Button variant="ghost" className="relative p-2">
+      <Button variant="ghost" className="relative p-2" disabled={isLoading}>
         <ShoppingCart className="h-6 w-6" />
         {itemCount > 0 && (
           <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
