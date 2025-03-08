@@ -1,40 +1,36 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Plus } from "lucide-react"
+import { toast } from "sonner"
 
-export function AddUserDialog() {
-  const router = useRouter()
+interface AddUserDialogProps {
+  children: React.ReactNode
+  onAddUser?: (userData: { name: string; email: string }) => void
+}
+
+export function AddUserDialog({ children, onAddUser }: AddUserDialogProps) {
   const [open, setOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: "USER",
-  })
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
-
-  const handleRoleChange = (value: string) => {
-    setFormData((prev) => ({ ...prev, role: value }))
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+  const handleAddUser = async () => {
+    if (!name || !email) {
+      toast.error("Please fill in all fields")
+      return
+    }
 
     try {
       const response = await fetch("/api/users", {
@@ -42,83 +38,71 @@ export function AddUserDialog() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ name, email }),
       })
-
-      const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create user")
+        throw new Error("Failed to add user")
       }
 
-      toast.success("User created successfully")
+      const newUser = await response.json()
+      
+      onAddUser?.({ name, email })
+      toast.success("User added successfully")
       setOpen(false)
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-        role: "USER",
-      })
-      router.refresh()
+      setName("")
+      setEmail("")
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to create user")
-    } finally {
-      setIsLoading(false)
+      toast.error("Error adding user")
+      console.error(error)
     }
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="flex bg-white border-zinc-300 border-2 text-black items-center gap-1">
-          <Plus className="h-4 w-4" />
-          Add team member
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="sm:max-w-[425px] bg-zinc-900 text-white border-zinc-800">
         <DialogHeader>
-          <DialogTitle>Add new team member</DialogTitle>
+          <DialogTitle>Add new user</DialogTitle>
+          <DialogDescription className="text-zinc-400">
+            Enter the details of the new user you want to add to the team.
+          </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" name="name" value={formData.name} onChange={handleChange} required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" name="email" type="email" value={formData.email} onChange={handleChange} required />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            <Input 
+              id="name" 
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="col-span-3 bg-zinc-800 border-zinc-700 text-white" 
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="role">Role</Label>
-            <Select value={formData.role} onValueChange={handleRoleChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ADMIN">Admin</SelectItem>
-                <SelectItem value="USER">User</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="email" className="text-right">
+              Email
+            </Label>
+            <Input 
+              id="email" 
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="col-span-3 bg-zinc-800 border-zinc-700 text-white" 
+            />
           </div>
-          <div className="flex justify-end pt-4">
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? "Creating..." : "Create user"}
-            </Button>
-          </div>
-        </form>
+        </div>
+        <DialogFooter>
+          <Button 
+            type="submit" 
+            onClick={handleAddUser}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white"
+          >
+            Add User
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )
 }
-

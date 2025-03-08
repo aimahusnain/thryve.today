@@ -84,6 +84,9 @@ model User {
   session       Session[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+    cart          Cart?
+
 }
 
 model Courses {
@@ -92,7 +95,7 @@ model Courses {
   duration          String
   price             Float
   description       String
-  classroom         String
+  classroom         String?
   Lab               String?
   Clinic            String?
   WhoShouldAttend   String[]
@@ -101,6 +104,8 @@ model Courses {
   Note              String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+
+    cartItems         CartItem[]
 }
 
 enum Status {
@@ -108,3 +113,22 @@ enum Status {
   ACTIVE
 }
 
+model Cart {
+  id        String      @id @default(uuid()) @map("_id") @db.Uuid
+  userId    String @unique
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(uuid()) @map("_id") @db.Uuid
+  cartId    String   @db.Uuid
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  courseId  String   @db.Uuid
+  course    Courses  @relation(fields: [courseId], references: [id])
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

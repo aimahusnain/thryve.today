@@ -376,9 +376,13 @@ const CoursesPage: React.FC = () => {
         "Our Pediatric Advanced Life Support (PALS) Course is designed for healthcare professionals who respond to Pediatric Emergencies, including Nurses, Paramedics, Physicians, and other Medical Personnel. This course follows American Heart Association (AHA) guidelines and provides the skills to recognize and manage pediatric respiratory and cardiovascular emergencies.",
       highlights: [
         "AHA-Certified Instructors – Learn from experienced professionals",
+
         "Comprehensive Training – Covers pediatric assessment, BLS, respiratory emergencies, shock, arrhythmias, and post-resuscitation care",
+
         "Hands-On Practice – Gain experience in simulated emergency scenarios",
+
         "Certification Upon Completion – Receive your PALS Provider Card, valid for two years",
+
         "Flexible Class Options – Day and evening schedules available",
       ],
       whoFor: [

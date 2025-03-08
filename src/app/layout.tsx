@@ -7,6 +7,7 @@ import BottomContactBar from "@/components/bottom-contact-bar";
 import ThemeContextProvider from "@/context/ThemeContext";
 import { AuthProvider } from "@/provider/auth-provider";
 import Navbar from "@/components/header";
+import { CartProvider } from '@/provider/cart-provider';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -28,11 +29,14 @@ export default function RootLayout({
       <body className={`${spaceGrotesk.variable} font-sans`}>
         <AuthProvider>
           <ThemeContextProvider>
-            <Navbar />
-            <Toaster />
-            <BottomContactBar />
-            {children}
-            <Footer />
+            {" "}
+            <CartProvider>
+              <Navbar />
+              <Toaster />
+              <BottomContactBar />
+              {children}
+              <Footer />
+            </CartProvider>
           </ThemeContextProvider>
         </AuthProvider>
       </body>

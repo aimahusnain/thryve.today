@@ -2,7 +2,6 @@ import { type NextRequest, NextResponse } from "next/server"
 import type { UserRole } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
 
-// GET all users
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -38,7 +37,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { name, email, password, role } = body
 
-    // Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
     })
@@ -51,7 +49,7 @@ export async function POST(request: NextRequest) {
       data: {
         name,
         email,
-        password, // Note: In a real app, you should hash this password
+        password,
         role: role || "USER",
       },
     })
@@ -62,4 +60,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Failed to create user" }, { status: 500 })
   }
 }
-

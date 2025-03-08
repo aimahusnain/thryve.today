@@ -1,67 +1,107 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
-import { useCart } from "@/provider/cart-provider"
-import { zodResolver } from "@hookform/resolvers/zod"
-import axios from "axios"
-import { format } from "date-fns"
-import { ArrowRight, CalendarIcon, CheckCircle, CreditCard } from "lucide-react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { Toaster, toast } from "sonner"
-import * as z from "zod"
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { useCart } from "@/provider/cart-provider";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { format } from "date-fns";
+import { ArrowRight, CalendarIcon, CheckCircle } from 'lucide-react';
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Toaster, toast } from "sonner";
+import * as z from "zod";
 
 const formSchema = z.object({
-  studentName: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  dateOfBirth: z.string().min(5, { message: "Date of birth must be at least 5 characters." }),
-  address: z.string().min(5, { message: "Address must be at least 5 characters." }),
-  cityStateZip: z.string().min(5, { message: "City/State/ZIP must be at least 5 characters." }),
-  phoneHome: z.string().min(10, { message: "Home phone must be at least 10 characters." }),
-  phoneCell: z.string().min(10, { message: "Cell phone must be at least 10 characters." }),
+  studentName: z
+    .string()
+    .min(2, { message: "Name must be at least 2 characters." }),
+  dateOfBirth: z
+    .string()
+    .min(5, { message: "Date of birth must be at least 5 characters." }),
+  address: z
+    .string()
+    .min(5, { message: "Address must be at least 5 characters." }),
+  cityStateZip: z
+    .string()
+    .min(5, { message: "City/State/ZIP must be at least 5 characters." }),
+  phoneHome: z
+    .string()
+    .min(10, { message: "Home phone must be at least 10 characters." }),
+  phoneCell: z
+    .string()
+    .min(10, { message: "Cell phone must be at least 10 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   socialSecurity: z.string().min(9, {
     message: "Social Security number must be at least 9 characters.",
   }),
   stateId: z.string().min(1, { message: "State ID is required." }),
-  emergencyContact: z.string().min(2, { message: "Emergency contact name is required." }),
-  emergencyRelationship: z.string().min(2, { message: "Relationship is required." }),
+  emergencyContact: z
+    .string()
+    .min(2, { message: "Emergency contact name is required." }),
+  emergencyRelationship: z
+    .string()
+    .min(2, { message: "Relationship is required." }),
   emergencyPhone: z.string().min(10, {
     message: "Emergency contact phone must be at least 10 characters.",
   }),
-  studentSignature: z.string().min(2, { message: "Student signature is required." }),
+  studentSignature: z
+    .string()
+    .min(2, { message: "Student signature is required." }),
   studentSignatureDate: z.date({
     required_error: "Student signature date is required.",
   }),
-  directorSignature: z.string().min(2, { message: "Director signature is required." }),
+  directorSignature: z
+    .string()
+    .min(2, { message: "Director signature is required." }),
   directorSignatureDate: z.date({
     required_error: "Director signature date is required.",
   }),
   guardianSignature: z.string().optional(),
   guardianSignatureDate: z.date().optional(),
-  courseId: z.string().optional(), // Added courseId field
-})
+  courseId: z.string(),
+});
 
-// Course data for nursing assistant program
-const nursingCourse = {
-  id: "nursing-assistant", // This should match a course ID in your database
-  name: "Nursing Assistant Program",
-  price: 999,
-  duration: "3.5 weeks",
+interface NursingEnrollmentFormProps {
+  courseId: string;
+  courseName: string;
+  coursePrice: number;
+  courseDuration: string;
 }
 
-export default function NursingEnrollment() {
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const { addToCart } = useCart()
-  const router = useRouter()
-
+export function NursingEnrollmentForm({ 
+  courseId, 
+  courseName, 
+  coursePrice, 
+  courseDuration 
+}: NursingEnrollmentFormProps) {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const { addToCart } = useCart();
+  const router = useRouter();
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -80,13 +120,13 @@ export default function NursingEnrollment() {
       studentSignature: "",
       directorSignature: "",
       guardianSignature: "",
-      courseId: nursingCourse.id, // Set the course ID
+      courseId: courseId,
     },
-  })
-
+  });
+  
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      toast.loading("Submitting enrollment form...")
+      toast.loading("Submitting enrollment form...");
 
       const formattedValues = {
         ...values,
@@ -94,42 +134,42 @@ export default function NursingEnrollment() {
         dateOfBirth: values.dateOfBirth?.toString(),
         directorSignatureDate: values.directorSignatureDate?.toISOString(),
         guardianSignatureDate: values.guardianSignatureDate?.toISOString(),
-      }
+      };
 
       const response = await axios.post("/api/enroll", formattedValues, {
         headers: {
           "Content-Type": "application/json",
         },
-      })
+      });
 
       if (response.status === 200 || response.status === 201) {
-        toast.dismiss()
-        toast.success("Enrollment form submitted successfully!")
-        setIsSubmitted(true)
-
+        toast.dismiss();
+        toast.success("Enrollment form submitted successfully!");
+        setIsSubmitted(true);
+        
         // Add the course to cart
         try {
-          await addToCart(nursingCourse.id, nursingCourse.name, nursingCourse.price, nursingCourse.duration)
-
+          await addToCart(courseId, courseName, coursePrice, courseDuration);
+          
           // Wait a moment before redirecting to cart
           setTimeout(() => {
-            router.push("/cart")
-          }, 1500)
+            router.push("/cart");
+          }, 1500);
         } catch (error) {
-          console.error("Error adding course to cart:", error)
-          toast.error("Failed to add course to cart. Please try again.")
+          console.error("Error adding course to cart:", error);
+          toast.error("Failed to add course to cart. Please try again.");
         }
       }
     } catch (error) {
-      toast.dismiss()
+      toast.dismiss();
       if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message
-        toast.error(errorMessage)
+        const errorMessage = error.response?.data?.message;
+        toast.error(errorMessage);
       } else {
-        toast.error("An unexpected error occurred. Please try again.")
+        toast.error("An unexpected error occurred. Please try again.");
       }
     }
-  }
+  };
 
   if (isSubmitted) {
     return (
@@ -140,7 +180,9 @@ export default function NursingEnrollment() {
             <div className="inline-block p-3 rounded-full bg-primary/10 mb-6">
               <CheckCircle className="w-12 h-12 text-primary" />
             </div>
-            <h1 className="text-4xl font-bold text-primary mb-4">Enrollment Submitted Successfully!</h1>
+            <h1 className="text-4xl font-bold text-primary mb-4">
+              Enrollment Submitted Successfully!
+            </h1>
             <p className="text-xl text-muted-foreground mb-8">
               Your course has been added to your cart. Redirecting to checkout...
             </p>
@@ -150,39 +192,41 @@ export default function NursingEnrollment() {
             <div className="p-8">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h2 className="text-2xl font-semibold">Nursing Assistant Program</h2>
-                  <p className="text-muted-foreground">Thryve.Today Training</p>
+                  <h2 className="text-2xl font-semibold">
+                    {courseName}
+                  </h2>
+                  <p className="text-muted-foreground">Duration: {courseDuration}</p>
                 </div>
-                <CreditCard className="w-8 h-8 text-primary" />
               </div>
 
               <div className="space-y-4 mb-8">
                 <div className="flex justify-between items-center py-2 border-b">
                   <span className="text-muted-foreground">Program Fee</span>
-                  <span className="font-semibold">$999.00</span>
+                  <span className="font-semibold">${coursePrice.toFixed(2)}</span>
                 </div>
               </div>
 
-              <Link
-                href="/cart"
+              <Button
+                onClick={() => router.push("/cart")}
                 className="flex items-center justify-center w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-6 py-4 text-lg font-semibold transition-colors"
               >
                 Go to Cart
                 <ArrowRight className="ml-2 w-5 h-5" />
-              </Link>
+              </Button>
             </div>
 
             <div className="bg-muted/30 p-6 mt-4">
               <h3 className="font-semibold mb-2">Important Note:</h3>
               <p className="text-sm text-muted-foreground">
-                Your enrollment will be finalized once the payment is processed. You&apos;ll receive a confirmation
-                email with further instructions after successful payment.
+                Your enrollment will be finalized once the payment is processed.
+                You&apos;ll receive a confirmation email with further
+                instructions after successful payment.
               </p>
             </div>
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -190,15 +234,19 @@ export default function NursingEnrollment() {
       <Toaster />
       <div className="container mx-auto py-12 px-6 sm:px-8 lg:px-12 max-w-6xl mt-20">
         <div className="flex justify-between items-center sm:flex-row flex-col mb-8">
-          <h1 className="text-4xl font-extrabold text-primary mb-2">Nursing Assistant Student Enrollment</h1>
+          <h1 className="text-4xl font-extrabold text-primary mb-2">
+            Enrollment Form: {courseName}
+          </h1>
           <p className="text-muted-foreground">
-            Fill out all required information below to enroll in our Nurse Aide Training Program.
+            Fill out all required information below to enroll in this course.
           </p>
         </div>
 
         <Card className="mb-8 bg-card">
           <CardHeader className="p-6">
-            <CardTitle className="text-3xl font-bold">Student Enrollment Agreement</CardTitle>
+            <CardTitle className="text-3xl font-bold">
+              Student Enrollment Agreement
+            </CardTitle>
             <CardDescription className="text-lg mt-2">
               Thryve.Today
               <br />
@@ -209,13 +257,24 @@ export default function NursingEnrollment() {
               Email: info@thryve.today
             </CardDescription>
           </CardHeader>
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-4 bg-muted/30 rounded-lg">
+              <div>
+                <h3 className="font-semibold text-lg">{courseName}</h3>
+                <p className="text-muted-foreground">Duration: {courseDuration}</p>
+              </div>
+              <div className="text-2xl font-bold">${coursePrice.toFixed(2)}</div>
+            </div>
+          </CardContent>
         </Card>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Card className="bg-card">
               <CardHeader className="bg-muted p-6">
-                <CardTitle className="text-2xl font-bold text-primary">Student Information</CardTitle>
+                <CardTitle className="text-2xl font-bold text-primary">
+                  Student Information
+                </CardTitle>
               </CardHeader>
               <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
                 <FormField
@@ -227,7 +286,11 @@ export default function NursingEnrollment() {
                         Student Name <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="John Doe" {...field} className="bg-background text-foreground" />
+                        <Input
+                          placeholder="John Doe"
+                          {...field}
+                          className="bg-background text-foreground"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -243,15 +306,16 @@ export default function NursingEnrollment() {
                         Date Of Birth <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="mm/dd/yyyy" {...field} className="bg-background text-foreground" />
+                        <Input
+                          placeholder="mm/dd/yyyy"
+                          {...field}
+                          className="bg-background text-foreground"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-
-                {/* Rest of the form fields remain unchanged */}
-                {/* ... */}
 
                 <FormField
                   control={form.control}
@@ -262,7 +326,11 @@ export default function NursingEnrollment() {
                         Address <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="123 Main St" {...field} className="bg-background text-foreground" />
+                        <Input
+                          placeholder="123 Main St"
+                          {...field}
+                          className="bg-background text-foreground"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -278,7 +346,11 @@ export default function NursingEnrollment() {
                         City/State/ZIP <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="Anytown, ST 12345" {...field} className="bg-background text-foreground" />
+                        <Input
+                          placeholder="Anytown, ST 12345"
+                          {...field}
+                          className="bg-background text-foreground"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -294,7 +366,11 @@ export default function NursingEnrollment() {
                         Phone (Home) <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="(123) 456-7890" {...field} className="bg-background text-foreground" />
+                        <Input
+                          placeholder="(123) 456-7890"
+                          {...field}
+                          className="bg-background text-foreground"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -310,7 +386,11 @@ export default function NursingEnrollment() {
                         Phone (Cell) <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="(123) 456-7890" {...field} className="bg-background text-foreground" />
+                        <Input
+                          placeholder="(123) 456-7890"
+                          {...field}
+                          className="bg-background text-foreground"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -326,7 +406,11 @@ export default function NursingEnrollment() {
                         Email Address <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="johndoe@example.com" {...field} className="bg-background text-foreground" />
+                        <Input
+                          placeholder="johndoe@example.com"
+                          {...field}
+                          className="bg-background text-foreground"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -339,10 +423,15 @@ export default function NursingEnrollment() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Social Security # <span className="text-red-500">*</span>
+                        Social Security #{" "}
+                        <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="XXX-XX-XXXX" {...field} className="bg-background text-foreground" />
+                        <Input
+                          placeholder="XXX-XX-XXXX"
+                          {...field}
+                          className="bg-background text-foreground"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -355,10 +444,15 @@ export default function NursingEnrollment() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Student State ID # <span className="text-red-500">*</span>
+                        Student State ID #{" "}
+                        <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="State ID" {...field} className="bg-background text-foreground" />
+                        <Input
+                          placeholder="State ID"
+                          {...field}
+                          className="bg-background text-foreground"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -371,10 +465,15 @@ export default function NursingEnrollment() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Emergency Contact <span className="text-red-500">*</span>
+                        Emergency Contact{" "}
+                        <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="Jane Doe" {...field} className="bg-background text-foreground" />
+                        <Input
+                          placeholder="Jane Doe"
+                          {...field}
+                          className="bg-background text-foreground"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -390,7 +489,11 @@ export default function NursingEnrollment() {
                         Relationship <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="Spouse" {...field} className="bg-background text-foreground" />
+                        <Input
+                          placeholder="Spouse"
+                          {...field}
+                          className="bg-background text-foreground"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -403,10 +506,15 @@ export default function NursingEnrollment() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Emergency Contact Phone <span className="text-red-500">*</span>
+                        Emergency Contact Phone{" "}
+                        <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input placeholder="(123) 456-7890" {...field} className="bg-background text-foreground" />
+                        <Input
+                          placeholder="(123) 456-7890"
+                          {...field}
+                          className="bg-background text-foreground"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -417,12 +525,15 @@ export default function NursingEnrollment() {
 
             <Card className="bg-card mt-6">
               <CardHeader className="bg-muted p-6">
-                <CardTitle className="text-2xl font-bold text-primary">Student Acknowledgments</CardTitle>
+                <CardTitle className="text-2xl font-bold text-primary">
+                  Student Acknowledgments
+                </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
                 <p className="text-foreground mb-6 leading-relaxed">
-                  By submitting this form, I am providing my digital signature and agree to the terms and conditions
-                  outlined in this agreement.
+                  By submitting this form, I am providing my digital signature
+                  and agree to the terms and conditions outlined in this
+                  agreement.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormField
@@ -431,10 +542,14 @@ export default function NursingEnrollment() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-foreground font-medium">
-                          Student&apos;s Signature <span className="text-red-500">*</span>
+                          Student&apos;s Signature{" "}
+                          <span className="text-red-500">*</span>
                         </FormLabel>
                         <FormControl>
-                          <Input {...field} className="bg-background text-foreground" />
+                          <Input
+                            {...field}
+                            className="bg-background text-foreground"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -456,10 +571,14 @@ export default function NursingEnrollment() {
                                 variant={"outline"}
                                 className={cn(
                                   "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground",
+                                  !field.value && "text-muted-foreground"
                                 )}
                               >
-                                {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                {field.value ? (
+                                  format(field.value, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
                             </FormControl>
@@ -469,7 +588,10 @@ export default function NursingEnrollment() {
                               mode="single"
                               selected={field.value}
                               onSelect={field.onChange}
-                              disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                              disabled={(date) =>
+                                date > new Date() ||
+                                date < new Date("1900-01-01")
+                              }
                               initialFocus
                             />
                           </PopoverContent>
@@ -485,10 +607,14 @@ export default function NursingEnrollment() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-foreground font-medium">
-                          Program Director/Director <span className="text-red-500">*</span>
+                          Program Director/Director{" "}
+                          <span className="text-red-500">*</span>
                         </FormLabel>
                         <FormControl>
-                          <Input {...field} className="bg-background text-foreground" />
+                          <Input
+                            {...field}
+                            className="bg-background text-foreground"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -510,10 +636,14 @@ export default function NursingEnrollment() {
                                 variant={"outline"}
                                 className={cn(
                                   "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground",
+                                  !field.value && "text-muted-foreground"
                                 )}
                               >
-                                {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                {field.value ? (
+                                  format(field.value, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
                             </FormControl>
@@ -523,7 +653,10 @@ export default function NursingEnrollment() {
                               mode="single"
                               selected={field.value}
                               onSelect={field.onChange}
-                              disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                              disabled={(date) =>
+                                date > new Date() ||
+                                date < new Date("1900-01-01")
+                              }
                               initialFocus
                             />
                           </PopoverContent>
@@ -542,7 +675,10 @@ export default function NursingEnrollment() {
                           Parent/Guardian Signature (if applicable)
                         </FormLabel>
                         <FormControl>
-                          <Input {...field} className="bg-background text-foreground" />
+                          <Input
+                            {...field}
+                            className="bg-background text-foreground"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -554,7 +690,9 @@ export default function NursingEnrollment() {
                     name="guardianSignatureDate"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel className="text-foreground font-medium">Date</FormLabel>
+                        <FormLabel className="text-foreground font-medium">
+                          Date
+                        </FormLabel>
                         <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
@@ -562,10 +700,14 @@ export default function NursingEnrollment() {
                                 variant={"outline"}
                                 className={cn(
                                   "w-full pl-3 text-left font-normal",
-                                  !field.value && "text-muted-foreground",
+                                  !field.value && "text-muted-foreground"
                                 )}
                               >
-                                {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
+                                {field.value ? (
+                                  format(field.value, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
                             </FormControl>
@@ -575,7 +717,10 @@ export default function NursingEnrollment() {
                               mode="single"
                               selected={field.value}
                               onSelect={field.onChange}
-                              disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                              disabled={(date) =>
+                                date > new Date() ||
+                                date < new Date("1900-01-01")
+                              }
                               initialFocus
                             />
                           </PopoverContent>
@@ -592,12 +737,11 @@ export default function NursingEnrollment() {
               type="submit"
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg py-6 mt-6"
             >
-              Submit Enrollment
+              Submit Enrollment & Add to Cart
             </Button>
           </form>
         </Form>
       </div>
     </div>
-  )
+  );
 }
-
