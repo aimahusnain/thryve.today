@@ -41,8 +41,8 @@ export async function POST() {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/cart`,
+      success_url: `${process.env.NEXTAUTH_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXTAUTH_URL}/cart`,
       metadata: {
         userId: session.user.id,
         cartId: cart.id,
@@ -55,4 +55,3 @@ export async function POST() {
     return NextResponse.json({ error: `Failed to create checkout session - ${error}` }, { status: 500 })
   }
 }
-
