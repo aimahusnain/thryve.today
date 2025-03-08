@@ -4,14 +4,11 @@ import { NursingEnrollmentForm } from "@/components/nursing-enrollment-form"
 
 const prisma = new PrismaClient()
 
-interface CoursePageProps {
-  params: {
-    id: string
-  }
-  searchParams?: Record<string, string | string[]>
-}
-
-export default async function CoursePage({ params }: CoursePageProps) {
+export default async function CoursePage({
+  params,
+}: {
+  params: { id: string }
+}) {
   const course = await prisma.courses.findUnique({
     where: { id: params.id },
   })
