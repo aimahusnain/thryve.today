@@ -153,7 +153,12 @@ export default function EnrollmentsDashboard() {
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-2 bg-white border rounded-md shadow-md">
-                  <Calendar mode="range" selected={date} onSelect={setDate} initialFocus />
+                <Calendar
+  mode="range"
+  selected={date}
+  onSelect={(range) => setDate(range as { from: Date | undefined; to: Date | undefined })} 
+  initialFocus
+/>
                 </PopoverContent>
               </Popover>
             </div>
