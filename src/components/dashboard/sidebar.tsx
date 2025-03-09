@@ -42,7 +42,6 @@ const navItems = [
   { title: "Orders", icon: ShoppingCart, url: "/admin-dashboard/orders" },
   { title: "Users", icon: GraduationCap, url: "/admin-dashboard/students" },
   { title: "My Courses", icon: BarChart3, url: "/admin-dashboard/my-courses" },
-  { title: "Payout", icon: Wallet, url: "/admin-dashboard/payout" },
 ]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {

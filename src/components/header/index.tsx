@@ -227,11 +227,11 @@ export default function Navbar() {
                       >
                         Sign In
                       </Link>
-                      <Goy id="courses">
+                      <Link href="/signup">
                         <Button className="bg-[#2db188] hover:bg-[#35dba8] text-white hover:text-black rounded-full">
                           Get Started
                         </Button>
-                      </Goy>
+                      </Link>
                     </>
                   )}
                   <ThemeToggle />
@@ -264,11 +264,11 @@ export default function Navbar() {
               </>
               ) : (
                 <>
-                  <Goy id="courses">
+                  <Link href="/signup">
                     <Button className="bg-[#2db188] text-white hover:bg-[#35dba8] rounded-full">
                       Get Started
                     </Button>
-                  </Goy>
+                  </Link>
                   <Link href="/log-in">
                     <Button variant="ghost" className="rounded-full">
                       Sign In
@@ -400,14 +400,14 @@ export default function Navbar() {
                               Sign In
                             </Button>
                           </Link>
-                          <Goy id="courses" className="w-full">
+                          <Link href="/signup" className="w-full">
                             <Button
                               onClick={() => setIsMenuOpen(false)}
                               className="w-full rounded-full h-12 text-white text-base bg-[#2db188] hover:bg-[#35dba8]"
                             >
                               Get Started
                             </Button>
-                          </Goy>
+                          </Link>
                         </>
                       )}
                     </motion.div>
