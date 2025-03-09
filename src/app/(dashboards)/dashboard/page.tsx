@@ -35,14 +35,6 @@ export default async function DashboardPage() {
     redirect("/api/auth/signin")
   }
 
-  // Fetch enrollments for this user
-  const enrollments = await prisma.enrollment.findMany({
-    where: {
-      email: user.email,
-      paymentStatus: "COMPLETED",
-    },
-  })
-
   // Since there's no direct relation between enrollments and courses in the schema,
   // we'll need a different approach to show enrolled courses
   // For now, let's fetch some active courses as a placeholder

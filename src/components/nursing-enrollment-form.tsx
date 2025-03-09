@@ -13,9 +13,8 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
-  DialogTitle,
+  DialogTitle
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -43,13 +42,13 @@ import {
   LogIn,
   UserPlus,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import type { Session } from "next-auth";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Toaster, toast } from "sonner";
 import * as z from "zod";
-import type { Session } from "next-auth";
 
 // Form schema remains the same
 const formSchema = z.object({

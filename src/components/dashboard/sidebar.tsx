@@ -1,21 +1,5 @@
 "use client"
 
-import {
-  BarChart3,
-  ClipboardList,
-  GraduationCap,
-  LayoutDashboard,
-  LogOut,
-  Moon,
-  Settings,
-  ShoppingCart,
-  Sun,
-  Wallet,
-} from "lucide-react"
-import { signOut, useSession } from "next-auth/react"
-import { useTheme } from "next-themes"
-import { usePathname } from "next/navigation"
-import type * as React from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Sidebar,
@@ -29,7 +13,22 @@ import {
   SidebarRail,
   SidebarSeparator,
 } from "@/components/ui/sidebar"
+import {
+  BarChart3,
+  ClipboardList,
+  GraduationCap,
+  LayoutDashboard,
+  LogOut,
+  Moon,
+  Settings,
+  ShoppingCart,
+  Sun
+} from "lucide-react"
+import { signOut, useSession } from "next-auth/react"
+import { useTheme } from "next-themes"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
+import type * as React from "react"
 import { HelpSupportDialog } from "./help-support-dialog"
 
 const navItems = [

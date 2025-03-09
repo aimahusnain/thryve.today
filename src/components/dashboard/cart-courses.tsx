@@ -26,7 +26,7 @@ export default function CartCourses({ cartItems }: CartCoursesProps) {
             <ShoppingCart className="h-5 w-5" />
             Your Cart
           </CardTitle>
-          <CardDescription>Courses you've added to your cart</CardDescription>
+          <CardDescription>Courses you&apos;ve added to your cart</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center py-10">
           <div className="rounded-full bg-muted p-3">
@@ -49,7 +49,7 @@ export default function CartCourses({ cartItems }: CartCoursesProps) {
           <ShoppingCart className="h-5 w-5" />
           Your Cart
         </CardTitle>
-        <CardDescription>Courses you've added to your cart</CardDescription>
+        <CardDescription>Courses you&apos;ve added to your cart</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {cartItems.map((item, index) => (

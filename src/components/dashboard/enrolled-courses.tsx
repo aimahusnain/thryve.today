@@ -27,7 +27,7 @@ export default function EnrolledCourses({ enrolledCourses }: EnrolledCoursesProp
             <GraduationCap className="h-5 w-5" />
             Your Enrolled Courses
           </CardTitle>
-          <CardDescription>Courses you've enrolled in</CardDescription>
+          <CardDescription>Courses you&apos;ve enrolled in</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center py-10">
           <div className="rounded-full bg-muted p-3">
@@ -50,7 +50,7 @@ export default function EnrolledCourses({ enrolledCourses }: EnrolledCoursesProp
           <GraduationCap className="h-5 w-5" />
           Your Enrolled Courses
         </CardTitle>
-        <CardDescription>Courses you've enrolled in</CardDescription>
+        <CardDescription>Courses you&apos;ve enrolled in</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {enrolledCourses.map((course, index) => {

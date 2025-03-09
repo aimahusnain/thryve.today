@@ -30,7 +30,7 @@ export function AuthRequiredCard() {
           >
             <p className="text-sm leading-relaxed">
               To ensure the security of your information and complete the enrollment process, please log in to your
-              account or create a new one if you don't have one yet.
+              account or create a new one if you don&apos;t have one yet.
             </p>
           </div>
         </CardContent>
