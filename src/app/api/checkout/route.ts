@@ -1,12 +1,9 @@
+import { NextResponse } from "next/server"
+import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { getUserCart } from "@/lib/cart"
-import { getServerSession } from "next-auth"
-import { NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
 import Stripe from "stripe"
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2023-10-16" as Stripe.LatestApiVersion,
-})
 
 export async function POST() {
   try {
@@ -16,6 +13,10 @@ export async function POST() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const userId = session.user.id
+    const userEmail = session.user.email || ""
+    const userName = session.user.name || "Customer"
+
     // Get the user's cart
     const cart = await getUserCart()
 
@@ -23,35 +24,102 @@ export async function POST() {
       return NextResponse.json({ error: "Cart is empty" }, { status: 400 })
     }
 
-    // Create line items for Stripe
-    const lineItems = cart.items.map((item) => ({
-      price_data: {
-        currency: "usd",
-        product_data: {
-          name: item.course.name,
-          description: `Duration: ${item.course.duration}`,
-        },
-        unit_amount: Math.round(item.course.price * 100), // Convert to cents
-      },
-      quantity: item.quantity,
-    }))
+    // Initialize Stripe
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: "2023-10-16" as Stripe.LatestApiVersion,
+    })
 
-    // Create a Stripe checkout session
+    // Prepare line items for Stripe and create/update pending enrollments
+    const lineItems = await Promise.all(
+      cart.items.map(async (item) => {
+        // Check if an enrollment already exists
+        let enrollment = await prisma.enrollment.findFirst({
+          where: {
+            AND: [
+              {
+                OR: [{ email: userEmail }, { userId: userId }],
+              },
+              { courseId: item.course.id },
+            ],
+          },
+        })
+
+        if (!enrollment) {
+          // Create a new pending enrollment
+          enrollment = await prisma.enrollment.create({
+            data: {
+              studentName: userName,
+              dateOfBirth: "",
+              address: "",
+              cityStateZip: "",
+              phoneHome: "",
+              phoneCell: "",
+              email: userEmail,
+              socialSecurity: "",
+              stateId: "",
+              emergencyContact: "",
+              emergencyRelationship: "",
+              emergencyPhone: "",
+              studentSignature: userName,
+              studentSignatureDate: new Date(),
+              directorSignature: "Pending Payment",
+              directorSignatureDate: new Date(),
+              paymentStatus: "PENDING",
+              courseId: item.course.id,
+              userId: userId,
+            },
+          })
+        } else if (enrollment.paymentStatus !== "COMPLETED") {
+          // Update existing enrollment if it's not already completed
+          await prisma.enrollment.update({
+            where: { id: enrollment.id },
+            data: {
+              paymentStatus: "PENDING",
+              studentName: userName,
+              email: userEmail,
+            },
+          })
+        }
+
+        return {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: item.course.name,
+              description: `${item.course.duration} course`,
+            },
+            unit_amount: Math.round(item.course.price * 100), // Convert to cents
+          },
+          quantity: item.quantity,
+        }
+      }),
+    )
+
+    // Extract course IDs for metadata
+    const courseIds = cart.items.map((item) => item.course.id)
+
+    // Create Stripe checkout session
     const stripeSession = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
       success_url: `${process.env.NEXTAUTH_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXTAUTH_URL}/cart`,
+      customer_email: userEmail,
+      client_reference_id: userId,
       metadata: {
-        userId: session.user.id,
-        cartId: cart.id,
+        userId,
+        courseIds: JSON.stringify(courseIds),
       },
     })
 
     return NextResponse.json({ checkoutUrl: stripeSession.url })
   } catch (error) {
     console.error("Checkout error:", error)
-    return NextResponse.json({ error: `Failed to create checkout session - ${error}` }, { status: 500 })
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Failed to create checkout session" },
+      { status: 500 },
+    )
   }
 }
+

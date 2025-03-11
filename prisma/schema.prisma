@@ -28,11 +28,15 @@ model Enrollment {
   guardianSignature     String?
   guardianSignatureDate DateTime?
   paymentStatus         PaymentStatus @default(PENDING)
-  paymentId             String?
+  paymentId             String?       // This can be either a Stripe session ID or a course ID
   paymentAmount         Float?
   paymentDate           DateTime?
+  courseId              String?       @db.Uuid  // Add this field to directly link to a course
+  userId                String?       // Add this field to directly link to a user
   createdAt             DateTime      @default(now())
   updatedAt             DateTime      @updatedAt
+
+  @@index([userId, courseId])
 }
 
 enum PaymentStatus {

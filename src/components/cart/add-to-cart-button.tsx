@@ -27,4 +27,3 @@ export function AddToCartButton({ courseId, className }: AddToCartButtonProps) {
     </Button>
   )
 }
-

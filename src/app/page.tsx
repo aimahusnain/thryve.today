@@ -277,7 +277,6 @@ export default function Home() {
         </div>
       </div>
       <WhyChooseUsSection />
-      <CoursesSection />
       <TeamofEducators />
       <ContactSection />
     </main>

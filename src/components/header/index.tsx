@@ -27,8 +27,7 @@ interface NavLink {
 }
 
 const navLinks: NavLink[] = [
-  { title: "Home", href: "home" },
-  { title: "Courses", href: "courses" },
+  { title: "Home", href: "home" },  
   { title: "Why Us", href: "why-us" },
   { title: "Instructors", href: "instructors" },
   { title: "Contact", href: "contact" },
@@ -42,6 +41,7 @@ export default function Navbar() {
   const { data: session, status } = useSession();
   const isLoading = status === "loading";
   const pathname = usePathname();
+  const isHomePage = pathname === "/" || pathname === "/home";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,6 +71,98 @@ export default function Navbar() {
       position: "top-right",
     });
     setTimeout(() => setCopied(false), 2000);
+  };
+  
+  // Render either Goy component (for home page) or Link to home page section (for other pages)
+  const renderNavLink = (link) => {
+    if (isHomePage) {
+      return (
+        <Goy
+          id={link.href}
+          key={link.href}
+          className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-[#2DB188] after:transition-transform after:duration-300 after:ease-&lsqb;cubic-bezier(0.65_0.05_0.36_1)&rsqb; hover:after:origin-bottom-left hover:after:scale-x-100"
+        >
+          {link.title}
+        </Goy>
+      );
+    } else {
+      return (
+        <Link
+          key={link.href}
+          href={`/#${link.href}`}
+          className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-[#2DB188] after:transition-transform after:duration-300 after:ease-&lsqb;cubic-bezier(0.65_0.05_0.36_1)&rsqb; hover:after:origin-bottom-left hover:after:scale-x-100"
+        >
+          {link.title}
+        </Link>
+      );
+    }
+  };
+  
+  // Render either Goy component or Link for mobile/tablet menu
+  const renderMobileNavLink = (link, index) => {
+    if (isHomePage) {
+      return (
+        <motion.div
+          key={link.href}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: index * 0.1 }}
+        >
+          <Goy id={link.href} className="w-full">
+            <div
+              className="flex items-center justify-between group w-full"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <div className="flex flex-col items-start">
+                <span className="text-2xl font-medium text-foreground">
+                  {link.title}
+                </span>
+                <span className="text-sm text-muted-foreground group-hover:text-[#2db188] transition-colors">
+                  Explore {link.title.toLowerCase()}
+                </span>
+              </div>
+              <motion.div
+                whileHover={{ x: 5 }}
+                className="text-[#2db188]"
+              >
+                <ChevronRight />
+              </motion.div>
+            </div>
+          </Goy>
+        </motion.div>
+      );
+    } else {
+      return (
+        <motion.div
+          key={link.href}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: index * 0.1 }}
+        >
+          <Link href={`/#${link.href}`} className="w-full">
+            <div
+              className="flex items-center justify-between group w-full"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <div className="flex flex-col items-start">
+                <span className="text-2xl font-medium text-foreground">
+                  {link.title}
+                </span>
+                <span className="text-sm text-muted-foreground group-hover:text-[#2db188] transition-colors">
+                  Explore {link.title.toLowerCase()}
+                </span>
+              </div>
+              <motion.div
+                whileHover={{ x: 5 }}
+                className="text-[#2db188]"
+              >
+                <ChevronRight />
+              </motion.div>
+            </div>
+          </Link>
+        </motion.div>
+      );
+    }
   };
   
   return (
@@ -136,35 +228,43 @@ export default function Navbar() {
 
               {/* Desktop Navigation Links */}
               <div className="hidden lg:flex items-center space-x-8 ml-8">
-                {navLinks.map((link) => (
-                  <Goy
-                    id={link.href}
-                    key={link.href}
-                    className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-[#2DB188] after:transition-transform after:duration-300 after:ease-&lsqb;cubic-bezier(0.65_0.05_0.36_1)&rsqb; hover:after:origin-bottom-left hover:after:scale-x-100"
-                  >
-                    {link.title}
-                  </Goy>
-                  // <Goy
-                  //   key={link.href}
-
-                  //   className="text-foreground hover:text-[#2db188] transition-colors duration-200"
-                  // >
-
-                  // </Goy>
-                ))}
+                {navLinks.map((link) => renderNavLink(link))}
+                <Link 
+                  href='/courses' 
+                  className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-[#2DB188] after:transition-transform after:duration-300 after:ease-&lsqb;cubic-bezier(0.65_0.05_0.36_1)&rsqb; hover:after:origin-bottom-left hover:after:scale-x-100"
+                >
+                  Courses
+                </Link>
               </div>
+              
 
               {/* Tablet Navigation Links */}
               <div className="hidden md:flex lg:hidden items-center space-x-6 ml-6">
                 {navLinks.slice(0, 3).map((link) => (
-                  <Goy
-                    key={link.href}
-                    id={link.href}
-                    className="text-foreground hover:text-[#2db188] transition-colors duration-200 text-sm"
-                  >
-                    {link.title}
-                  </Goy>
+                  isHomePage ? (
+                    <Goy
+                      key={link.href}
+                      id={link.href}
+                      className="text-foreground hover:text-[#2db188] transition-colors duration-200 text-sm"
+                    >
+                      {link.title}
+                    </Goy>
+                  ) : (
+                    <Link
+                      key={link.href}
+                      href={`/#${link.href}`}
+                      className="text-foreground hover:text-[#2db188] transition-colors duration-200 text-sm"
+                    >
+                      {link.title}
+                    </Link>
+                  )
                 ))}
+                <Link 
+                  href='/courses'
+                  className="text-foreground hover:text-[#2db188] transition-colors duration-200 text-sm"
+                >
+                  Courses
+                </Link>
                 <button
                   className="text-foreground hover:text-[#2db188]"
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -300,36 +400,37 @@ export default function Navbar() {
               >
                 {/* Navigation Links with Animations */}
                 <div className="px-8 py-8 space-y-6">
-                  {navLinks.map((link, index) => (
-                    <motion.div
-                      key={link.href}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      <Goy id={link.href} className="w-full">
-                        <div
-                          className="flex items-center justify-between group w-full"
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          <div className="flex flex-col items-start">
-                            <span className="text-2xl font-medium text-foreground">
-                              {link.title}
-                            </span>
-                            <span className="text-sm text-muted-foreground group-hover:text-[#2db188] transition-colors">
-                              Explore {link.title.toLowerCase()}
-                            </span>
-                          </div>
-                          <motion.div
-                            whileHover={{ x: 5 }}
-                            className="text-[#2db188]"
-                          >
-                            <ChevronRight />
-                          </motion.div>
+                  {/* Main navigation links (using Goy or Link based on current page) */}
+                  {navLinks.map((link, index) => renderMobileNavLink(link, index))}
+                  
+                  {/* Courses link (direct link) */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: navLinks.length * 0.1 }}
+                  >
+                    <Link href="/courses" className="w-full">
+                      <div
+                        className="flex items-center justify-between group w-full"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        <div className="flex flex-col items-start">
+                          <span className="text-2xl font-medium text-foreground">
+                            Courses
+                          </span>
+                          <span className="text-sm text-muted-foreground group-hover:text-[#2db188] transition-colors">
+                            Explore our courses
+                          </span>
                         </div>
-                      </Goy>
-                    </motion.div>
-                  ))}
+                        <motion.div
+                          whileHover={{ x: 5 }}
+                          className="text-[#2db188]"
+                        >
+                          <ChevronRight />
+                        </motion.div>
+                      </div>
+                    </Link>
+                  </motion.div>
                 </div>
 
                 {/* Bottom Actions Section */}
