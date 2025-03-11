@@ -8,11 +8,9 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Stripe from "stripe"
 
-// Note the file path in the error: src/app/(rawpages)/checkout/success/page.tsx
-// This suggests we need to match the expected types for this specific project
-
+// Define a more specific type for params
 interface PageProps {
-  params: Promise<any>
+  params: Promise<Record<string, string>>
   searchParams: { [key: string]: string | string[] | undefined }
 }
 
@@ -152,3 +150,4 @@ export default async function CheckoutSuccessPage({ params, searchParams }: Page
     </div>
   )
 }
+
