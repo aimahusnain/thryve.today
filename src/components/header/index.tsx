@@ -98,7 +98,6 @@ export default function Navbar() {
     }
   };
   
-  // Render either Goy component or Link for mobile/tablet menu
   const renderMobileNavLink = (link: {href: string, title: string}, index: number) => {
     if (isHomePage) {
       return (

@@ -9,13 +9,15 @@ import Link from "next/link"
 import Stripe from "stripe"
 
 interface PageProps {
-  params: Record<string, never>
+  params: { [key: string]: string }
   searchParams: { [key: string]: string | string[] | undefined }
 }
 
-export default async function CheckoutSuccessPage({ searchParams }: PageProps) {
+export default async function CheckoutSuccessPage({ params, searchParams }: PageProps) {
   const session = await getServerSession(authOptions)
   const session_id = searchParams.session_id as string | undefined
+
+  console.log(params)
 
   if (!session?.user?.id) {
     redirect("/log-in?callbackUrl=/checkout/success")
