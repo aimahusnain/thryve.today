@@ -154,4 +154,3 @@ export default async function CheckoutSuccessPage({
     </div>
   )
 }
-

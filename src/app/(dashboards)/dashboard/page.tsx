@@ -21,9 +21,9 @@ export default async function DashboardPage() {
 
   return (
  <>
- <Navbar />
 
 <div className="container mx-auto py-10 px-4 sm:px-6 pt-[100px]">
+ <Navbar />
       <div className="flex flex-col space-y-6">
 <div className="flex items-center justify-between">
 <div className="flex flex-col space-y-2">
