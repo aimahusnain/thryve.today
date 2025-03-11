@@ -53,7 +53,7 @@ export default async function CoursesPage() {
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="flex items-center gap-1.5 text-[#35dba8] dark:text-[#2db188] bg-lime-50 dark:bg-[#2db188]/10 px-3 py-1.5 rounded-full">
                     <DollarSign className="w-4 h-4" />
-                    <span className="font-semibold">${course.price.toFixed(2)}</span>
+                    <span className="font-semibold">{course.price.toFixed(2)}</span>
                   </div>
                   {course.duration && (
                     <div className="flex items-center gap-1.5 text-zinc-600 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-300/10 px-3 py-1.5 rounded-full">
