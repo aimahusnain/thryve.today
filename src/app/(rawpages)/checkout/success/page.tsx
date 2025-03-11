@@ -8,18 +8,18 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Stripe from "stripe"
 
-export default async function CheckoutSuccessPage({
-  searchParams,
-}: {
-  searchParams: { session_id?: string }
-}) {
+interface PageProps {
+  params: Record<string, never>
+  searchParams: { [key: string]: string | string[] | undefined }
+}
+
+export default async function CheckoutSuccessPage({ searchParams }: PageProps) {
   const session = await getServerSession(authOptions)
+  const session_id = searchParams.session_id as string | undefined
 
   if (!session?.user?.id) {
     redirect("/log-in?callbackUrl=/checkout/success")
   }
-
-  const session_id = searchParams.session_id
 
   if (!session_id) {
     redirect("/cart")
@@ -32,7 +32,6 @@ export default async function CheckoutSuccessPage({
 
   try {
     const stripeSession = await stripe.checkout.sessions.retrieve(session_id)
-
     if (stripeSession.payment_status !== "paid") {
       throw new Error("Payment not completed")
     }
@@ -92,7 +91,6 @@ export default async function CheckoutSuccessPage({
         {/* Decorative elements */}
         <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full opacity-20 dark:opacity-10 blur-xl animate-pulse"></div>
         <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-tr from-blue-400 to-teal-500 rounded-full opacity-20 dark:opacity-10 blur-xl animate-pulse delay-700"></div>
-
         <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
           {/* Success card content */}
           <div className="p-8">
@@ -106,7 +104,6 @@ export default async function CheckoutSuccessPage({
                 <CheckCircle className="h-10 w-10 text-white" />
               </div>
             </div>
-
             {/* Text content */}
             <div className="text-center mb-8">
               <h1 className="text-2xl font-bold mb-2 bg-gradient-to-r from-green-500 to-emerald-600 dark:from-green-400 dark:to-emerald-500 bg-clip-text text-transparent">
@@ -117,7 +114,6 @@ export default async function CheckoutSuccessPage({
                 Your courses are now available in your account.
               </p>
             </div>
-
             {/* Divider with sparkle */}
             <div className="relative flex items-center justify-center my-8">
               <div className="flex-grow h-px bg-gray-200 dark:bg-gray-700"></div>
@@ -126,7 +122,6 @@ export default async function CheckoutSuccessPage({
               </div>
               <div className="flex-grow h-px bg-gray-200 dark:bg-gray-700"></div>
             </div>
-
             {/* Action buttons */}
             <div className="space-y-4">
               <Link href="/dashboard" className="block">
@@ -144,7 +139,6 @@ export default async function CheckoutSuccessPage({
               </Link>
             </div>
           </div>
-
           {/* Bottom decoration */}
           <div className="h-1.5 bg-gradient-to-r from-green-400 via-emerald-500 to-teal-500"></div>
         </div>

@@ -59,7 +59,7 @@ export default function Navbar() {
   }, []);
 
   // Hide navbar on /dashboard/* routes
-  if (pathname.startsWith("/dashboard")) return null;
+  // if (pathname.startsWith("/dashboard")) return null;
   if (pathname.startsWith("/admin-dashboard")) return null;
 
   const copyEmail = async () => {
@@ -74,7 +74,7 @@ export default function Navbar() {
   };
   
   // Render either Goy component (for home page) or Link to home page section (for other pages)
-  const renderNavLink = (link) => {
+  const renderNavLink = (link: {href: string, title: string}) => {
     if (isHomePage) {
       return (
         <Goy
@@ -99,7 +99,7 @@ export default function Navbar() {
   };
   
   // Render either Goy component or Link for mobile/tablet menu
-  const renderMobileNavLink = (link, index) => {
+  const renderMobileNavLink = (link: {href: string, title: string}, index: number) => {
     if (isHomePage) {
       return (
         <motion.div
