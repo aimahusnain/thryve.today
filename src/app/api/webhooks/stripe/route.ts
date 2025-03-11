@@ -37,6 +37,16 @@ export async function POST(request: Request) {
     try {
       // Update enrollment records for each course
       for (const courseId of courseIds) {
+        // Find the course to get its price
+        const course = await prisma.courses.findUnique({
+          where: { id: courseId },
+        })
+
+        if (!course) {
+          console.error(`Course with ID ${courseId} not found`)
+          continue
+        }
+
         // Find existing enrollment using user ID and course ID
         const existingEnrollment = await prisma.enrollment.findFirst({
           where: {
@@ -49,13 +59,13 @@ export async function POST(request: Request) {
         })
 
         if (existingEnrollment) {
-          // Update existing enrollment
+          // Update existing enrollment with the specific course price
           await prisma.enrollment.update({
             where: { id: existingEnrollment.id },
             data: {
               paymentStatus: "COMPLETED",
               paymentId: session.id,
-              paymentAmount: session.amount_total ? session.amount_total / 100 : undefined,
+              paymentAmount: course.price, // Use the specific course price
               paymentDate: new Date(),
             },
           })

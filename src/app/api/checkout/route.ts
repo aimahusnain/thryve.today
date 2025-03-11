@@ -45,7 +45,7 @@ export async function POST() {
         })
 
         if (!enrollment) {
-          // Create a new pending enrollment
+          // Create a new pending enrollment with the course price
           enrollment = await prisma.enrollment.create({
             data: {
               studentName: userName,
@@ -67,6 +67,7 @@ export async function POST() {
               paymentStatus: "PENDING",
               courseId: item.course.id,
               userId: userId,
+              paymentAmount: item.course.price, // Store the course price during enrollment creation
             },
           })
         } else if (enrollment.paymentStatus !== "COMPLETED") {
@@ -77,6 +78,7 @@ export async function POST() {
               paymentStatus: "PENDING",
               studentName: userName,
               email: userEmail,
+              paymentAmount: item.course.price, // Update the course price
             },
           })
         }

@@ -50,7 +50,7 @@ export default async function DashboardPage() {
                 <h2 className="text-2xl font-bold">No courses yet</h2>
                 <p className="text-muted-foreground max-w-md">
                   You haven&apos;t enrolled in any courses yet. Browse our catalog and start your learning journey
-                  today!
+                  today!  
                 </p>
                 <Link href="/courses">
                   <Button size="lg" className="mt-2 rounded-full px-8">
