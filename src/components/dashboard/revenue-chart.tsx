@@ -10,6 +10,8 @@ export function RevenueChart() {
   const [loading, setLoading] = useState(true)
   const [year, setYear] = useState(new Date().getFullYear())
 
+  setYear(new Date().getFullYear())
+
   useEffect(() => {
     async function fetchRevenueData() {
       try {
