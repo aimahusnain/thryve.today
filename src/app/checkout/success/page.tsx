@@ -8,16 +8,20 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Stripe from "stripe"
 
+// Note the file path in the error: src/app/(rawpages)/checkout/success/page.tsx
+// This suggests we need to match the expected types for this specific project
+
 interface PageProps {
-  params: { [key: string]: string }
+  params: Promise<any>
   searchParams: { [key: string]: string | string[] | undefined }
 }
 
 export default async function CheckoutSuccessPage({ params, searchParams }: PageProps) {
+  // Await the params since it's a Promise in this project
+  await params
+
   const session = await getServerSession(authOptions)
   const session_id = searchParams.session_id as string | undefined
-
-  console.log(params)
 
   if (!session?.user?.id) {
     redirect("/log-in?callbackUrl=/checkout/success")
