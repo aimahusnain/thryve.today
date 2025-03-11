@@ -11,7 +11,7 @@ import Stripe from "stripe"
 export default async function CheckoutSuccessPage({
   searchParams,
 }: {
-  searchParams: Promise<{ session_id?: string }> | { session_id?: string }
+  searchParams: { session_id?: string }
 }) {
   const session = await getServerSession(authOptions)
 
@@ -19,9 +19,7 @@ export default async function CheckoutSuccessPage({
     redirect("/log-in?callbackUrl=/checkout/success")
   }
 
-  // Await searchParams if it's a Promise
-  const params = searchParams instanceof Promise ? await searchParams : searchParams
-  const session_id = params.session_id
+  const session_id = searchParams.session_id
 
   if (!session_id) {
     redirect("/cart")
