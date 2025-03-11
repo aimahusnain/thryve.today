@@ -8,18 +8,19 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Stripe from "stripe"
 
-// Define a more specific type for params
+// Update both params and searchParams to be Promises
 interface PageProps {
   params: Promise<Record<string, string>>
-  searchParams: { [key: string]: string | string[] | undefined }
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 
 export default async function CheckoutSuccessPage({ params, searchParams }: PageProps) {
-  // Await the params since it's a Promise in this project
+  // Await both params and searchParams
   await params
+  const resolvedSearchParams = await searchParams
 
   const session = await getServerSession(authOptions)
-  const session_id = searchParams.session_id as string | undefined
+  const session_id = resolvedSearchParams.session_id as string | undefined
 
   if (!session?.user?.id) {
     redirect("/log-in?callbackUrl=/checkout/success")
@@ -150,4 +151,3 @@ export default async function CheckoutSuccessPage({ params, searchParams }: Page
     </div>
   )
 }
-
