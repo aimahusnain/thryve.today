@@ -37,7 +37,6 @@ const navItems = [
     icon: LayoutDashboard,
     url: "/admin-dashboard",
   },
-  { title: "Forms", icon: ClipboardList, url: "/admin-dashboard/forms" },
   { title: "Orders", icon: ShoppingCart, url: "/admin-dashboard/orders" },
   { title: "Users", icon: GraduationCap, url: "/admin-dashboard/students" },
   { title: "My Courses", icon: BarChart3, url: "/admin-dashboard/my-courses" },
@@ -164,7 +163,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               tooltip="Logout"
               onClick={handleLogout}
-              className="group flex w-full cursor-pointer items-center rounded-lg px-3 mb-2 py-2 text-sm font-medium text-muted-foreground transition-all hover:bg-destructive/10 hover:text-destructive"
+              className="group flex w-full cursor-pointer items-center rounded-lg px-3 mb-2 py-2 text-sm font-medium text-muted-foreground transition-all hover:bg-destructive/10 hover:text-destructive hover:!text-black"
             >
               <div className="flex w-full items-center">
                 <LogOut className="h-5 w-5 transition-transform group-hover:scale-110" />

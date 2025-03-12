@@ -1,31 +1,30 @@
 "use client"
 
+import { format, formatDistanceToNow } from "date-fns"
+import { CheckCircle2, ChevronDown, Clock, Filter, MoreVertical, Search, Shield, Users } from "lucide-react"
 import { useEffect, useState } from "react"
 import { toast, Toaster } from "sonner"
-import { MoreVertical, Search, UserPlus, Filter, ChevronDown, CheckCircle2, Clock, Shield, Users } from "lucide-react"
-import { format, formatDistanceToNow } from "date-fns"
 
 import { AppSidebar } from "@/components/dashboard/sidebar"
+import { DeleteUserDialog } from "@/components/dashboard/team-members/delete-user-dialog"
+import { EditUserDialog } from "@/components/dashboard/team-members/edit-user-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuCheckboxItem,
 } from "@/components/ui/dropdown-menu"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { DeleteUserDialog } from "@/components/dashboard/team-members/delete-user-dialog"
-import { EditUserDialog } from "@/components/dashboard/team-members/edit-user-dialog"
-import { AddUserDialog } from "@/components/dashboard/team-members/add-user-dialog"
-import type { User } from "@/types/users"
 import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import type { User } from "@/types/users"
 
 // Format date for display
 const formatDate = (dateString?: Date | string | null): string => {
@@ -93,7 +92,6 @@ export default function TeamMembersPage() {
 
   const filteredUsers = filterUsers(users)
 
-
   return (
     <SidebarProvider>
       <Toaster position="top-right" />
@@ -112,7 +110,7 @@ export default function TeamMembersPage() {
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="relative w-full md:w-64">
+                  <div className="relative w-full md:w-82">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-zinc-500 dark:text-zinc-400" />
                     <Input
                       placeholder="Search members..."
@@ -121,12 +119,6 @@ export default function TeamMembersPage() {
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
                   </div>
-                  <AddUserDialog>
-                    <Button className="gap-1.5 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white">
-                      <UserPlus className="h-4 w-4" />
-                      <span className="hidden md:inline">Add Member</span>
-                    </Button>
-                  </AddUserDialog>
                 </div>
               </div>
 
@@ -344,9 +336,9 @@ function UserTable({ users, isLoading, selectedUser, setSelectedUser }: UserTabl
                 <td className="p-4">
                   <div className="flex items-center gap-3">
                     <Avatar className="w-10 h-10 border-2 border-indigo-500/20 dark:border-indigo-500/20 ring-2 ring-black/80">
-                      <AvatarImage src={user.image || `https://i.pravatar.cc/124?img=${i + 1}`} />
+                      <AvatarImage src={user.image || undefined} alt={user.name || "User"} />
                       <AvatarFallback className="bg-indigo-500/10 text-indigo-400 dark:bg-indigo-500/20">
-                        {user.name?.charAt(0) || user.email.charAt(0).toUpperCase()}
+                        {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                     <div>

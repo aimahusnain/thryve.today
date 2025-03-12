@@ -105,7 +105,7 @@ export async function getDashboardData() {
   }
 }
 
-export async function getRevenueByMonth(year = new Date().getFullYear()) {
+export async function getRevenueByMonth() {
   const session = await getServerSession(authOptions)
 
   if (!session?.user?.id) {
@@ -123,18 +123,21 @@ export async function getRevenueByMonth(year = new Date().getFullYear()) {
   }
 
   // Get all completed payments for the specified year
+
   const enrollments = await prisma.enrollment.findMany({
-    where: {
-      paymentStatus: "COMPLETED",
-      paymentAmount: { not: null },
-      paymentDate: {
-        gte: new Date(`${year}-01-01`),
-        lt: new Date(`${year + 1}-01-01`),
-      },
-    },
     select: {
+      id: true,
+      studentName: true,
+      email: true,
+      phoneCell: true,
+      paymentStatus: true,
       paymentAmount: true,
       paymentDate: true,
+      createdAt: true,
+      courseId: true,
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   })
 
@@ -184,7 +187,7 @@ export async function getEnrollmentDetails() {
       paymentAmount: true,
       paymentDate: true,
       createdAt: true,
-      paymentId: true,
+      courseId: true,
     },
     orderBy: {
       createdAt: "desc",
@@ -196,9 +199,9 @@ export async function getEnrollmentDetails() {
     enrollments.map(async (enrollment) => {
       let courseName = "Unknown Course"
 
-      if (enrollment.paymentId) {
+      if (enrollment.courseId) {
         const course = await prisma.courses.findUnique({
-          where: { id: enrollment.paymentId },
+          where: { id: enrollment.courseId },
           select: { name: true },
         })
 
@@ -216,3 +219,4 @@ export async function getEnrollmentDetails() {
 
   return enrollmentsWithCourseDetails
 }
+

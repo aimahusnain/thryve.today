@@ -14,7 +14,7 @@ export function RevenueChart() {
   useEffect(() => {
     async function fetchRevenueData() {
       try {
-        const data = await getRevenueByMonth(year)
+        const data = await getRevenueByMonth()
         setRevenueData(data)
       } catch (error) {
         console.error("Failed to fetch revenue data:", error)
