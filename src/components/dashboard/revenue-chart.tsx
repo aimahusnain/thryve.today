@@ -9,7 +9,7 @@ export function RevenueChart() {
   const [revenueData, setRevenueData] = useState<Array<{ name: string; revenue: number }>>([])
   const [loading, setLoading] = useState(true)
   // Initialize year state ONCE with the current year
-  const [year, setYear] = useState(new Date().getFullYear())
+  const [year] = useState(new Date().getFullYear())
 
   useEffect(() => {
     async function fetchRevenueData() {

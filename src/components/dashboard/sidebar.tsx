@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/sidebar"
 import {
   BarChart3,
-  ClipboardList,
   GraduationCap,
   LayoutDashboard,
   LogOut,

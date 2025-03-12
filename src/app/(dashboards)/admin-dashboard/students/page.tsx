@@ -321,7 +321,7 @@ function UserTable({ users, isLoading, selectedUser, setSelectedUser }: UserTabl
             </tr>
           </thead>
           <tbody>
-            {users.map((user, i) => (
+            {users.map((user) => (
               <tr
                 key={user.id}
                 className="border-b border-zinc-800 last:border-b-0 hover:bg-zinc-800/50 dark:hover:bg-zinc-800/50 transition-colors"

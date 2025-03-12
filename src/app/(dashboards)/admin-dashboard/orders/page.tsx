@@ -14,7 +14,6 @@ import {
   ChevronDown,
   ChevronUp,
   Download,
-  ExternalLink,
   Phone,
   User,
   Calendar,
@@ -23,7 +22,6 @@ import {
   Clock,
   RefreshCcw,
 } from "lucide-react"
-import Link from "next/link"
 
 // Define types based on the available fields
 type PaymentStatus = "PENDING" | "COMPLETED" | "FAILED"
