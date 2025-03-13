@@ -1,7 +1,7 @@
 "use client"
 
 import { format, formatDistanceToNow } from "date-fns"
-import { CheckCircle2, ChevronDown, Clock, Filter, MoreVertical, Search, Shield, Users } from "lucide-react"
+import { CheckCircle2, ChevronDown, Clock, Filter, MoreVertical, RefreshCw, Search, Shield, Users } from "lucide-react"
 import { useEffect, useState } from "react"
 import { toast, Toaster } from "sonner"
 
@@ -17,7 +17,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
@@ -42,6 +41,7 @@ export default function TeamMembersPage() {
   const [users, setUsers] = useState<User[]>([])
   const [selectedUser, setSelectedUser] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [isRefreshing, setIsRefreshing] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [activeTab, setActiveTab] = useState("all")
   const [filters, setFilters] = useState({
@@ -49,28 +49,42 @@ export default function TeamMembersPage() {
     pending: true,
   })
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
+  const fetchUsers = async (showToast = false) => {
+    try {
+      if (showToast) {
+        setIsRefreshing(true)
+      } else {
         setIsLoading(true)
-        const response = await fetch("/api/users")
-        const data = await response.json()
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch users")
-        }
-
-        setUsers(data)
-      } catch (error) {
-        toast.error("Failed to load users")
-        console.error(error)
-      } finally {
-        setIsLoading(false)
       }
-    }
 
+      const response = await fetch("/api/users")
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch users")
+      }
+
+      setUsers(data)
+
+      if (showToast) {
+        toast.success("User data refreshed successfully")
+      }
+    } catch (error) {
+      toast.error("Failed to load users")
+      console.error(error)
+    } finally {
+      setIsLoading(false)
+      setIsRefreshing(false)
+    }
+  }
+
+  useEffect(() => {
     fetchUsers()
   }, [])
+
+  const handleRefresh = () => {
+    fetchUsers(true)
+  }
 
   // Filter users based on search query, active tab, and filters
   const filterUsers = (users: User[]) => {
@@ -94,7 +108,6 @@ export default function TeamMembersPage() {
 
   return (
     <SidebarProvider>
-      <Toaster position="top-right" />
       <AppSidebar />
       <SidebarInset>
         <div className="flex flex-col min-h-screen bg-gradient-to-b from-black to-zinc-900 dark:from-black dark:to-zinc-900">
@@ -119,6 +132,16 @@ export default function TeamMembersPage() {
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
                   </div>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={handleRefresh}
+                    disabled={isRefreshing || isLoading}
+                    className="h-10 w-10 bg-zinc-900/50 border-zinc-800 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200"
+                  >
+                    <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+                    <span className="sr-only">Refresh</span>
+                  </Button>
                 </div>
               </div>
 
@@ -387,14 +410,8 @@ function UserTable({ users, isLoading, selectedUser, setSelectedUser }: UserTabl
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="bg-zinc-900 border-zinc-800">
-                      <DropdownMenuItem className="text-zinc-300 focus:bg-zinc-800 focus:text-white">
-                        View profile
-                      </DropdownMenuItem>
                       <EditUserDialog user={user} />
                       <DeleteUserDialog userId={user.id} userName={user.name || user.email} />
-                      <DropdownMenuItem className="text-zinc-300 focus:bg-zinc-800 focus:text-white">
-                        Permissions
-                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </td>
@@ -406,3 +423,4 @@ function UserTable({ users, isLoading, selectedUser, setSelectedUser }: UserTabl
     </div>
   )
 }
+

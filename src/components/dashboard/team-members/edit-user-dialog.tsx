@@ -33,7 +33,7 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
     e.preventDefault()
     
     try {
-      const response = await fetch(`/api/users/${user.id}`, {
+      const response = await fetch(`/api/users/update?id=${user.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
