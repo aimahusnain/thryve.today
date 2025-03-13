@@ -32,10 +32,10 @@ interface Enrollment {
   email: string
   phoneCell: string
   paymentStatus: PaymentStatus
-  paymentAmount: number
-  paymentDate?: Date | string
+  paymentAmount: number | null  // Update to allow null
+  paymentDate?: Date | string | null  // Update to allow null
   createdAt: Date | string
-  courseId?: string
+  courseId?: string | null  // Update to allow null
   courseName?: string
 }
 
@@ -56,7 +56,6 @@ export default function OrdersPage() {
         setLoading(false)
       }
     }
-
     fetchData()
   }, [])
 
