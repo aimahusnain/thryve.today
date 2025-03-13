@@ -3,7 +3,7 @@
 import { format, formatDistanceToNow } from "date-fns"
 import { CheckCircle2, ChevronDown, Clock, Filter, MoreVertical, RefreshCw, Search, Shield, Users } from "lucide-react"
 import { useEffect, useState } from "react"
-import { toast, Toaster } from "sonner"
+import { toast } from "sonner"
 
 import { AppSidebar } from "@/components/dashboard/sidebar"
 import { DeleteUserDialog } from "@/components/dashboard/team-members/delete-user-dialog"
