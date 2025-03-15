@@ -26,26 +26,20 @@ export async function POST() {
 
     // Initialize Stripe
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: "2024-04-01",
+      apiVersion: "2023-10-16" as Stripe.LatestApiVersion, // Using the correct API version type
     });
 
     // Prepare line items for Stripe and create/update pending enrollments
     const lineItems = await Promise.all(
       cart.items.map(async (item) => {
-        // Check if an enrollment already exists
         let enrollment = await prisma.enrollment.findFirst({
           where: {
-            AND: [
-              {
-                OR: [{ email: userEmail }, { userId: userId }],
-              },
-              { courseId: item.course.id },
-            ],
+            OR: [{ email: userEmail }, { userId: userId }],
+            courseId: item.course.id,
           },
         });
 
         if (!enrollment) {
-          // Create a new pending enrollment with the course price
           enrollment = await prisma.enrollment.create({
             data: {
               studentName: userName,
@@ -69,16 +63,15 @@ export async function POST() {
               userId: userId,
               paymentAmount: item.course.price, // Store the course price during enrollment creation
             },
-          });
+          })
         } else if (enrollment.paymentStatus !== "COMPLETED") {
-          // Update existing enrollment if it's not already completed
           await prisma.enrollment.update({
             where: { id: enrollment.id },
             data: {
               paymentStatus: "PENDING",
               studentName: userName,
               email: userEmail,
-              paymentAmount: item.course.price, // Update the course price
+              paymentAmount: item.course.price,
             },
           });
         }
@@ -90,7 +83,7 @@ export async function POST() {
               name: item.course.name,
               description: `${item.course.duration} course`,
             },
-            unit_amount: Math.round(item.course.price * 100), // Convert to cents
+            unit_amount: Math.round(item.course.price * 100),
           },
           quantity: item.quantity,
         };
@@ -102,13 +95,7 @@ export async function POST() {
 
     // Create Stripe checkout session
     const stripeSession = await stripe.checkout.sessions.create({
-      payment_method_types: [
-        "card",
-        "klarna",
-        "afterpay_clearpay",
-        "amazon_pay",
-        "google_pay",
-      ],
+      payment_method_types: ["card", "klarna", "afterpay_clearpay"], // Removed "google_pay" and "amazon_pay"
       line_items: lineItems,
       mode: "payment",
       success_url: `${process.env.NEXTAUTH_URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
