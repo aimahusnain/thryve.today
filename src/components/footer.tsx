@@ -14,7 +14,7 @@ const Footer = () => {
   if (pathname.startsWith("/admin-dashboard")) return null;
 
   return (
-    <footer className="w-full pt-8 md:pt-12 pb-6 md:pb-[17px] px-10 sm:px-6 md:px-[72px] bg-white dark:bg-zinc-900 border-b-4 border-[#2eb88e]">
+    <footer className="w-full mt-9 pt-8 md:pt-12 pb-6 md:pb-[17px] px-10 sm:px-6 md:px-[72px] bg-white dark:bg-zinc-900 border-b-4 border-[#2eb88e]">
       <div className="max-w-[1296px] mx-auto">
         {/* Main Content */}
         <div className="flex flex-col md:flex-row justify-between items-start gap-8 md:gap-0 mb-8 md:mb-[64px]">
@@ -75,12 +75,12 @@ const Footer = () => {
               best self today.
             </h3>
             <div className="flex flex-col sm:flex-row gap-3">
-              <Goy
-                id="contact"
+              <Link
+                href="/signup"
                 className="w-full sm:w-auto px-5 py-[10px] bg-[#2eb88e] rounded-[100px] text-[#101828] dark:text-zinc-900 font-semibold text-[14px] hover:bg-[#85dc0e] transition-colors"
               >
                 Apply Now
-              </Goy>
+              </Link>
               <Goy
                 id="courses"
                 className="w-full sm:w-auto px-5 py-[10px] border border-[#D0D5DD] dark:border-zinc-700 rounded-[100px] text-[#101828] dark:text-white font-semibold text-[14px] hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
