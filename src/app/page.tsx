@@ -216,7 +216,7 @@ export default function Home() {
             </div>
 
             {/* Reviews Section */}
-            <motion.div
+            {/* <motion.div
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7, duration: 0.5 }}
@@ -271,12 +271,12 @@ export default function Home() {
                   </motion.div>
                 ))}
               </ScrollArea>
-            </motion.div>
+            </motion.div> */}
           </motion.div>
         </div>
       </div>
       <WhyChooseUsSection />
-      <TeamofEducators />
+      {/* <TeamofEducators /> */}
       <ContactSection />
     </main>
   );
