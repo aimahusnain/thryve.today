@@ -69,9 +69,9 @@ export default async function DashboardPage() {
                       You haven&apos;t enrolled in any courses yet. Browse our
                       catalog and discover amazing learning opportunities!
                     </p>
-                    <Button size="lg" className="mt-6 rounded-full px-10 py-6 text-lg bg-gradient-to-r from-primary to-green-600 hover:opacity-90 transition-all border-none">
+                    <Link href='/courses' className="text-black mt-6 rounded-full px-10 py-3 text-lg bg-gradient-to-r from-primary to-green-600 hover:opacity-90 transition-all border-none">
                       Browse Courses
-                    </Button>
+                    </Link>
                   </div>
                 </CardContent>
               </Card>
