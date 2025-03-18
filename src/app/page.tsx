@@ -2,14 +2,10 @@
 
 import ContactSection from "@/components/contact/contact_section";
 import Goy from "@/components/goy";
-import TeamofEducators from "@/components/team-of-educators";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SpinningText } from "@/components/ui/spinning-text";
 import WhyChooseUsSection from "@/components/why-choose-us";
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
 import Image from "next/image";
 
 export default function Home() {
