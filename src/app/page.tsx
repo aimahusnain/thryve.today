@@ -2,7 +2,6 @@
 
 import ContactSection from "@/components/contact/contact_section";
 import Goy from "@/components/goy";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { SpinningText } from "@/components/ui/spinning-text";
 import WhyChooseUsSection from "@/components/why-choose-us";
 import { motion } from "framer-motion";
