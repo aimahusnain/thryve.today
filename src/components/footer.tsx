@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
 import Image from "next/image";
-import Goy from "./goy";
 import { usePathname, useRouter } from "next/navigation";
 
 const Footer = () => {
