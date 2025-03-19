@@ -5,19 +5,16 @@ import React, { MouseEvent } from "react";
 const Goy = ({
   id,
   children,
-  className,
-  key
+  className
 }: {
   id: string;
   children: React.ReactNode;
   className?: string;
-  key?: string
 }) => {
-//   console.log(scrollMargin);
 
   const handleButtonClick = (e: MouseEvent<HTMLButtonElement>, myelement: string) => {
+    e.preventDefault();
     const newScrollMargin = 60;
-    console.log(e);
 
     const element = document.getElementById(myelement);
     if (element) {
@@ -30,10 +27,9 @@ const Goy = ({
 
   return (
     <button
-    key={key}
       aria-label="Go Button"
       className={className}
-      onClick={(e) => handleButtonClick(e, `${id}`)}
+      onClick={(e) => handleButtonClick(e, id)}
     >
       {children}
     </button>
