@@ -51,8 +51,8 @@ const Footer = () => {
               Begin your journey to your<br className="hidden md:block" /> best self today.
             </h3>
             <div className="flex flex-col sm:flex-row gap-3">
-              <Link href="/signup" className="w-full sm:w-auto px-5 py-[10px] bg-[#2eb88e] rounded-[100px] text-[#101828] dark:text-zinc-900 font-semibold text-[14px] hover:bg-[#85dc0e] transition-colors">Apply Now</Link>
-              <Goy id="courses" className="w-full sm:w-auto px-5 py-[10px] border border-[#D0D5DD] dark:border-zinc-700 rounded-[100px] text-[#101828] dark:text-white font-semibold text-[14px] hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">Explore Courses</Goy>
+              <Link href="/signup" className="w-full text-center sm:w-auto px-5 py-[10px] bg-[#2eb88e] rounded-[100px] text-[#101828] dark:text-zinc-900 font-semibold text-[14px] hover:bg-[#85dc0e] transition-colors">Apply Now</Link>
+              <Link href='/courses' className="w-full text-center sm:w-auto px-5 py-[10px] border border-[#D0D5DD] dark:border-zinc-700 rounded-[100px] text-[#101828] dark:text-white font-semibold text-[14px] hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">Explore Courses</Link>
             </div>
           </div>
         </div>

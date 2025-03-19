@@ -3,8 +3,7 @@
 import React from "react";
 import { Heart, GraduationCap, BookOpen, Hand, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import Goy from "./goy";
-
+import Link from "next/link";
 const WhyChooseUsSection = () => {
   const features = [
     {
@@ -123,13 +122,13 @@ const WhyChooseUsSection = () => {
                   do, ensuring that our students not only excel in their careers
                   but also contribute meaningfully to healthcare.
                 </p>
-                <Goy 
-                  id='courses' 
+                <Link 
+                  href='/signup' 
                   className="mt-auto w-full bg-[#2db188] text-zinc-900 dark:text-zinc-900 px-8 py-4 rounded-xl font-semibold hover:bg-[#2db188] transition-colors duration-300 flex items-center justify-center group/button"
                 >
                   Start Your Journey
                   <ArrowRight className="ml-2 w-5 h-5 group-hover/button:translate-x-1 transition-transform duration-300" />
-                </Goy>
+                </Link>
               </div>
             </div>
           </motion.div>
