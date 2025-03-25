@@ -2,7 +2,7 @@
 
 import React from "react"
 import { useState, useEffect } from "react"
-import { getEnrollmentDetails } from "@/lib/dashboard-actions"
+import { getEnrollmentDetails, deleteEnrollment } from "@/lib/enrollment-actions"
 import { AppSidebar } from "@/components/dashboard/sidebar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { format } from "date-fns"
+import { DeleteConfirmationDialog } from "@/components/delete-confirmation-dialog"
 import {
   ChevronDown,
   ChevronUp,
@@ -22,6 +23,7 @@ import {
   Clock,
   RefreshCcw,
 } from "lucide-react"
+import { toast } from "sonner"
 
 // Define types based on the available fields
 type PaymentStatus = "PENDING" | "COMPLETED" | "FAILED"
@@ -32,10 +34,10 @@ interface Enrollment {
   email: string
   phoneCell: string
   paymentStatus: PaymentStatus
-  paymentAmount: number | null  // Update to allow null
-  paymentDate?: Date | string | null  // Update to allow null
+  paymentAmount: number | null // Update to allow null
+  paymentDate?: Date | string | null // Update to allow null
   createdAt: Date | string
-  courseId?: string | null  // Update to allow null
+  courseId?: string | null // Update to allow null
   courseName?: string
 }
 
@@ -87,6 +89,23 @@ export default function OrdersPage() {
   // Toggle expanded row
   const toggleExpand = (id: string) => {
     setExpandedId(expandedId === id ? null : id)
+  }
+
+  // Handle delete enrollment
+  const handleDeleteEnrollment = async (id: string) => {
+    try {
+      await deleteEnrollment(id)
+      // Update local state to remove the deleted enrollment
+      setEnrollments(enrollments.filter((enrollment) => enrollment.id !== id))
+      toast.success("Order deleted", {
+        description: "The enrollment has been successfully deleted.",
+      })
+    } catch (error) {
+      console.error("Error deleting enrollment:", error)
+      toast.error("Error", {
+        description: "Failed to delete enrollment. Please try again.",
+      })
+    }
   }
 
   return (
@@ -180,6 +199,7 @@ export default function OrdersPage() {
                       <TableHead>Date</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Amount</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -221,7 +241,11 @@ export default function OrdersPage() {
                             <TableCell>{formatCurrency(enrollment.paymentAmount)}</TableCell>
                             <TableCell>
                               <div className="flex items-center gap-2">
-                          
+                                <DeleteConfirmationDialog
+                                  id={enrollment.id}
+                                  name={enrollment.studentName}
+                                  onDelete={handleDeleteEnrollment}
+                                />
                                 <Button
                                   variant="ghost"
                                   size="sm"

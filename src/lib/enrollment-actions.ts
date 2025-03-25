@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma"
 import type { Enrollment } from "@prisma/client"
+import { revalidatePath } from "next/cache"
 
 export async function getEnrollments(): Promise<Enrollment[]> {
   try {
@@ -58,3 +59,48 @@ export async function updateEnrollmentPaymentStatus(
     throw new Error(`Failed to update payment status for enrollment ${id}`)
   }
 }
+
+export async function deleteEnrollment(id: string) {
+  try {
+    await prisma.enrollment.delete({
+      where: {
+        id,
+      },
+    })
+
+    revalidatePath("/dashboard/orders")
+    return { success: true }
+  } catch (error) {
+    console.error("Error deleting enrollment:", error)
+    throw new Error("Failed to delete enrollment")
+  }
+}
+
+export async function getEnrollmentDetails() {
+  try {
+    const enrollments = await prisma.enrollment.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        studentName: true,
+        email: true,
+        phoneCell: true,
+        paymentStatus: true,
+        paymentAmount: true,
+        paymentDate: true,
+        createdAt: true,
+        courseId: true,
+      },
+    })
+
+    // If you need to fetch course names, you can add that logic here
+    // This is a simplified example
+    return enrollments
+  } catch (error) {
+    console.error("Error fetching enrollment data:", error)
+    throw new Error("Failed to fetch enrollment data")
+  }
+}
+
