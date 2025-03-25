@@ -2,15 +2,13 @@
 
 import { format, formatDistanceToNow } from "date-fns";
 import {
-  CheckCircle2,
   ChevronDown,
-  Clock,
   Filter,
   MoreVertical,
   RefreshCw,
   Search,
   Shield,
-  Users,
+  Users
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
