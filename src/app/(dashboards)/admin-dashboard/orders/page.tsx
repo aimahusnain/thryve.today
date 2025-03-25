@@ -229,13 +229,13 @@ export default function OrdersPage() {
                                 variant="outline"
                                 className={`${
                                   enrollment.paymentStatus === "COMPLETED"
-                                    ? "bg-green-100 text-green-800 hover:bg-green-100"
+                                    ? "bg-green-100 text-green-800 hover:bg-green-100 uppercase"
                                     : enrollment.paymentStatus === "FAILED"
-                                      ? "bg-red-100 text-red-800 hover:bg-red-100"
-                                      : "bg-orange-100 text-orange-800 hover:bg-orange-100"
+                                      ? "bg-red-100 uppercase text-red-800 hover:bg-red-100"
+                                      : "bg-orange-100 uppercase text-orange-800 hover:bg-orange-100"
                                 }`}
                               >
-                                {enrollment.paymentStatus}
+                                {enrollment.paymentStatus === "COMPLETED" ? "Completed/PAID" : enrollment.paymentStatus === "PENDING" ? "Pending/UNPAID" : "Failed/CANNOT PAY"}
                               </Badge>
                             </TableCell>
                             <TableCell>{formatCurrency(enrollment.paymentAmount)}</TableCell>
@@ -322,7 +322,7 @@ export default function OrdersPage() {
                                                     : "bg-orange-100 text-orange-800 hover:bg-orange-100"
                                               }`}
                                             >
-                                              {enrollment.paymentStatus}
+                                              {enrollment.paymentStatus === "COMPLETED" ? "Completed/PAID" : enrollment.paymentStatus === "PENDING" ? "Pending/UNPAID" : "Failed/CANNOT PAY"}
                                             </Badge>
                                           </p>
                                         </div>
