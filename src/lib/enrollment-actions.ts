@@ -78,6 +78,7 @@ export async function deleteEnrollment(id: string) {
 
 export async function getEnrollmentDetails() {
   try {
+    // Use a more efficient approach with a single query
     const enrollments = await prisma.enrollment.findMany({
       orderBy: {
         createdAt: "desc",
@@ -95,12 +96,42 @@ export async function getEnrollmentDetails() {
       },
     })
 
-    // If you need to fetch course names, you can add that logic here
-    // This is a simplified example
-    return enrollments
+    // For each enrollment with a courseId, fetch the course name
+    const enrollmentsWithCourseInfo = await Promise.all(
+      enrollments.map(async (enrollment) => {
+        let courseName = "N/A"
+
+        // Only try to fetch course if courseId exists
+        if (enrollment.courseId) {
+          const course = await prisma.courses.findUnique({
+            where: { id: enrollment.courseId },
+            select: { name: true, price: true },
+          })
+
+          if (course) {
+            courseName = course.name
+
+            // If paymentAmount is null but we have course price, use that
+            if (enrollment.paymentAmount === null && course.price) {
+              enrollment.paymentAmount = course.price
+            }
+          }
+        }
+
+        // Ensure paymentAmount is a number or null, not undefined
+        const paymentAmount = enrollment.paymentAmount !== undefined ? enrollment.paymentAmount : null
+
+        return {
+          ...enrollment,
+          courseName,
+          paymentAmount,
+        }
+      }),
+    )
+
+    return enrollmentsWithCourseInfo
   } catch (error) {
     console.error("Error fetching enrollment data:", error)
     throw new Error("Failed to fetch enrollment data")
   }
 }
-
