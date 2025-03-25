@@ -100,8 +100,8 @@ export default function OrdersPage() {
       toast.success("Order deleted", {
         description: "The enrollment has been successfully deleted.",
         action: {
-          label: "Undo",
-          onClick: () => console.log("Undo"),
+          label: "Close",
+          onClick: () => console.log("Close"),
         },
       })
     } catch (error) {
@@ -109,8 +109,8 @@ export default function OrdersPage() {
       toast.error("Error", {
         description: "Failed to delete enrollment. Please try again.",
         action: {
-          label: "Undo",
-          onClick: () => console.log("Undo"),
+          label: "Close",
+          onClick: () => console.log("Close"),
         },
       })
     }
