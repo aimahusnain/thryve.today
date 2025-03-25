@@ -99,11 +99,19 @@ export default function OrdersPage() {
       setEnrollments(enrollments.filter((enrollment) => enrollment.id !== id))
       toast.success("Order deleted", {
         description: "The enrollment has been successfully deleted.",
+        action: {
+          label: "Undo",
+          onClick: () => console.log("Undo"),
+        },
       })
     } catch (error) {
       console.error("Error deleting enrollment:", error)
       toast.error("Error", {
         description: "Failed to delete enrollment. Please try again.",
+        action: {
+          label: "Undo",
+          onClick: () => console.log("Undo"),
+        },
       })
     }
   }
