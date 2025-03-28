@@ -118,6 +118,10 @@ export function ContactForm() {
       console.error("Error sending message:", error);
       toast.error("Failed to send message", {
         description: "Please try again later.",
+        action: {
+          label: "Close",
+          onClick: () => console.log("Close"),
+        },
       });
     }
     setIsSubmitting(false);

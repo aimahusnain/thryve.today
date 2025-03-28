@@ -295,7 +295,7 @@ export default function CoursesPage() {
         onConfirm={handleDeleteCourse}
       />
 
-      <Toaster position="top-right" richColors />
+      {/* <Toaster position="top-right" richColors /> */}
     </SidebarProvider>
   )
 }

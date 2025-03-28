@@ -5,6 +5,7 @@ export interface User {
   name: string | null
   email: string
   emailVerified?: Date | null
+  telephone: string | null // Changed from number | null to string | null
   image?: string | null
   role: UserRole
   createdAt?: Date

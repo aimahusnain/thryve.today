@@ -27,18 +27,19 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState(user.name || "")
   const [email, setEmail] = useState(user.email)
+  const [telephone, setTelephone] = useState<string>(user.telephone || "")
   const [role, setRole] = useState<"ADMIN" | "USER">(user.role)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     try {
       const response = await fetch(`/api/users/update?id=${user.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, email, role }),
+        body: JSON.stringify({ name, email, role, telephone }),
       })
 
       if (!response.ok) {
@@ -66,9 +67,7 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
       <DialogContent className="sm:max-w-[425px] bg-zinc-900 text-white border-zinc-800">
         <DialogHeader>
           <DialogTitle>Edit team member</DialogTitle>
-          <DialogDescription className="text-zinc-400">
-            Make changes to the user&apos;s profile here.
-          </DialogDescription>
+          <DialogDescription className="text-zinc-400">Make changes to the user&apos;s profile here.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
@@ -96,6 +95,18 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="telephone" className="text-right">
+                Telephone
+              </Label>
+              <Input
+                id="telephone"
+                type="tel"
+                value={telephone}
+                onChange={(e) => setTelephone(e.target.value)}
+                className="col-span-3 bg-zinc-800 border-zinc-700 text-white"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="role" className="text-right">
                 Role
               </Label>
@@ -111,10 +122,7 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
             </div>
           </div>
           <DialogFooter>
-            <Button 
-              type="submit" 
-              className="bg-indigo-600 hover:bg-indigo-700 text-white"
-            >
+            <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700 text-white">
               Save Changes
             </Button>
           </DialogFooter>
@@ -123,3 +131,4 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
     </Dialog>
   )
 }
+

@@ -348,6 +348,7 @@ function UserTable({
               <th className="text-left p-4 font-medium text-sm text-gray-500 dark:text-zinc-400">
                 Member
               </th>
+              <th className="text-left p-4 font-medium text-sm text-gray-500 dark:text-zinc-400">Telephone</th>
               <th className="text-left p-4 font-medium text-sm text-gray-500 dark:text-zinc-400">
                 Role
               </th>
@@ -395,6 +396,11 @@ function UserTable({
                     </div>
                   </div>
                 </td>
+
+                <td className="p-4 text-sm">
+                    {user.telephone}
+                </td>
+
                 <td className="p-4">
                   <Badge
                     variant={user.role === "ADMIN" ? "default" : "secondary"}

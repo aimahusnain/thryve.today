@@ -18,6 +18,7 @@ export async function PUT(request: NextRequest) {
         name: body.name,
         email: body.email,
         role: body.role,
+        telephone: body.telephone,
         // Only update password if provided
         ...(body.password ? { password: body.password } : {}),
       },
