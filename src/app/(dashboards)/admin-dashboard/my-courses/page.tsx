@@ -1,16 +1,14 @@
 "use client"
 
-import type React from "react"
 
-import { useState, useEffect, useCallback } from "react"
-import { ChevronDown, Grid, List, Plus, Search, Filter } from "lucide-react"
+import { CourseForm } from "@/components/dashboard/courses/course-form"
+import { CourseGrid } from "@/components/dashboard/courses/course-grid"
+import { CourseList } from "@/components/dashboard/courses/course-list"
+import { DeleteConfirmationDialog } from "@/components/dashboard/courses/delete-confirmation-dialog"
+import { EmptyState } from "@/components/dashboard/courses/empty-state"
+import { LoadingState } from "@/components/dashboard/courses/loading-state"
+import { AppSidebar } from "@/components/dashboard/sidebar"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
-import { motion } from "framer-motion"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -19,18 +17,18 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/dashboard/sidebar"
-import { Toaster } from "sonner"
-import { toast } from "sonner"
-import { CourseList } from "@/components/dashboard/courses/course-list"
-import { CourseGrid } from "@/components/dashboard/courses/course-grid"
-import { CourseForm } from "@/components/dashboard/courses/course-form"
-import { DeleteConfirmationDialog } from "@/components/dashboard/courses/delete-confirmation-dialog"
-import { EmptyState } from "@/components/dashboard/courses/empty-state"
-import { LoadingState } from "@/components/dashboard/courses/loading-state"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { cn } from "@/lib/utils"
 import type { Course } from "@/types/course"
+import { motion } from "framer-motion"
+import { ChevronDown, Filter, Grid, List, Plus, Search } from "lucide-react"
+import { useCallback, useEffect, useState } from "react"
+import { toast } from "sonner"
 
 export default function CoursesPage() {
   const [viewMode, setViewMode] = useState<"list" | "grid">("list")
