@@ -25,18 +25,16 @@ export const actionTypes = {
   REMOVE_TOAST: "REMOVE_TOAST",
 } as const;
 
+// This is the only declaration of ActionType, it should remain exported.
 export type ActionType = keyof typeof actionTypes;
 
-
-
-let count = 0
+let count = 0;
 
 function genId() {
-  count = (count + 1) % Number.MAX_SAFE_INTEGER
-  return count.toString()
+  count = (count + 1) % Number.MAX_SAFE_INTEGER;
+  return count.toString();
 }
 
-type ActionType = typeof actionTypes
 
 type Action =
   | {
