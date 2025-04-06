@@ -8,6 +8,7 @@ import ThemeContextProvider from "@/context/ThemeContext";
 import { AuthProvider } from "@/provider/auth-provider";
 import Navbar from "@/components/header";
 import { CartProvider } from '@/provider/cart-provider';
+import { Cart2Provider } from "@/components/cart/cart-provider";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -30,6 +31,7 @@ export default function RootLayout({
         <AuthProvider>
           <ThemeContextProvider>
             {" "}
+            <Cart2Provider>
             <CartProvider>
               <Navbar />
               <Toaster />
@@ -37,6 +39,7 @@ export default function RootLayout({
               {children}
               <Footer />
             </CartProvider>
+            </Cart2Provider>
           </ThemeContextProvider>
         </AuthProvider>
       </body>

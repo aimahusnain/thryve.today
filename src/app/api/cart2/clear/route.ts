@@ -6,9 +6,9 @@ export async function POST() {
     await clearCart()
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("Error clearing cart2:", error)
+    console.error("Error clearing cart:", error)
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to clear cart2" },
+      { error: error instanceof Error ? error.message : "Failed to clear cart" },
       { status: 500 },
     )
   }

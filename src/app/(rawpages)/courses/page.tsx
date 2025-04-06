@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client"
 import Link from "next/link"
 import { ArrowRight, CheckCircle, Clock, DollarSign, GraduationCap } from "lucide-react"
+import { CourseCart2Button } from "@/components/cart/course-cart-button"
 
 const prisma = new PrismaClient()
 
@@ -27,8 +28,7 @@ export default async function CoursesPage() {
               Healthcare Training Programs
             </h1>
             <p className="text-lg md:text-xl text-zinc-600 dark:text-zinc-400 max-w-3xl mx-auto">
-              Discover our comprehensive range of healthcare courses designed to
-              launch and advance your medical career
+              Discover our comprehensive range of healthcare courses designed to launch and advance your medical career
             </p>
           </div>
         </div>
@@ -66,44 +66,53 @@ export default async function CoursesPage() {
 
               <p className="text-sm md:text-base text-zinc-600 dark:text-zinc-400 line-clamp-3">{course.description}</p>
               <div className="space-y-3 mt-0">
-              <h4 className="text-sm font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
-                <GraduationCap className="w-4 h-4 text-[#35dba8] dark:text-[#2db188]" /> Program Highlights
-              </h4>
-              <ul className="grid gap-2 md:gap-3">
-                {course.ProgramHighlights && course.ProgramHighlights.length > 0 ? (
-                  // Limit to 4 highlights
-                  course.ProgramHighlights.slice(0, 4).map((highlight, index) => (
-                    <li
-                      key={index}
-                      className="flex items-start gap-2 text-sm md:text-base text-zinc-600 dark:text-zinc-300"
-                    >
-                      <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-[#35dba8] dark:text-[#2db188] shrink-0 mt-0.5" />
-                      <span className="line-clamp-2">{highlight}</span>
-                    </li>
-                  ))
-                ) : (
-                  <li className="text-sm text-zinc-500 dark:text-zinc-400">No highlights available</li>
-                )}
-              </ul>
+                <h4 className="text-sm font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
+                  <GraduationCap className="w-4 h-4 text-[#35dba8] dark:text-[#2db188]" /> Program Highlights
+                </h4>
+                <ul className="grid gap-2 md:gap-3">
+                  {course.ProgramHighlights && course.ProgramHighlights.length > 0 ? (
+                    // Limit to 4 highlights
+                    course.ProgramHighlights.slice(0, 4).map((highlight, index) => (
+                      <li
+                        key={index}
+                        className="flex items-start gap-2 text-sm md:text-base text-zinc-600 dark:text-zinc-300"
+                      >
+                        <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-[#35dba8] dark:text-[#2db188] shrink-0 mt-0.5" />
+                        <span className="line-clamp-2">{highlight}</span>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="text-sm text-zinc-500 dark:text-zinc-400">No highlights available</li>
+                  )}
+                </ul>
+              </div>
             </div>
 
-            </div>
+            <div className="mt-auto pt-6 flex flex-col gap-3">
+              <Link href={`/courses/${course.id}`}>
+                <button
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3 md:py-4 
+                           bg-zinc-900 dark:bg-white dark:hover:bg-zinc-100 
+                           text-white dark:text-zinc-900 font-medium text-sm md:text-base rounded-xl
+                           transition-all duration-300 group-hover:shadow-lg"
+                >
+                  Enroll Now
+                  <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                </button>
+              </Link>
 
-      
-            <Link href={`/courses/${course.id}`} className="mt-auto pt-6">
-              <button
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 md:py-4 
-                         bg-zinc-900 dark:bg-white dark:hover:bg-zinc-100 
-                         text-white dark:text-zinc-900 font-medium text-sm md:text-base rounded-xl
-                         transition-all duration-300 group-hover:shadow-lg"
-              >
-                Enroll Now
-                <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform duration-300" />
-              </button>
-            </Link>
+              {/* Add to Cart2 Button */}
+              <CourseCart2Button
+                courseId={course.id}
+                courseName={course.name}
+                coursePrice={course.price}
+                courseDuration={course.duration || ""}
+              />
+            </div>
           </div>
         ))}
       </div>
     </div>
   )
 }
+
