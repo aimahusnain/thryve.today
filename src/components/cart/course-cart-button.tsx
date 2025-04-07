@@ -36,7 +36,7 @@ export function CourseCart2Button({ courseId, courseName, coursePrice, courseDur
                 text-zinc-900 dark:text-white border-zinc-200 dark:border-zinc-700"
     >
       <ShoppingCart className="w-4 h-4 md:w-5 md:h-5 mr-2" />
-      {isAdding ? "Adding..." : "Add to Cart2"}
+      {isAdding ? "Adding..." : "Add to Cart"}
     </Button>
   )
 }
