@@ -1,5 +1,5 @@
 declare global {
-    var passwordResets:
+    const passwordResets:
       | {
           [email: string]: {
             otp: string
