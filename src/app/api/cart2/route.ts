@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { addToCart, getUserCart, removeFromCart, updateCartItemQuantity } from "@/lib/cart"
+import { addToCart, getUserCart, removeItemFromCart, updateCartItemQuantity } from "@/lib/cart"
 
 export async function GET() {
   try {
@@ -41,7 +41,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Cart item ID is required" }, { status: 400 })
     }
 
-    await removeFromCart(cartItemId)
+    await removeItemFromCart(cartItemId)
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error("Error removing from cart:", error)

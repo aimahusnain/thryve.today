@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 
@@ -18,7 +17,7 @@ export function RemoveFromCartButton({ id, children }: RemoveFromCartButtonProps
     setIsLoading(true)
 
     try {
-      const response = await fetch(`/api/cart/remove`, {
+      const response = await fetch(`/api/cart/remove-item`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

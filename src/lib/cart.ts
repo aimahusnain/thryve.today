@@ -146,7 +146,7 @@ export async function addToCart(courseId: string) {
 }
 
 // Remove an item from the cart
-export async function removeFromCart(cartItemId: string) {
+export async function removeItemFromCart(cartItemId: string) {
   const session = await getServerSession(authOptions)
 
   if (!session?.user?.id) {
