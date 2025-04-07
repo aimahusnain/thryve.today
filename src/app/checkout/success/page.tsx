@@ -7,6 +7,7 @@ import { CheckCircle, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Stripe from "stripe"
+import Image from "next/image"
 
 // Update both params and searchParams to be Promises
 interface PageProps {
@@ -91,63 +92,81 @@ export default async function CheckoutSuccessPage({ params, searchParams }: Page
   }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md relative">
-        {/* Decorative elements */}
-        <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full opacity-20 dark:opacity-10 blur-xl animate-pulse"></div>
-        <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-tr from-blue-400 to-teal-500 rounded-full opacity-20 dark:opacity-10 blur-xl animate-pulse delay-700"></div>
-        <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
-          {/* Success card content */}
-          <div className="p-8">
-            {/* Success icon with animated background */}
-            <div className="mb-8 relative">
-              <div
-                className="absolute inset-0 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full opacity-10 dark:opacity-20 animate-ping"
-                style={{ animationDuration: "3s" }}
-              ></div>
-              <div className="mx-auto w-20 h-20 flex items-center justify-center rounded-full bg-gradient-to-r from-green-400 to-emerald-500 p-4">
-                <CheckCircle className="h-10 w-10 text-white" />
-              </div>
-            </div>
-            {/* Text content */}
-            <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold mb-2 bg-gradient-to-r from-green-500 to-emerald-600 dark:from-green-400 dark:to-emerald-500 bg-clip-text text-transparent">
-                Payment Successful!
-              </h1>
-              <p className="text-gray-600 dark:text-gray-300 mb-2">Thank you for your purchase.</p>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">
-                Your courses are now available in your account.
+      <div className='flex flex-col w-full justify-center items-center py-[800px] h-screen p-4 text-center'>
+        <h1 className='text-5xl font-bold mb-6'>Welcome</h1>
+
+<div className="flex flex-col max-w-4xl text-left  items-center justify-center w-full ">
+<Image src="/philibotomy.jpg" width={800} height={800} alt={"fds"}/>
+<div className="p-8 md:p-12">
+            <div className="prose max-w-none">
+              <p className="text-lg font-medium mb-6">Dear Keisha Thomas,</p>
+
+              <p className="mb-4">
+                Welcome to the Thryve.Today Training Center! We are excited to have you join us on this journey to
+                becoming a skilled and compassionate healthcare professional. This program will equip you with the
+                knowledge and hands-on experience necessary to succeed in the dynamic and rewarding field of phlebotomy.
               </p>
-            </div>
-            {/* Divider with sparkle */}
-            <div className="relative flex items-center justify-center my-8">
-              <div className="flex-grow h-px bg-gray-200 dark:bg-gray-700"></div>
-              <div className="flex-shrink-0 mx-2 p-1 bg-gray-50 dark:bg-gray-800 rounded-full">
-                <Sparkles className="h-4 w-4 text-amber-400" />
+
+              <p className="mb-4">
+                Throughout your studies, you will have the opportunity to work alongside experienced professionals,
+                developing the skills that are essential for success in this field.
+              </p>
+
+              <p className="mb-4">
+                At Thryve.Today, we are committed to your success. Our instructors are dedicated to providing you with a
+                supportive learning environment that encourages growth, curiosity, and practical learning. We offer
+                hands-on training to ensure you feel confident and well-prepared for your clinical experiences and
+                certification exams.
+              </p>
+
+              <p className="mb-4">Here are a few important things to keep in mind as you start your program:</p>
+
+              <ul className="list-disc pl-6 mb-4 space-y-2">
+                <li>
+                  <span className="font-medium">Training and Support:</span> Our program combines classroom instruction
+                  with real-world, hands-on training. You will be supported throughout your journey by faculty and staff
+                  who are committed to your success
+                </li>
+                <li>
+                  <span className="font-medium">Safety and Best Practices:</span> We emphasize the importance of safety
+                  and professionalism in the healthcare setting. You will be taught industry-standard protocols to
+                  ensure that both you and your patients are protected.
+                </li>
+                <li>
+                  <span className="font-medium">Collaboration:</span> All of our programs involve working closely with
+                  others, so we encourage collaboration with your peers, instructors, and healthcare professionals. This
+                  will help you build strong communication skills and expand your network.
+                </li>
+                <li>
+                  <span className="font-medium">Opportunities for Growth:</span> Your time in our programs will open
+                  doors to a range of career opportunities in hospitals, laboratories, clinics, and other settings. Upon
+                  successful completion of the program, you will be well-positioned to begin your career with the
+                  confidence and experience needed to thrive.
+                </li>
+              </ul>
+
+              <p className="mb-4">
+                We are so proud of the commitment you've shown in choosing this career path, and we are here to guide
+                and support you every step of the way. If you have any questions or need assistance, please don't
+                hesitate to contact your instructor or our Program Coordinator.
+              </p>
+
+              <p className="mb-8">
+                We look forward to seeing you grow and succeed throughout this program, and we are excited for you to
+                join the ranks of healthcare professionals who make a difference in the lives of patients every day.
+              </p>
+
+              <div className="mt-12">
+                <p className="mb-1">Best regards,</p>
+                <p className="font-medium t">Keira L. Reid</p>
+                <p className="">RN, BSN Director @ Thryve.Today</p>
+                <p className="">Office Number: 979-484-7983 Email: keira@thryve.today</p>
               </div>
-              <div className="flex-grow h-px bg-gray-200 dark:bg-gray-700"></div>
-            </div>
-            {/* Action buttons */}
-            <div className="space-y-4">
-              <Link href="/dashboard" className="block">
-                <Button className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 dark:from-blue-600 dark:to-indigo-700 dark:hover:from-blue-700 dark:hover:to-indigo-800 border-0 text-white font-medium py-2.5 rounded-xl transition-all duration-200 hover:shadow-lg">
-                  Go to My Courses
-                </Button>
-              </Link>
-              <Link href="/courses" className="block">
-                <Button
-                  variant="outline"
-                  className="w-full border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 font-medium py-2.5 rounded-xl transition-all duration-200"
-                >
-                  Browse More Courses
-                </Button>
-              </Link>
             </div>
           </div>
-          {/* Bottom decoration */}
-          <div className="h-1.5 bg-gradient-to-r from-green-400 via-emerald-500 to-teal-500"></div>
-        </div>
+  </div>
+  
+    
       </div>
-    </div>
   )
 }

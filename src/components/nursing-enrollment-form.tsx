@@ -14,7 +14,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -77,11 +77,9 @@ const formSchema = z.object({
   }),
   stateId: z.string().min(1, { message: "State ID is required." }),
   emergencyContact: z
-    .string()
-    .min(2, { message: "Emergency contact name is required." }),
+    .string().optional(),
   emergencyRelationship: z
-    .string()
-    .min(2, { message: "Relationship is required." }),
+    .string().optional(),
   emergencyPhone: z.string().min(10, {
     message: "Emergency contact phone must be at least 10 characters.",
   }),
@@ -205,112 +203,166 @@ export function NursingEnrollmentForm({
   };
 
   // Authentication Dialog Component
-// Authentication Dialog Component
-const AuthDialog = () => (
-  <Dialog open={showAuthDialog} onOpenChange={() => {}}>
-    <DialogContent className="sm:max-w-md border-none p-0 overflow-hidden shadow-xl rounded-2xl">
-      {/* Animated gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-primary/10 z-0 overflow-hidden">
-        <div className="absolute top-[-100px] right-[-100px] w-[300px] h-[300px] rounded-full bg-primary/5 animate-pulse-slow"></div>
-        <div className="absolute bottom-[-50px] left-[-50px] w-[200px] h-[200px] rounded-full bg-primary/10 animate-pulse-slower"></div>
-        
-        {/* Decorative patterns */}
-        <div className="absolute inset-0 opacity-10">
-          <svg className="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.5" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
-        </div>
-      </div>
-      
-      <div className="relative z-10 px-6 py-8">
-        <DialogHeader className="text-center mb-2">
-          {/* Custom icon container with subtle animation */}
-          <div className="relative mx-auto mb-6">
-            <div className="absolute inset-0 bg-primary/10 rounded-2xl blur-xl animate-pulse-slow"></div>
-            <div className="relative h-20 w-20 mx-auto rounded-2xl bg-gradient-to-tr from-primary/20 to-primary/5 flex items-center justify-center backdrop-blur-sm shadow-inner border border-primary/20">
-              <LogIn className="h-8 w-8 text-primary" strokeWidth={1.5} />
-            </div>
+  // Authentication Dialog Component
+  const AuthDialog = () => (
+    <Dialog open={showAuthDialog} onOpenChange={() => {}}>
+      <DialogContent className="sm:max-w-md border-none p-0 overflow-hidden shadow-xl rounded-2xl">
+        {/* Animated gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-primary/10 z-0 overflow-hidden">
+          <div className="absolute top-[-100px] right-[-100px] w-[300px] h-[300px] rounded-full bg-primary/5 animate-pulse-slow"></div>
+          <div className="absolute bottom-[-50px] left-[-50px] w-[200px] h-[200px] rounded-full bg-primary/10 animate-pulse-slower"></div>
+
+          {/* Decorative patterns */}
+          <div className="absolute inset-0 opacity-10">
+            <svg
+              className="w-full h-full"
+              viewBox="0 0 100 100"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <pattern
+                  id="grid"
+                  width="10"
+                  height="10"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <path
+                    d="M 10 0 L 0 0 0 10"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="0.5"
+                    opacity="0.5"
+                  />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)" />
+            </svg>
           </div>
-          
-          {/* Title with gradient effect */}
-          <DialogTitle className="text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80 pb-1">
-            Authentication Required
-          </DialogTitle>
-          
-          <DialogDescription className="text-foreground/80 text-base max-w-xs mx-auto">
-            Sign in or create an account to complete your enrollment
-          </DialogDescription>
-        </DialogHeader>
-        
-        {/* Course information with custom styling */}
-        <div className="mt-5 mb-7">
-          <div className="bg-card/60 backdrop-blur-sm p-5 rounded-xl border border-primary/10 shadow-sm hover:shadow-md transition-shadow duration-300">
-            <div className="flex items-start space-x-4">
-              <div className="shrink-0 bg-gradient-to-br from-primary/20 to-primary/5 p-3 rounded-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
-                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                  <path d="M6 12v5c3 3 9 3 12 0v-5"/>
-                </svg>
+        </div>
+
+        <div className="relative z-10 px-6 py-8">
+          <DialogHeader className="text-center mb-2">
+            {/* Custom icon container with subtle animation */}
+            <div className="relative mx-auto mb-6">
+              <div className="absolute inset-0 bg-primary/10 rounded-2xl blur-xl animate-pulse-slow"></div>
+              <div className="relative h-20 w-20 mx-auto rounded-2xl bg-gradient-to-tr from-primary/20 to-primary/5 flex items-center justify-center backdrop-blur-sm shadow-inner border border-primary/20">
+                <LogIn className="h-8 w-8 text-primary" strokeWidth={1.5} />
               </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="font-medium text-foreground truncate">{courseName}</h4>
-                <div className="mt-2 space-y-1.5">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Price:</span>
-                    <span className="font-medium text-foreground">${coursePrice.toFixed(2)}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Duration:</span> 
-                    <span className="font-medium text-foreground">{courseDuration}</span>
+            </div>
+
+            {/* Title with gradient effect */}
+            <DialogTitle className="text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80 pb-1">
+              Authentication Required
+            </DialogTitle>
+
+            <DialogDescription className="text-foreground/80 text-base max-w-xs mx-auto">
+              Sign in or create an account to complete your enrollment
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* Course information with custom styling */}
+          <div className="mt-5 mb-7">
+            <div className="bg-card/60 backdrop-blur-sm p-5 rounded-xl border border-primary/10 shadow-sm hover:shadow-md transition-shadow duration-300">
+              <div className="flex items-start space-x-4">
+                <div className="shrink-0 bg-gradient-to-br from-primary/20 to-primary/5 p-3 rounded-lg">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-primary"
+                  >
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                    <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-medium text-foreground truncate">
+                    {courseName}
+                  </h4>
+                  <div className="mt-2 space-y-1.5">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Price:</span>
+                      <span className="font-medium text-foreground">
+                        ${coursePrice.toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Duration:</span>
+                      <span className="font-medium text-foreground">
+                        {courseDuration}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        
-        {/* Security notice with subtle hover effect */}
-        <div className="flex items-center justify-center p-2 rounded-lg bg-muted/20 mb-6 hover:bg-muted/30 transition-colors duration-200">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary mr-2">
-            <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
-            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-          </svg>
-          <p className="text-xs text-muted-foreground">Your enrollment information is secure</p>
-        </div>
-        
-        {/* Action buttons with fixed height and responsive design */}
-        <div className="space-y-3 pt-1">
-          <Button asChild className="w-full h-11 bg-gradient-to-r from-primary to-primary/90 hover:opacity-90 text-primary-foreground border-none shadow-md">
-            <Link href="/log-in" className="flex items-center justify-center">
-              <LogIn className="mr-2 h-4 w-4" />
-              <span className="truncate">Sign In to Continue</span>
-            </Link>
-          </Button>
-          
-          {/* Divider with text */}
-          <div className="relative w-full flex items-center justify-center py-1">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-border"></span>
-            </div>
-            <span className="relative px-3 text-xs text-muted-foreground bg-background">or</span>
+
+          {/* Security notice with subtle hover effect */}
+          <div className="flex items-center justify-center p-2 rounded-lg bg-muted/20 mb-6 hover:bg-muted/30 transition-colors duration-200">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-primary mr-2"
+            >
+              <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <p className="text-xs text-muted-foreground">
+              Your enrollment information is secure
+            </p>
           </div>
-          
-          <Button asChild variant="outline" className="w-full h-11 bg-background/80 hover:bg-primary/5 border-primary/20">
-            <Link href="/signup" className="flex items-center justify-center">
-              <UserPlus className="mr-2 h-4 w-4" />
-              <span className="truncate">Create New Account</span>
-            </Link>
-          </Button>
+
+          {/* Action buttons with fixed height and responsive design */}
+          <div className="space-y-3 pt-1">
+            <Button
+              asChild
+              className="w-full h-11 bg-gradient-to-r from-primary to-primary/90 hover:opacity-90 text-primary-foreground border-none shadow-md"
+            >
+              <Link href="/log-in" className="flex items-center justify-center">
+                <LogIn className="mr-2 h-4 w-4" />
+                <span className="truncate">Sign In to Continue</span>
+              </Link>
+            </Button>
+
+            {/* Divider with text */}
+            <div className="relative w-full flex items-center justify-center py-1">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-border"></span>
+              </div>
+              <span className="relative px-3 text-xs text-muted-foreground bg-background">
+                or
+              </span>
+            </div>
+
+            <Button
+              asChild
+              variant="outline"
+              className="w-full h-11 bg-background/80 hover:bg-primary/5 border-primary/20"
+            >
+              <Link href="/signup" className="flex items-center justify-center">
+                <UserPlus className="mr-2 h-4 w-4" />
+                <span className="truncate">Create New Account</span>
+              </Link>
+            </Button>
+          </div>
         </div>
-      </div>
-    </DialogContent>
-  </Dialog>
-);
+      </DialogContent>
+    </Dialog>
+  );
 
   if (isSubmitted) {
     return (
@@ -629,7 +681,6 @@ const AuthDialog = () => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
                         Emergency Contact{" "}
-                        <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -672,7 +723,6 @@ const AuthDialog = () => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
                         Emergency Contact Phone{" "}
-                        <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -801,62 +851,62 @@ const AuthDialog = () => (
                     )}
                   />
 
-<FormField
-  control={form.control}
-  name="directorSignatureDate"
-  render={({ field }) => (
-    <FormItem className="flex flex-col">
-      <FormLabel className="text-foreground font-medium">
-        Date <span className="text-red-500">*</span>
-      </FormLabel>
-      <Popover>
-        <PopoverTrigger asChild disabled={!session}>
-          <FormControl>
-            <Button
-              variant={"outline"}
-              className={cn(
-                "w-full pl-3 text-left font-normal",
-                !field.value && "text-muted-foreground",
-                !session && "opacity-50 cursor-not-allowed"
-              )}
-              disabled={!session}
-              onClick={(e) => {
-                if (!session) {
-                  e.preventDefault();
-                  setShowAuthDialog(true);
-                }
-              }}
-            >
-              {field.value ? (
-                format(field.value, "PPP")
-              ) : (
-                <span>Pick a date</span>
-              )}
-              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-            </Button>
-          </FormControl>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={field.value}
-            onSelect={(date) => {
-              if (session) field.onChange(date);
-              else setShowAuthDialog(true);
-            }}
-            disabled={(date) =>
-              date > new Date() ||
-              date < new Date("1900-01-01") ||
-              !session
-            }
-            initialFocus
-          />
-        </PopoverContent>
-      </Popover>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
+                  <FormField
+                    control={form.control}
+                    name="directorSignatureDate"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel className="text-foreground font-medium">
+                          Date <span className="text-red-500">*</span>
+                        </FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild disabled={!session}>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-full pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground",
+                                  !session && "opacity-50 cursor-not-allowed"
+                                )}
+                                disabled={!session}
+                                onClick={(e) => {
+                                  if (!session) {
+                                    e.preventDefault();
+                                    setShowAuthDialog(true);
+                                  }
+                                }}
+                              >
+                                {field.value ? (
+                                  format(field.value, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={(date) => {
+                                if (session) field.onChange(date);
+                                else setShowAuthDialog(true);
+                              }}
+                              disabled={(date) =>
+                                date > new Date() ||
+                                date < new Date("1900-01-01") ||
+                                !session
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
                   <FormField
                     control={form.control}
@@ -878,62 +928,62 @@ const AuthDialog = () => (
                     )}
                   />
 
-<FormField
-  control={form.control}
-  name="guardianSignatureDate"
-  render={({ field }) => (
-    <FormItem className="flex flex-col">
-      <FormLabel className="text-foreground font-medium">
-        Date
-      </FormLabel>
-      <Popover>
-        <PopoverTrigger asChild disabled={!session}>
-          <FormControl>
-            <Button
-              variant={"outline"}
-              className={cn(
-                "w-full pl-3 text-left font-normal",
-                !field.value && "text-muted-foreground",
-                !session && "opacity-50 cursor-not-allowed"
-              )}
-              disabled={!session}
-              onClick={(e) => {
-                if (!session) {
-                  e.preventDefault();
-                  setShowAuthDialog(true);
-                }
-              }}
-            >
-              {field.value ? (
-                format(field.value, "PPP")
-              ) : (
-                <span>Pick a date</span>
-              )}
-              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-            </Button>
-          </FormControl>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={field.value}
-            onSelect={(date) => {
-              if (session) field.onChange(date);
-              else setShowAuthDialog(true);
-            }}
-            disabled={(date) =>
-              date > new Date() ||
-              date < new Date("1900-01-01") ||
-              !session
-            }
-            initialFocus
-          />
-        </PopoverContent>
-      </Popover>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
+                  <FormField
+                    control={form.control}
+                    name="guardianSignatureDate"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel className="text-foreground font-medium">
+                          Date
+                        </FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild disabled={!session}>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-full pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground",
+                                  !session && "opacity-50 cursor-not-allowed"
+                                )}
+                                disabled={!session}
+                                onClick={(e) => {
+                                  if (!session) {
+                                    e.preventDefault();
+                                    setShowAuthDialog(true);
+                                  }
+                                }}
+                              >
+                                {field.value ? (
+                                  format(field.value, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={(date) => {
+                                if (session) field.onChange(date);
+                                else setShowAuthDialog(true);
+                              }}
+                              disabled={(date) =>
+                                date > new Date() ||
+                                date < new Date("1900-01-01") ||
+                                !session
+                              }
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
               </CardContent>
             </Card>
