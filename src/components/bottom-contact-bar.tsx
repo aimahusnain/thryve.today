@@ -28,7 +28,7 @@ const BottomContactBar = () => {
   return (
     <div
       className={`
-        fixed bottom-0 right-0 md:right-4
+        fixed bottom-0 left-0 md:left-4
         transform transition-all duration-500 ease-in-out z-50
         ${isVisible ? "translate-y-0" : "translate-y-full"}
         bg-gradient-to-r from-white via-zinc-50 to-zinc-100
