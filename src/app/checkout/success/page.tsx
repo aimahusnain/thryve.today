@@ -3,9 +3,6 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { clearCart } from "@/lib/cart"
 import { prisma } from "@/lib/prisma"
-import { CheckCircle, Sparkles } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
 import Stripe from "stripe"
 import Image from "next/image"
 
@@ -146,8 +143,8 @@ export default async function CheckoutSuccessPage({ params, searchParams }: Page
               </ul>
 
               <p className="mb-4">
-                We are so proud of the commitment you've shown in choosing this career path, and we are here to guide
-                and support you every step of the way. If you have any questions or need assistance, please don't
+                We are so proud of the commitment you&apos;ve shown in choosing this career path, and we are here to guide
+                and support you every step of the way. If you have any questions or need assistance, please don&apos;t
                 hesitate to contact your instructor or our Program Coordinator.
               </p>
 
