@@ -104,7 +104,7 @@ export function Cart2Provider({ children }: { children: React.ReactNode }) {
       setItemCount((prev) => prev + 1)
 
       toast.success("Added to cart2", {
-        description: "Course has been added to your cart2",
+        description: "Course has been added to your cart",
       })
     } catch (error) {
       toast.error("Error", {
