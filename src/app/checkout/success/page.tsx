@@ -1,62 +1,78 @@
-import { redirect } from "next/navigation";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { clearCart } from "@/lib/cart";
-import { prisma } from "@/lib/prisma";
-import Stripe from "stripe";
-import Image from "next/image";
+import { redirect } from "next/navigation"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
+import { clearCart } from "@/lib/cart"
+import { prisma } from "@/lib/prisma"
+import { sendPurchaseConfirmationEmail } from "@/lib/autoemail"
+import { CheckCircle, Sparkles, Mail } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import Stripe from "stripe"
 
 // Update both params and searchParams to be Promises
 interface PageProps {
-  params: Promise<Record<string, string>>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  params: Promise<Record<string, string>>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 
-export default async function CheckoutSuccessPage({
-  params,
-  searchParams,
-}: PageProps) {
+export default async function CheckoutSuccessPage({ params, searchParams }: PageProps) {
   // Await both params and searchParams
-  await params;
-  const resolvedSearchParams = await searchParams;
+  await params
+  const resolvedSearchParams = await searchParams
 
-  const session = await getServerSession(authOptions);
-  const session_id = resolvedSearchParams.session_id as string | undefined;
+  const session = await getServerSession(authOptions)
+  const session_id = resolvedSearchParams.session_id as string | undefined
 
   if (!session?.user?.id) {
-    redirect("/log-in?callbackUrl=/checkout/success");
+    redirect("/log-in?callbackUrl=/checkout/success")
   }
 
   if (!session_id) {
-    redirect("/cart");
+    redirect("/cart")
   }
+
+  console.log("Processing checkout success for session:", session_id)
+  console.log("User ID:", session.user.id)
 
   // Verify the Stripe session
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: "2023-10-16" as Stripe.LatestApiVersion,
-  });
+  })
+
+  let emailSent = false
+  let emailError = null
+  const purchasedCourses: { id: string; name: string }[] = []
 
   try {
-    const stripeSession = await stripe.checkout.sessions.retrieve(session_id);
+    const stripeSession = await stripe.checkout.sessions.retrieve(session_id)
+    console.log("Stripe session payment status:", stripeSession.payment_status)
+
     if (stripeSession.payment_status !== "paid") {
-      throw new Error("Payment not completed");
+      throw new Error("Payment not completed")
     }
 
     // Get course IDs from metadata
-    const courseIds = stripeSession.metadata?.courseIds
-      ? JSON.parse(stripeSession.metadata.courseIds)
-      : [];
+    const courseIds = stripeSession.metadata?.courseIds ? JSON.parse(stripeSession.metadata.courseIds) : []
+    console.log("Course IDs from metadata:", courseIds)
 
     // Update enrollment records for each course
     for (const courseId of courseIds) {
       // Find the course to get its price
       const course = await prisma.courses.findUnique({
         where: { id: courseId },
-      });
+        select: { id: true, name: true, price: true },
+      })
 
       if (!course) {
-        console.error(`Course with ID ${courseId} not found`);
-        continue;
+        console.error(`Course with ID ${courseId} not found`)
+        continue
+      }
+
+      console.log(`Found course: ${course.name} (${course.id}) - Price: ${course.price}`)
+
+      // Add course to purchased courses list for email
+      if (course.name) {
+        purchasedCourses.push({ id: courseId, name: course.name })
       }
 
       // Find existing enrollment using user ID and course ID
@@ -68,9 +84,10 @@ export default async function CheckoutSuccessPage({
         orderBy: {
           createdAt: "desc",
         },
-      });
+      })
 
       if (existingEnrollment) {
+        console.log(`Updating enrollment: ${existingEnrollment.id}`)
         // Update existing enrollment with the specific course price
         await prisma.enrollment.update({
           where: { id: existingEnrollment.id },
@@ -80,164 +97,122 @@ export default async function CheckoutSuccessPage({
             paymentAmount: course.price, // Use the specific course price
             paymentDate: new Date(),
           },
-        });
+        })
       } else {
-        console.error(
-          `No enrollment found for user ${session.user.id} and course ${courseId}`
-        );
+        console.error(`No enrollment found for user ${session.user.id} and course ${courseId}`)
       }
     }
 
+    // Get user details for email
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { email: true, name: true },
+    })
+
+    console.log("User details for email:", user)
+
+    if (user && user.email) {
+      try {
+        // Send confirmation email
+        const courseNames = purchasedCourses.map((course) => course.name)
+        console.log("Sending email with course names:", courseNames)
+
+        const emailResult = await sendPurchaseConfirmationEmail(user.email, user.name || "", courseNames)
+        console.log("Email sending result:", emailResult)
+
+        emailSent = emailResult.success
+        if (!emailResult.success) {
+          emailError = emailResult.error
+        }
+      } catch (emailErr) {
+        console.error("Error in email sending process:", emailErr)
+        emailError = emailErr instanceof Error ? emailErr.message : String(emailErr)
+      }
+    } else {
+      console.error("Cannot send email: User email not found")
+    }
+
     // Clear the cart after successful payment
-    await clearCart();
+    await clearCart()
   } catch (error) {
-    console.error("Error processing successful checkout:", error);
+    console.error("Error processing successful checkout:", error)
     // We'll still show the success page, but log the error
   }
 
   return (
-    <div className="flex flex-col w-full">
-      {/* Header image with responsive container */}
-      <div className="relative w-full max-h-[300px] sm:max-h-[350px] md:max-h-[400px] lg:max-h-[450px] overflow-hidden sm:pb-0 pb-36">
-        <Image
-          src="/philibotomy.png"
-          width={1200}
-          height={1200}
-          alt="Header image"
-          className="w-full h-auto object-cover"
-          priority
-        />
-
-        {/* Header content with better responsive positioning */}
-        <div className="absolute inset-0 mt-10 flex flex-col md:flex-row items-center md:items-start justify-center md:justify-start md:p-8 lg:p-12">
-          <div className="dark:bg-black/80 bg-white/80 p-3 md:p-5 rounded-lg flex flex-col md:flex-row items-center gap-3 md:gap-6">
-            {/* Logo with responsive sizing */}
-            <Image 
-              src="/logo (2).png" 
-              width={100} 
-              height={100} 
-              alt="Thryve.Today logo" 
-              className="w-20 h-auto md:w-28 lg:w-32"
-            />
-
-            <div className="text-center md:text-start font-serif">
-              <h1 className="text-xl md:text-2xl lg:text-3xl tracking-widest font-semibold">
-                THRYVE.TODAY
+    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md relative">
+        {/* Decorative elements */}
+        <div className="absolute -top-6 -left-6 w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-full opacity-20 dark:opacity-10 blur-xl animate-pulse"></div>
+        <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gradient-to-tr from-blue-400 to-teal-500 rounded-full opacity-20 dark:opacity-10 blur-xl animate-pulse delay-700"></div>
+        <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
+          {/* Success card content */}
+          <div className="p-8">
+            {/* Success icon with animated background */}
+            <div className="mb-8 relative">
+              <div
+                className="absolute inset-0 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full opacity-10 dark:opacity-20 animate-ping"
+                style={{ animationDuration: "3s" }}
+              ></div>
+              <div className="mx-auto w-20 h-20 flex items-center justify-center rounded-full bg-gradient-to-r from-green-400 to-emerald-500 p-4">
+                <CheckCircle className="h-10 w-10 text-white" />
+              </div>
+            </div>
+            {/* Text content */}
+            <div className="text-center mb-8">
+              <h1 className="text-2xl font-bold mb-2 bg-gradient-to-r from-green-500 to-emerald-600 dark:from-green-400 dark:to-emerald-500 bg-clip-text text-transparent">
+                Payment Successful!
               </h1>
-              <p className="text-xs md:text-sm lg:text-base mt-1">1800 Roswell Road Ste 2100</p>
-              <p className="text-xs md:text-sm lg:text-base">Marietta, Georgia 30062</p>
-              <p className="text-xs md:text-sm lg:text-base">979-484-7983</p>
+              <p className="text-gray-600 dark:text-gray-300 mb-2">Thank you for your purchase.</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">
+                Your courses are now available in your account.
+              </p>
+
+              {/* Email notification */}
+              <div className="mt-4 flex items-center justify-center text-sm">
+                <p className="text-gray-600 dark:text-gray-300">
+                  {emailSent
+                    ? "We've sent you a email. Please check your inbox."
+                    : "A confirmation email will be sent to your registered email address."}
+                </p>
+              </div>
+
+              {/* Show error message if email failed */}
+              {emailError && (
+                <p className="mt-2 text-xs text-amber-600 dark:text-amber-400">
+                  Note: There might be a delay in receiving the email. If you don't receive it, please contact support.
+                </p>
+              )}
+            </div>
+            {/* Divider with sparkle */}
+            <div className="relative flex items-center justify-center my-8">
+              <div className="flex-grow h-px bg-gray-200 dark:bg-gray-700"></div>
+              <div className="flex-shrink-0 mx-2 p-1 bg-gray-50 dark:bg-gray-800 rounded-full">
+                <Sparkles className="h-4 w-4 text-amber-400" />
+              </div>
+              <div className="flex-grow h-px bg-gray-200 dark:bg-gray-700"></div>
+            </div>
+            {/* Action buttons */}
+            <div className="space-y-4">
+              <Link href="/dashboard" className="block">
+                <Button className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 dark:from-blue-600 dark:to-indigo-700 dark:hover:from-blue-700 dark:hover:to-indigo-800 border-0 text-white font-medium py-2.5 rounded-xl transition-all duration-200 hover:shadow-lg">
+                  Go to My Courses
+                </Button>
+              </Link>
+              <Link href="/courses" className="block">
+                <Button
+                  variant="outline"
+                  className="w-full border-2 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 font-medium py-2.5 rounded-xl transition-all duration-200"
+                >
+                  Browse More Courses
+                </Button>
+              </Link>
             </div>
           </div>
+          {/* Bottom decoration */}
+          <div className="h-1.5 bg-gradient-to-r from-green-400 via-emerald-500 to-teal-500"></div>
         </div>
-      </div>
-
-      {/* Main content with container class for better spacing */}
-      <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 py-6 md:py-10">
-        <div className="prose prose-sm sm:prose md:prose-lg lg:prose-xl max-w-none">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
-            Welcome to the Thryve.Today Training Center!
-          </h1>
-          <p>
-            We are thrilled to have you embark on this unique journey to
-            becoming a skilled and compassionate healthcare professional. Our
-            program, unlike any other, will equip you with the knowledge and
-            hands-on experience necessary to excel in the dynamic and rewarding
-            field of healthcare.
-          </p>
-          <p>
-            Throughout your studies, you will have the opportunity to work
-            alongside experienced professionals, developing the skills that are
-            essential for success in this field.
-          </p>
-          <p>
-            At <span className="font-semibold">Thryve.Today</span>, your success
-            is our top priority. Our instructors are dedicated to creating a
-            nurturing learning environment that promotes growth, curiosity, and
-            practical learning. We offer hands-on training to ensure you feel
-            confident and well-prepared for your clinical experiences and
-            certification exams.
-          </p>
-
-          <div className="my-6 md:my-8">
-            <h2 className="text-xl sm:text-2xl font-semibold mb-4">
-              Here are a few important things to keep in mind as you start your
-              program:
-            </h2>
-            <ul className="list-disc pl-5 space-y-3">
-              <li>
-                <strong>Training and Support:</strong> Our program combines
-                classroom instruction with real-world, hands-on training. You
-                will be fully supported throughout your journey by faculty and
-                staff who are deeply committed to your success.
-              </li>
-              <li>
-                <strong>Safety and Best Practices:</strong> We place a strong
-                emphasis on the importance of safety and professionalism in the
-                healthcare setting. You will be taught industry-standard
-                protocols to ensure that both you and your patients are always
-                protected.
-              </li>
-              <li>
-                <strong>Collaboration:</strong> All of our programs involve
-                working closely with others, so we encourage collaboration with
-                your peers, instructors, and healthcare professionals. This will
-                help you build strong communication skills and expand your
-                network.
-              </li>
-              <li>
-                <strong>Opportunities for Growth:</strong> Your time in our
-                programs will open doors to a range of career opportunities in
-                hospitals, laboratories, clinics, and other settings. Upon
-                successful completion of the program, you will be
-                well-positioned to begin your career with the confidence and
-                experience needed to thrive.
-              </li>
-            </ul>
-          </div>
-          
-          <p>
-            We are so proud of the commitment you&apos;ve shown in choosing this
-            career path, and we are here to guide and support you every step of
-            the way. If you have any questions or need assistance, please don&apos;t
-            hesitate to contact your instructor or our Program Coordinator.
-          </p>
-          
-          <p>
-            We eagerly anticipate witnessing your growth and success throughout
-            this program. We are excited for you to become part of our community
-            of healthcare professionals who make a profound difference in
-            patients&apos; lives every day.
-          </p>
-
-          <div className="mt-8 border-t pt-6">
-            <p className="font-semibold">Best regards,</p>
-            <p className="mt-2">
-              Keira L. Reid <br />
-              RN, BSN Director @ Thryve.Today
-            </p>
-            <div className="mt-3 flex flex-col sm:flex-row gap-2 sm:gap-6">
-              <p>
-                Office: <a href="tel:9794847983" className="text-blue-600 hover:text-blue-800 hover:underline">979-484-7983</a>
-              </p>
-              <p>
-                Email: <a href="mailto:keira@thryve.today" className="text-blue-600 hover:text-blue-800 hover:underline">keira@thryve.today</a>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Footer image with responsive container */}
-      <div className="w-full max-h-[200px] sm:max-h-[250px] md:max-h-[300px] overflow-hidden">
-        <Image
-          src="/footer.png"
-          width={1200}
-          height={1200}
-          alt="Footer image"
-          className="w-full h-auto object-cover"
-        />
       </div>
     </div>
-  );
+  )
 }
