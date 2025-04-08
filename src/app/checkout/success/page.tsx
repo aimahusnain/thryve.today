@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth"
 import { clearCart } from "@/lib/cart"
 import { prisma } from "@/lib/prisma"
 import { sendPurchaseConfirmationEmail } from "@/lib/autoemail"
-import { CheckCircle, Sparkles, Mail } from "lucide-react"
+import { CheckCircle, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Stripe from "stripe"
@@ -180,7 +180,7 @@ export default async function CheckoutSuccessPage({ params, searchParams }: Page
               {/* Show error message if email failed */}
               {emailError && (
                 <p className="mt-2 text-xs text-amber-600 dark:text-amber-400">
-                  Note: There might be a delay in receiving the email. If you don't receive it, please contact support.
+                  Note: There might be a delay in receiving the email. If you dont receive it, please contact support.
                 </p>
               )}
             </div>
