@@ -28,12 +28,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* <script
+        {/* <script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="3a26cdac-030d-4bb1-80eb-00a1c5176077";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script> */}
+        <script
           type="text/javascript"
           dangerouslySetInnerHTML={{
             __html: `
           window.$crisp=[];
-          window.CRISP_WEBSITE_ID="efd5f37b-eea3-40ee-9cfe-b489ec358910";
+          window.CRISP_WEBSITE_ID="3a26cdac-030d-4bb1-80eb-00a1c5176077";
         (function(){
           var d = document;
          var  s=d.createElement("script");
@@ -42,7 +43,7 @@ export default function RootLayout({
           d.getElementsByTagName("head")[0].appendChild(s);})();
             `,
           }}
-        ></script> */}
+        ></script>
       </head>
       <body className={`${spaceGrotesk.variable} font-sans`}>
         <AuthProvider>
