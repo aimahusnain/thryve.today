@@ -34,7 +34,6 @@ export async function sendPurchaseConfirmationEmail(email: string, name: string,
     console.log("Transporter verification result:", verifyResult)
 
     // Generate course list HTML
-    const courseListHtml =
       courseNames.length > 0
         ? courseNames
             .map(
