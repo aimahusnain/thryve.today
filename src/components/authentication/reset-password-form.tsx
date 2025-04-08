@@ -114,4 +114,3 @@ export function ResetPasswordForm({ className, ...props }: React.ComponentPropsW
     </div>
   )
 }
-

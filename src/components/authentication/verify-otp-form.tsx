@@ -68,7 +68,7 @@ export function VerifyOtpForm({ className, ...props }: React.ComponentPropsWitho
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" value={email} readOnly disabled />
             </div>
-              <Label htmlFor="otp">OTP</Label>
+            <Label htmlFor="otp">OTP</Label>
             <div className="grid w-full justify-center items-center gap-2">
               <InputOTP
                 maxLength={6}
@@ -107,4 +107,3 @@ export function VerifyOtpForm({ className, ...props }: React.ComponentPropsWitho
     </div>
   )
 }
-
