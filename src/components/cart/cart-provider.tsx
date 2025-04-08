@@ -103,12 +103,12 @@ export function Cart2Provider({ children }: { children: React.ReactNode }) {
 
       setItemCount((prev) => prev + 1)
 
-      toast.success("Added to cart2", {
+      toast.success("Added to cart", {
         description: "Course has been added to your cart",
       })
     } catch (error) {
       toast.error("Error", {
-        description: error instanceof Error ? error.message : "Failed to add to cart2",
+        description: error instanceof Error ? error.message : "Failed to add to cart",
       })
     } finally {
       setIsLoading(false)
@@ -177,7 +177,7 @@ export function Cart2Provider({ children }: { children: React.ReactNode }) {
       setItemCount((prev) => prev - oldQuantity + quantity)
     } catch (error) {
       toast.error("Error", {
-        description: error instanceof Error ? error.message : "Failed to update cart2",
+        description: error instanceof Error ? error.message : "Failed to update cart",
       })
     } finally {
       setIsLoading(false)
@@ -194,19 +194,19 @@ export function Cart2Provider({ children }: { children: React.ReactNode }) {
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.error || "Failed to clear cart2")
+        throw new Error(error.error || "Failed to clear cart")
       }
 
       // Update local state
       setItems([])
       setItemCount(0)
 
-      toast.success("Cart2 cleared", {
-        description: "Your cart2 has been cleared",
+      toast.success("Cart cleared", {
+        description: "Your cart has been cleared",
       })
     } catch (error) {
       toast.error("Error", {
-        description: error instanceof Error ? error.message : "Failed to clear cart2",
+        description: error instanceof Error ? error.message : "Failed to clear cart",
       })
     } finally {
       setIsLoading(false)

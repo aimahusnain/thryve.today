@@ -21,7 +21,7 @@ export function CourseCart2Button({ courseId, courseName, coursePrice, courseDur
     try {
       await addToCart2(courseId, courseName, coursePrice, courseDuration || "")
     } catch (error) {
-      console.error("Failed to add to cart2:", error)
+      console.error("Failed to add to cart:", error)
     } finally {
       setIsAdding(false)
     }
