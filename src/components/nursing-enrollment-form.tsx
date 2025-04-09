@@ -701,7 +701,7 @@ export function NursingEnrollmentForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Relationship <span className="text-red-500">*</span>
+                        Relationship
                       </FormLabel>
                       <FormControl>
                         <Input
