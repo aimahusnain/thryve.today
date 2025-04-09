@@ -34,23 +34,24 @@ export async function sendPurchaseConfirmationEmail(email: string, name: string,
     console.log("Transporter verification result:", verifyResult)
 
     // Generate course list HTML
+    const courseListHtml =
       courseNames.length > 0
         ? courseNames
             .map(
               (course) => `
-          <div style="background-color: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 3px solid #2DB188;">
-            <p style="font-size: 16px; color: #333333; margin: 0; font-weight: 500;">
-              <span style="color: #2DB188; margin-right: 8px;">✓</span>${course}
-            </p>
-          </div>
-        `,
+    <div style="background-color: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 3px solid #2DB188;">
+      <p style="font-size: 16px; color: #333333; margin: 0; font-weight: 500;">
+        <span style="color: #2DB188; margin-right: 8px;">✓</span>${course}
+      </p>
+    </div>
+  `,
             )
             .join("")
         : `<div style="background-color: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 3px solid #2DB188;">
-           <p style="font-size: 16px; color: #333333; margin: 0; font-weight: 500;">
-             <span style="color: #2DB188; margin-right: 8px;">✓</span>Your course
-           </p>
-         </div>`
+     <p style="font-size: 16px; color: #333333; margin: 0; font-weight: 500;">
+       <span style="color: #2DB188; margin-right: 8px;">✓</span>Your course
+     </p>
+   </div>`
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
