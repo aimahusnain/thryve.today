@@ -64,11 +64,11 @@ export function UserNav() {
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link
-                href="/profile"
+                href="/cart"
                 className="flex w-full cursor-pointer items-center"
               >
                 <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
+                <span>Cart</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>

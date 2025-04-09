@@ -593,7 +593,7 @@ export function NursingEnrollmentForm({
                   name="phoneCell"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground font-medium">
+                      <FormLabel className="text-black dark:text-foreground font-medium">
                         Phone (Cell) <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
@@ -601,10 +601,13 @@ export function NursingEnrollmentForm({
                           disabled={!session}
                           placeholder="(123) 456-7890"
                           {...field}
-                          className="bg-background text-foreground"
+                          className="bg-background text-black dark:text-foreground"
                         />
                       </FormControl>
+                      <div className="text-sm text-black mt-1">
+                        
                       <FormMessage />
+                      </div>
                     </FormItem>
                   )}
                 />
