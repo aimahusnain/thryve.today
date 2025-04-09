@@ -837,7 +837,6 @@ export function NursingEnrollmentForm({
                       <FormItem>
                         <FormLabel className="text-foreground font-medium">
                           Program Director/Director{" "}
-                          <span className="text-red-500">*</span>
                         </FormLabel>
                         <FormControl>
                           <Input
