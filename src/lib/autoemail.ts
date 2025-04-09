@@ -84,10 +84,16 @@ export async function sendPurchaseConfirmationEmail(email: string, name: string,
       <h2 style="font-size: 20px; color: #2DB188; margin-bottom: 15px; font-weight: 600;">Here are a few important things to keep in mind as you start your program:</h2>
       <ul style="font-size: 15px; color: #444444; line-height: 1.8; padding-left: 20px; margin: 0;">
         <li style="margin-bottom: 12px;"><strong>Training and Support:</strong> Real-world hands-on training backed by committed staff and faculty.</li>
-        <li style="margin-bottom: 12px;"><strong>Safety and Best Practices:</strong> You’ll be taught industry-standard protocols to protect you and your patients.</li>
+        <li style="margin-bottom: 12px;"><strong>Safety and Best Practices:</strong> You'll be taught industry-standard protocols to protect you and your patients.</li>
         <li style="margin-bottom: 12px;"><strong>Collaboration:</strong> We encourage peer-to-peer and instructor teamwork for strong communication and networking.</li>
         <li><strong>Opportunities for Growth:</strong> Our programs open doors to careers in hospitals, labs, clinics, and more.</li>
       </ul>
+    </div>
+
+    <!-- Course List -->
+    <div style="margin: 35px 0 25px;">
+      <h2 style="font-size: 20px; color: #2DB188; margin-bottom: 15px; font-weight: 600;">Your Enrolled Courses:</h2>
+      ${courseListHtml}
     </div>
 
     <p style="font-size: 16px; color: #444444; line-height: 1.8;">We are proud of your commitment and are here to guide you every step of the way. If you need help, feel free to contact your instructor or our Program Coordinator.</p>
