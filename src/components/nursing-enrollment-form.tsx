@@ -90,11 +90,8 @@ const formSchema = z.object({
     required_error: "Student signature date is required.",
   }),
   directorSignature: z
-    .string()
-    .min(2, { message: "Director signature is required." }),
-  directorSignatureDate: z.date({
-    required_error: "Director signature date is required.",
-  }),
+    .string().optional(),
+  directorSignatureDate: z.date().optional(),
   guardianSignature: z.string().optional(),
   guardianSignatureDate: z.date().optional(),
   courseId: z.string(),
@@ -860,7 +857,7 @@ export function NursingEnrollmentForm({
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
                         <FormLabel className="text-foreground font-medium">
-                          Date <span className="text-red-500">*</span>
+                          Date
                         </FormLabel>
                         <Popover>
                           <PopoverTrigger asChild disabled={!session}>
