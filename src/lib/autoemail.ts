@@ -136,7 +136,7 @@ export async function sendPurchaseConfirmationEmail(email: string, courseNames: 
 }
 
 // Send welcome email
-export async function sendWelcomeEmail(email: string, name: string) {
+export async function sendWelcomeEmail(email: string) {
   console.log(`Attempting to send welcome email to: ${email}`)
 
   if (!email) {
