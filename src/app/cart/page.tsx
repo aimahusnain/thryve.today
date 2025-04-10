@@ -190,7 +190,6 @@ export default function CartPage() {
                       courseId={item.courseId}
                       name={item.course?.name || "Course"}
                       price={item.course?.price || 0}
-                      quantity={item.quantity || 1}
                       duration={item.course?.duration || ""}
                       isEnrolled={!!enrollmentStatus[item.courseId]}
                       onRemove={handleCartItemRemoved}
