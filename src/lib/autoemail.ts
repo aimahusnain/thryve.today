@@ -165,7 +165,6 @@ export async function sendWelcomeEmail(email: string, name: string) {
         </div>
         
         <div style="padding: 40px 30px; background-color: #ffffff;">
-          <p style="font-size: 17px; color: #333333; line-height: 1.5; margin-top: 0; font-weight: 500;">Hello ${name || "there"},</p>
           
           <p style="font-size: 16px; color: #444444; line-height: 1.6;">Welcome to the Thryve.Today Training Center! We are thrilled to have you embark on this unique journey to becoming a skilled and compassionate healthcare professional. Our program, unlike any other, will equip you with the knowledge and hands-on experience necessary to excel in the dynamic and rewarding field of healthcare.</p>
           
