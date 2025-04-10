@@ -1,15 +1,20 @@
+"use client"
+
 import { RemoveFromCartButton } from "@/components/cart/remove-from-cart-button"
 import { Button } from "@/components/ui/button"
-import { Clock, Trash2 } from "lucide-react"
+import { Clock, Trash2, FileText, CheckCircle } from "lucide-react"
+import Link from "next/link"
+import { Badge } from "@/components/ui/badge"
 
 interface CartItemProps {
   id: string
   name: string
   price: number
   duration: string
+  isEnrolled?: boolean
 }
 
-export function CartItem({ id, name, price, duration }: CartItemProps) {
+export function CartItem({ id, name, price, duration, isEnrolled = false }: CartItemProps) {
   return (
     <div className="p-6 flex flex-col sm:flex-row gap-4 group hover:bg-muted/50 transition-colors">
       <div className="flex-1 flex flex-col">
@@ -23,10 +28,27 @@ export function CartItem({ id, name, price, duration }: CartItemProps) {
           <span>{duration}</span>
         </div>
 
-        <div className="mt-auto flex items-center justify-between pt-2">
-          <div className="flex items-center gap-2"></div>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            {isEnrolled ? (
+              <Badge
+                variant="outline"
+                className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1.5 py-1.5"
+              >
+                <CheckCircle className="h-3.5 w-3.5" />
+                <span>Enrolled</span>
+              </Badge>
+            ) : (
+              <Link href={`/courses/${id}`}>
+                <Button variant="outline" size="sm" className="flex items-center gap-1.5">
+                  <FileText className="h-3.5 w-3.5" />
+                  <span>Complete Enrollment</span>
+                </Button>
+              </Link>
+            )}
+          </div>
 
-          {/* Use the RemoveFromCartButton component instead of a plain button */}
+          {/* Use the RemoveFromCartButton component */}
           <RemoveFromCartButton id={id}>
             <Button
               variant="ghost"
@@ -42,4 +64,3 @@ export function CartItem({ id, name, price, duration }: CartItemProps) {
     </div>
   )
 }
-

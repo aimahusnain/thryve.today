@@ -1,30 +1,118 @@
-import { getUserCart, getCartTotal } from "@/lib/cart"
-import { CartItem } from "@/components/cart/cart-item"
+"use client"
+
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { ShoppingBag, ArrowLeft, ShoppingCart, AlertCircle } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { ClearCartButton } from "@/components/cart/clear-cart-button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import Link from "next/link"
-import { ShoppingBag, ArrowLeft, ShoppingCart } from "lucide-react"
-import { redirect } from "next/navigation"
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth"
+import { CartItem } from "@/components/cart/cart-item"
+import { ClearCartButton } from "@/components/cart/clear-cart-button"
 import { CheckoutButton } from "@/components/cart/checkout-button"
+import { toast } from "sonner"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
-export default async function CartPage() {
-  const session = await getServerSession(authOptions)
+// Define types for our data structures
+interface Course {
+  id: string
+  name: string
+  price: number
+  duration?: string
+}
 
-  if (!session) {
-    redirect("/log-in?callbackUrl=/cart")
+interface Item {
+  id: string
+  courseId: string
+  quantity: number
+  course?: Course
+}
+
+interface Cart {
+  items: Item[]
+}
+
+export default function CartPage() {
+  const router = useRouter()
+  const [cart, setCart] = useState<Cart>({ items: [] })
+  const [total, setTotal] = useState<number>(0)
+  const [enrollmentStatus, setEnrollmentStatus] = useState<Record<string, boolean>>({})
+  const [loading, setLoading] = useState<boolean>(true)
+  const [allEnrolled, setAllEnrolled] = useState<boolean>(false)
+
+  useEffect(() => {
+    async function loadData() {
+      try {
+        // Fetch cart data
+        const cartResponse = await fetch("/api/cart")
+        if (!cartResponse.ok) {
+          if (cartResponse.status === 401) {
+            // Redirect to login if unauthorized
+            router.push("/log-in?callbackUrl=/cart")
+            return
+          }
+          throw new Error("Failed to fetch cart")
+        }
+        const cartData = (await cartResponse.json()) as Cart
+        setCart(cartData)
+
+        // Calculate total
+        const totalAmount = cartData.items.reduce(
+          (sum, item) => sum + (item.course?.price || 0) * (item.quantity || 1),
+          0,
+        )
+        setTotal(totalAmount)
+
+        // Check enrollment status for each course
+        if (cartData.items && cartData.items.length > 0) {
+          const enrollmentStatusMap: Record<string, boolean> = {}
+          let allCoursesEnrolled = true
+
+          for (const item of cartData.items) {
+            if (item.courseId) {
+              const enrollmentResponse = await fetch(`/api/enrollment/status?courseId=${item.courseId}`)
+              if (enrollmentResponse.ok) {
+                const { completed } = (await enrollmentResponse.json()) as { completed: boolean }
+                enrollmentStatusMap[item.courseId] = completed
+                if (!completed) {
+                  allCoursesEnrolled = false
+                }
+              } else {
+                // If we can't determine enrollment status, assume not enrolled
+                enrollmentStatusMap[item.courseId] = false
+                allCoursesEnrolled = false
+              }
+            }
+          }
+
+          setEnrollmentStatus(enrollmentStatusMap)
+          setAllEnrolled(allCoursesEnrolled)
+        }
+      } catch (error) {
+        console.error("Error loading cart data:", error)
+        toast.error("Failed to load cart data")
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadData()
+  }, [router])
+
+  const itemCount = cart.items?.reduce((total, item) => total + (item.quantity || 0), 0) || 0
+
+  if (loading) {
+    return (
+      <div className="container pt-[100px] mx-auto py-10 px-4 sm:px-6 flex justify-center items-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    )
   }
 
-  const cart = await getUserCart()
-  const total = await getCartTotal()
-  const itemCount = cart.items.reduce((total, item) => total + item.quantity, 0)
-
   return (
-    <div className="container pt-[100px]  mx-auto py-10 px-4 sm:px-6">
+    <div className="container pt-[100px] mx-auto py-10 px-4 sm:px-6">
       <div className="flex flex-col sm:flex-row items-center mb-8 gap-4">
         <Link
           href="/courses"
@@ -44,7 +132,7 @@ export default async function CartPage() {
         </div>
       </div>
 
-      {cart.items.length === 0 ? (
+      {!cart.items || cart.items.length === 0 ? (
         <Card className="border-dashed border-2 bg-muted/50">
           <CardContent className="pt-16 pb-16">
             <div className="flex flex-col items-center justify-center space-y-6 text-center">
@@ -85,15 +173,29 @@ export default async function CartPage() {
                   {cart.items.map((item) => (
                     <CartItem
                       key={item.id}
-                      id={item.id}
-                      name={item.course.name}
-                      price={item.course.price}
-                      duration={item.course.duration}
+                      id={item.courseId || item.id}
+                      name={item.course?.name || "Course"}
+                      price={item.course?.price || 0}
+                      duration={item.course?.duration || ""}
+                      isEnrolled={!!enrollmentStatus[item.courseId]}
                     />
                   ))}
                 </div>
               </CardContent>
             </Card>
+
+            {!allEnrolled && (
+              <Alert
+                className="bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800"
+              >
+                <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-500" />
+                <AlertTitle>Enrollment Required</AlertTitle>
+                <AlertDescription>
+                  Please complete enrollment for all courses in your cart before proceeding to checkout.
+                </AlertDescription>
+              </Alert>
+            )}
+
             <div className="flex justify-between items-center px-4">
               <Link href="/courses" className="text-sm font-medium text-primary hover:underline">
                 Add more courses
@@ -110,8 +212,8 @@ export default async function CartPage() {
                 <div className="space-y-4">
                   {cart.items.map((item) => (
                     <div key={item.id} className="flex justify-between text-sm">
-                      <span>{item.course.name}</span>
-                      <span>${item.course.price.toFixed(2)}</span>
+                      <span>{item.course?.name || "Course"}</span>
+                      <span>${(item.course?.price || 0).toFixed(2)}</span>
                     </div>
                   ))}
                   <Separator />
@@ -123,7 +225,12 @@ export default async function CartPage() {
               </CardContent>
 
               <CardFooter className="bg-gradient-to-r from-primary/5 to-primary/10 flex flex-col gap-4 pt-6">
-                <CheckoutButton total={total} />
+                <CheckoutButton total={total} disabled={!allEnrolled} />
+                {!allEnrolled && (
+                  <p className="text-sm text-muted-foreground text-center">
+                    Please complete enrollment for all courses to proceed to checkout
+                  </p>
+                )}
                 <div className="flex items-center justify-center w-full gap-2 text-xs text-muted-foreground">
                   <span>Secure Checkout</span>
                   <span>•</span>

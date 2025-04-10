@@ -7,12 +7,15 @@ import { toast } from "sonner"
 
 interface CheckoutButtonProps {
   total: number
+  disabled?: boolean
 }
 
-export function CheckoutButton({ total }: CheckoutButtonProps) {
+export function CheckoutButton({ total, disabled = false }: CheckoutButtonProps) {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleCheckout = async () => {
+    if (disabled) return
+
     try {
       setIsLoading(true)
 
@@ -48,12 +51,11 @@ export function CheckoutButton({ total }: CheckoutButtonProps) {
   return (
     <Button
       onClick={handleCheckout}
-      disabled={isLoading || total <= 0}
+      disabled={isLoading || total <= 0 || disabled}
       className="w-full h-12 rounded-full font-bold text-base shadow-md flex items-center gap-2 bg-primary hover:bg-primary/90 transition-all"
     >
       <CreditCard className="h-5 w-5" />
-      {isLoading ? "Processing..." : "Proceed to Checkout"}
+      {isLoading ? "Processing..." : `Proceed to Checkout ${total > 0 ? `($${total.toFixed(2)})` : ""}`}
     </Button>
   )
 }
-

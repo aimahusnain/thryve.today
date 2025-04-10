@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client"
-import Link from "next/link"
-import { ArrowRight, CheckCircle, Clock, DollarSign, GraduationCap } from "lucide-react"
+import { CheckCircle, Clock, DollarSign, GraduationCap } from "lucide-react"
 import { CourseCart2Button } from "@/components/cart/course-cart-button"
 
 const prisma = new PrismaClient()
@@ -88,20 +87,8 @@ export default async function CoursesPage() {
               </div>
             </div>
 
-            <div className="mt-auto pt-6 flex flex-col gap-3">
-              <Link href={`/courses/${course.id}`}>
-                <button
-                  className="w-full flex items-center justify-center gap-2 px-6 py-3 md:py-4 
-                           bg-zinc-900 dark:bg-white dark:hover:bg-zinc-100 
-                           text-white dark:text-zinc-900 font-medium text-sm md:text-base rounded-xl
-                           transition-all duration-300 group-hover:shadow-lg"
-                >
-                  Enroll Now
-                  <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform duration-300" />
-                </button>
-              </Link>
-
-              {/* Add to Cart2 Button */}
+            <div className="mt-auto pt-6">
+              {/* Only show the Add to Cart button */}
               <CourseCart2Button
                 courseId={course.id}
                 courseName={course.name}
@@ -115,4 +102,3 @@ export default async function CoursesPage() {
     </div>
   )
 }
-
