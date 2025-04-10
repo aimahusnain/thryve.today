@@ -1,242 +1,477 @@
 import nodemailer from "nodemailer"
+import { formatDistanceToNow } from "date-fns"
 
-// Create a transporter
+/**
+ * Result interface for email operations
+ */
+interface EmailResult {
+  success: boolean
+  messageId?: string
+  error?: string
+}
+
+/**
+ * Configuration for the email transporter
+ */
+const emailConfig = {
+  host: process.env.EMAIL_SERVER_HOST,
+  port: Number(process.env.EMAIL_SERVER_PORT || 587),
+  secure: process.env.EMAIL_SERVER_SECURE === "true",
+  auth: {
+    user: process.env.EMAIL_SERVER_USER,
+    pass: process.env.EMAIL_SERVER_PASSWORD,
+  },
+  from: process.env.EMAIL_FROM || "noreply@healthcaretraining.com",
+}
+
+/**
+ * Create a reusable transporter object using SMTP transport
+ */
 const createTransporter = () => {
-  console.log("Creating email transporter with user:", process.env.EMAIL_USER?.substring(0, 3) + "***")
   return nodemailer.createTransport({
-    service: "Gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
+    host: emailConfig.host,
+    port: emailConfig.port,
+    secure: emailConfig.secure,
+    auth: emailConfig.auth,
   })
 }
 
-// Send purchase confirmation email
-export async function sendPurchaseConfirmationEmail(email: string, courseNames: string[]) {
-  console.log(`Attempting to send purchase confirmation email to: ${email}`)
-  console.log(`Courses purchased: ${JSON.stringify(courseNames)}`)
-
-  if (!email) {
-    console.error("Cannot send email: No email address provided")
-    return { success: false, error: "No email address provided" }
-  }
-
-  if (!courseNames || courseNames.length === 0) {
-    console.warn("Sending email with empty course list")
-  }
-
+/**
+ * Send a purchase confirmation email
+ * @param to Email address to send to
+ * @param userName Name of the user
+ * @param courseNames Array of course names
+ * @returns Promise with success status and optional error
+ */
+export async function sendPurchaseConfirmationEmail(
+  to: string,
+  userName: string,
+  courseNames: string[],
+): Promise<EmailResult> {
   try {
     const transporter = createTransporter()
 
-    // Test transporter connection
-    const verifyResult = await transporter.verify()
-    console.log("Transporter verification result:", verifyResult)
+    // Format the course list
+    const courseList = courseNames.map((course) => `• ${course}`).join("\n")
 
-    // Generate course list HTML
-    const courseListHtml =
-      courseNames.length > 0
-        ? courseNames
-            .map(
-              (course) => `
-    <div style="background-color: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 3px solid #2DB188;">
-      <p style="font-size: 16px; color: #333333; margin: 0; font-weight: 500;">
-        <span style="color: #2DB188; margin-right: 8px;">✓</span>${course}
-      </p>
-    </div>
-  `,
-            )
-            .join("")
-        : `<div style="background-color: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 3px solid #2DB188;">
-     <p style="font-size: 16px; color: #333333; margin: 0; font-weight: 500;">
-       <span style="color: #2DB188; margin-right: 8px;">✓</span>Your course
-     </p>
-   </div>`
-
+    // Create email content
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Welcome to the Thryve.Today Training Center! ",
+      from: `Healthcare Training <${emailConfig.from}>`,
+      to,
+      subject: "Your Course Purchase Confirmation",
+      text: `
+Hello ${userName},
+
+Thank you for your purchase! Your enrollment is now complete.
+
+Courses purchased:
+${courseList}
+
+You can access your courses by logging into your account.
+
+If you have any questions, please contact our support team.
+
+Best regards,
+The Healthcare Training Team
+      `,
       html: `
-<div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 640px; margin: 30px auto; border: 1px solid #e0e0e0; border-radius: 16px; overflow: hidden; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);">
-  <!-- Header -->
-  <div style="background: linear-gradient(135deg, #2DB188, #25a07a); padding: 40px 30px; text-align: center;">
-    <h1 style="font-size: 30px; color: #ffffff; margin: 0; font-weight: 700; letter-spacing: 0.5px; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);">Welcome to Thryve.Today</h1>
-    <p style="color: rgba(255, 255, 255, 0.95); margin: 12px 0 0; font-size: 16px; font-weight: 500;">Your Healthcare Training Journey Starts Now</p>
-  </div>
-
-  <!-- Body -->
-  <div style="padding: 45px 35px; background-color: #ffffff;">
-    <p style="font-size: 16px; color: #444444; line-height: 1.8; margin-bottom: 20px;">
-      Welcome to the <strong>Thryve.Today Training Center!</strong> We are thrilled to have you embark on this unique journey to becoming a skilled and compassionate healthcare professional.
-    </p>
-
-    <p style="font-size: 16px; color: #444444; line-height: 1.8;">Our program, unlike any other, will equip you with the knowledge and hands-on experience necessary to excel in the dynamic and rewarding field of healthcare.</p>
-    
-    <p style="font-size: 16px; color: #444444; line-height: 1.8;">Throughout your studies, you will work alongside experienced professionals, developing the skills essential for success in this field.</p>
-
-    <p style="font-size: 16px; color: #444444; line-height: 1.8;">At Thryve.Today, your success is our top priority. Our instructors are dedicated to creating a nurturing learning environment that promotes growth, curiosity, and practical learning.</p>
-
-    <!-- List -->
-    <div style="margin: 35px 0 25px;">
-      <h2 style="font-size: 20px; color: #2DB188; margin-bottom: 15px; font-weight: 600;">Here are a few important things to keep in mind as you start your program:</h2>
-      <ul style="font-size: 15px; color: #444444; line-height: 1.8; padding-left: 20px; margin: 0;">
-        <li style="margin-bottom: 12px;"><strong>Training and Support:</strong> Real-world hands-on training backed by committed staff and faculty.</li>
-        <li style="margin-bottom: 12px;"><strong>Safety and Best Practices:</strong> You'll be taught industry-standard protocols to protect you and your patients.</li>
-        <li style="margin-bottom: 12px;"><strong>Collaboration:</strong> We encourage peer-to-peer and instructor teamwork for strong communication and networking.</li>
-        <li><strong>Opportunities for Growth:</strong> Our programs open doors to careers in hospitals, labs, clinics, and more.</li>
-      </ul>
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #35dba8; color: white; padding: 20px; text-align: center; }
+    .content { padding: 20px; }
+    .footer { background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 12px; color: #777; }
+    .course-list { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }
+    .button { display: inline-block; background-color: #35dba8; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 15px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Purchase Confirmation</h1>
     </div>
-
-    <!-- Course List -->
-    <div style="margin: 35px 0 25px;">
-      <h2 style="font-size: 20px; color: #2DB188; margin-bottom: 15px; font-weight: 600;">Your Enrolled Courses:</h2>
-      ${courseListHtml}
+    <div class="content">
+      <p>Hello ${userName},</p>
+      <p>Thank you for your purchase! Your enrollment is now complete.</p>
+      
+      <div class="course-list">
+        <h3>Courses purchased:</h3>
+        <ul>
+          ${courseNames.map((course) => `<li>${course}</li>`).join("")}
+        </ul>
+      </div>
+      
+      <p>You can access your courses by logging into your account.</p>
+      <p>If you have any questions, please contact our support team.</p>
+      
+      <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard" class="button">View My Courses</a>
     </div>
-
-    <p style="font-size: 16px; color: #444444; line-height: 1.8;">We are proud of your commitment and are here to guide you every step of the way. If you need help, feel free to contact your instructor or our Program Coordinator.</p>
-
-    <p style="font-size: 16px; color: #444444; line-height: 1.8;">We can't wait to witness your success. Welcome to our community of healthcare professionals making a difference every day.</p>
-
-    <!-- Signature -->
-    <div style="margin-top: 35px;">
-      <p style="font-size: 16px; color: #333333; line-height: 1.6;">
-        <strong>Best regards,</strong><br/>
-        Keira L. Reid<br/>
-        RN, BSN Director @ Thryve.Today<br/>
-        <span style="color: #777;">Office: 979-484-7983<br/>Email: <a href="mailto:keira@thryve.today" style="color: #2DB188; text-decoration: none;">keira@thryve.today</a></span>
-      </p>
+    <div class="footer">
+      <p>Best regards,<br>The Healthcare Training Team</p>
+      <p>© ${new Date().getFullYear()} Healthcare Training. All rights reserved.</p>
     </div>
   </div>
-
-  <!-- Footer -->
-  <div style="background-color: #f9fafb; padding: 25px; text-align: center; border-top: 1px solid #f0f0f0;">
-    <img src="https://sjc.microlink.io/hdhQ_8dOk0vag0Ubm6UfE4b-52Gh2wB-svl9Wfeca7agKbrskZMBR3MJiNnsU3V66XFJJwiLwLzYH55gSVuInQ.jpeg" alt="Thryve Logo" style="height: 30px; width: auto; margin-bottom: 15px; display: none;">
-    <p style="font-size: 14px; color: #777777; margin: 0;">&copy; ${new Date().getFullYear()} <span style="color: #2DB188; font-weight: 600;">Thryve.Today</span>. All rights reserved.</p>
-    <p style="font-size: 13px; color: #999999; margin-top: 8px;">123 Wellness Street, Health City, HC 12345</p>
-  </div>
-</div>
-
+</body>
+</html>
       `,
     }
 
-    console.log("Sending email with options:", {
-      from: mailOptions.from,
-      to: mailOptions.to,
-      subject: mailOptions.subject,
-    })
-
-    const result = await transporter.sendMail(mailOptions)
-    console.log("Email sent successfully:", result.messageId)
-    return { success: true, messageId: result.messageId }
+    // Send the email
+    const info = await transporter.sendMail(mailOptions)
+    console.log("Purchase confirmation email sent:", info.messageId)
+    return { success: true, messageId: info.messageId }
   } catch (error) {
     console.error("Error sending purchase confirmation email:", error)
-    return { success: false, error: error instanceof Error ? error.message : String(error) }
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error sending email",
+    }
   }
 }
 
-// Send welcome email
-export async function sendWelcomeEmail(email: string) {
-  console.log(`Attempting to send welcome email to: ${email}`)
-
-  if (!email) {
-    console.error("Cannot send welcome email: No email address provided")
-    return { success: false, error: "No email address provided" }
-  }
-
+/**
+ * Send a welcome email to a new user
+ * @param to Email address to send to
+ * @param userName Name of the user
+ * @returns Promise with success status and optional error
+ */
+export async function sendWelcomeEmail(to: string, userName: string): Promise<EmailResult> {
   try {
     const transporter = createTransporter()
 
-    // Test transporter connection
-    const verifyResult = await transporter.verify()
-    console.log("Transporter verification result:", verifyResult)
-
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Welcome to Thryve.Today Training Center!",
+      from: `Healthcare Training <${emailConfig.from}>`,
+      to,
+      subject: "Welcome to Healthcare Training",
+      text: `
+Hello ${userName},
+
+Welcome to Healthcare Training! We're excited to have you join our community of healthcare professionals.
+
+Here's what you can do now:
+• Browse our catalog of healthcare courses
+• Enroll in courses that interest you
+• Track your progress in your personal dashboard
+
+If you have any questions, our support team is here to help.
+
+Best regards,
+The Healthcare Training Team
+      `,
       html: `
-      <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);">
-        <div style="background: linear-gradient(135deg, #2DB188 0%, #25a07a 100%); padding: 35px 20px; text-align: center;">
-          <h1 style="font-size: 28px; color: #ffffff; margin: 0; font-weight: 700; letter-spacing: 0.5px; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);">Welcome to Thryve.Today</h1>
-          <p style="color: rgba(255, 255, 255, 0.9); margin: 8px 0 0; font-size: 15px; font-weight: 500;">Your journey to healthcare excellence begins now</p>
-        </div>
-        
-        <div style="padding: 40px 30px; background-color: #ffffff;">
-          
-          <p style="font-size: 16px; color: #444444; line-height: 1.6;">Welcome to the Thryve.Today Training Center! We are thrilled to have you embark on this unique journey to becoming a skilled and compassionate healthcare professional. Our program, unlike any other, will equip you with the knowledge and hands-on experience necessary to excel in the dynamic and rewarding field of healthcare.</p>
-          
-          <p style="font-size: 16px; color: #444444; line-height: 1.6;">Throughout your studies, you will have the opportunity to work alongside experienced professionals, developing the skills that are essential for success in this field.</p>
-          
-          <p style="font-size: 16px; color: #444444; line-height: 1.6;">At Thryve.Today, your success is our top priority. Our instructors are dedicated to creating a nurturing learning environment that promotes growth, curiosity, and practical learning. We offer hands-on training to ensure you feel confident and well-prepared for your clinical experiences and certification exams.</p>
-          
-          <div style="margin: 30px 0;">
-            <h2 style="font-size: 20px; color: #2DB188; margin-bottom: 15px; font-weight: 600;">Important Things to Keep in Mind:</h2>
-            
-            <div style="background-color: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 3px solid #2DB188;">
-              <p style="font-size: 16px; color: #333333; margin: 0; font-weight: 500;">
-                <span style="color: #2DB188; margin-right: 8px;">•</span><strong>Training and Support:</strong> Our program combines classroom instruction with real-world, hands-on training. You will be fully supported throughout your journey by faculty and staff who are deeply committed to your success.
-              </p>
-            </div>
-            
-            <div style="background-color: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 3px solid #2DB188;">
-              <p style="font-size: 16px; color: #333333; margin: 0; font-weight: 500;">
-                <span style="color: #2DB188; margin-right: 8px;">•</span><strong>Safety and Best Practices:</strong> We place a strong emphasis on the importance of safety and professionalism in the healthcare setting. You will be taught industry-standard protocols to ensure that both you and your patients are always protected.
-              </p>
-            </div>
-            
-            <div style="background-color: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 3px solid #2DB188;">
-              <p style="font-size: 16px; color: #333333; margin: 0; font-weight: 500;">
-                <span style="color: #2DB188; margin-right: 8px;">•</span><strong>Collaboration:</strong> All of our programs involve working closely with others, so we encourage collaboration with your peers, instructors, and healthcare professionals. This will help you build strong communication skills and expand your network.
-              </p>
-            </div>
-            
-            <div style="background-color: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 3px solid #2DB188;">
-              <p style="font-size: 16px; color: #333333; margin: 0; font-weight: 500;">
-                <span style="color: #2DB188; margin-right: 8px;">•</span><strong>Opportunities for Growth:</strong> Your time in our programs will open doors to a range of career opportunities in hospitals, laboratories, clinics, and other settings. Upon successful completion of the program, you will be well-positioned to begin your career with the confidence and experience needed to thrive.
-              </p>
-            </div>
-          </div>
-          
-          <p style="font-size: 16px; color: #444444; line-height: 1.6;">We are so proud of the commitment you've shown in choosing this career path, and we are here to guide and support you every step of the way. If you have any questions or need assistance, please don't hesitate to contact your instructor or our Program Coordinator.</p>
-          
-          <p style="font-size: 16px; color: #444444; line-height: 1.6;">We eagerly anticipate witnessing your growth and success throughout this program. We are excited for you to become part of our community of healthcare professionals who make a profound difference in patients' lives every day.</p>
-          
-          <div style="background-color: rgba(45, 177, 136, 0.08); border-radius: 8px; padding: 15px; margin: 25px 0;">
-            <p style="font-size: 15px; color: #444444; margin: 0; line-height: 1.5;">
-              <span style="color: #2DB188; font-weight: 600;">Best regards,</span><br>
-              Keira L. Reid<br>
-              RN, BSN Director @ Thryve.Today<br>
-              Office Number: 979-484-7983<br>
-              Email: keira@thryve.today
-            </p>
-          </div>
-          
-          <div style="margin-top: 35px; text-align: center;">
-            <a href="${process.env.NEXT_PUBLIC_APP_URL}/courses" style="display: inline-block; background-color: #2DB188; color: white; text-decoration: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; font-size: 15px; box-shadow: 0 2px 5px rgba(45, 177, 136, 0.3);">Explore Our Courses</a>
-          </div>
-        </div>
-        
-        <div style="background-color: #f9fafb; padding: 25px; text-align: center; border-top: 1px solid #f0f0f0;">
-          <img src="https://sjc.microlink.io/MPARN5Q2FJQDcS6fCydFeoNC72Obw-c33NYFTjZW8MYkuVb4LMqTLoYDtQA-5NLn99m4X-a8PecPRgo-paUpIQ.jpeg" alt="Thryve Logo" style="height: 60px; width: auto; margin-bottom: 15px;">
-          <p style="font-size: 14px; color: #777777; margin: 0; line-height: 1.5;">&copy; ${new Date().getFullYear()} <span style="color: #2DB188; font-weight: 600;">Thryve.Today</span>. All rights reserved.</p>
-          <p style="font-size: 13px; color: #999999; margin-top: 8px;">Transform Your Life with Quality Medical Training</p>
-        </div>
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #35dba8; color: white; padding: 20px; text-align: center; }
+    .content { padding: 20px; }
+    .footer { background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 12px; color: #777; }
+    .features { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 15px 0; }
+    .button { display: inline-block; background-color: #35dba8; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 15px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Welcome to Healthcare Training</h1>
+    </div>
+    <div class="content">
+      <p>Hello ${userName},</p>
+      <p>Welcome to Healthcare Training! We're excited to have you join our community of healthcare professionals.</p>
+      
+      <div class="features">
+        <h3>Here's what you can do now:</h3>
+        <ul>
+          <li>Browse our catalog of healthcare courses</li>
+          <li>Enroll in courses that interest you</li>
+          <li>Track your progress in your personal dashboard</li>
+        </ul>
       </div>
+      
+      <p>If you have any questions, our support team is here to help.</p>
+      
+      <a href="${process.env.NEXT_PUBLIC_APP_URL}/courses" class="button">Explore Courses</a>
+    </div>
+    <div class="footer">
+      <p>Best regards,<br>The Healthcare Training Team</p>
+      <p>© ${new Date().getFullYear()} Healthcare Training. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
       `,
     }
 
-    console.log("Sending welcome email with options:", {
-      from: mailOptions.from,
-      to: mailOptions.to,
-      subject: mailOptions.subject,
-    })
-
-    const result = await transporter.sendMail(mailOptions)
-    console.log("Welcome email sent successfully:", result.messageId)
-    return { success: true, messageId: result.messageId }
+    const info = await transporter.sendMail(mailOptions)
+    console.log("Welcome email sent:", info.messageId)
+    return { success: true, messageId: info.messageId }
   } catch (error) {
     console.error("Error sending welcome email:", error)
-    return { success: false, error: error instanceof Error ? error.message : String(error) }
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error sending email",
+    }
+  }
+}
+
+/**
+ * Send a password reset email
+ * @param to Email address to send to
+ * @param userName Name of the user
+ * @param resetToken Reset token
+ * @param expiryTime Expiry time of the token
+ * @returns Promise with success status and optional error
+ */
+export async function sendPasswordResetEmail(
+  to: string,
+  userName: string,
+  resetToken: string,
+  expiryTime: Date,
+): Promise<EmailResult> {
+  try {
+    const transporter = createTransporter()
+
+    const resetLink = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${resetToken}`
+    const expiryTimeString = formatDistanceToNow(expiryTime, { addSuffix: true })
+
+    const mailOptions = {
+      from: `Healthcare Training <${emailConfig.from}>`,
+      to,
+      subject: "Reset Your Password",
+      text: `
+Hello ${userName},
+
+We received a request to reset your password. If you didn't make this request, you can ignore this email.
+
+To reset your password, click the link below:
+${resetLink}
+
+This link will expire ${expiryTimeString}.
+
+Best regards,
+The Healthcare Training Team
+      `,
+      html: `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #35dba8; color: white; padding: 20px; text-align: center; }
+    .content { padding: 20px; }
+    .footer { background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 12px; color: #777; }
+    .warning { background-color: #fff3cd; padding: 15px; border-radius: 5px; margin: 15px 0; color: #856404; }
+    .button { display: inline-block; background-color: #35dba8; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 15px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Reset Your Password</h1>
+    </div>
+    <div class="content">
+      <p>Hello ${userName},</p>
+      <p>We received a request to reset your password. If you didn't make this request, you can ignore this email.</p>
+      
+      <div class="warning">
+        <p>This link will expire ${expiryTimeString}.</p>
+      </div>
+      
+      <p>To reset your password, click the button below:</p>
+      
+      <a href="${resetLink}" class="button">Reset Password</a>
+      
+      <p style="margin-top: 20px;">If the button doesn't work, copy and paste this link into your browser:</p>
+      <p style="word-break: break-all; font-size: 12px;">${resetLink}</p>
+    </div>
+    <div class="footer">
+      <p>Best regards,<br>The Healthcare Training Team</p>
+      <p>© ${new Date().getFullYear()} Healthcare Training. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
+      `,
+    }
+
+    const info = await transporter.sendMail(mailOptions)
+    console.log("Password reset email sent:", info.messageId)
+    return { success: true, messageId: info.messageId }
+  } catch (error) {
+    console.error("Error sending password reset email:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error sending email",
+    }
+  }
+}
+
+/**
+ * Send a course completion certificate email
+ * @param to Email address to send to
+ * @param userName Name of the user
+ * @param courseName Name of the completed course
+ * @param certificateUrl URL to download the certificate
+ * @returns Promise with success status and optional error
+ */
+export async function sendCourseCompletionEmail(
+  to: string,
+  userName: string,
+  courseName: string,
+  certificateUrl: string,
+): Promise<EmailResult> {
+  try {
+    const transporter = createTransporter()
+
+    const mailOptions = {
+      from: `Healthcare Training <${emailConfig.from}>`,
+      to,
+      subject: `Congratulations on Completing ${courseName}`,
+      text: `
+Hello ${userName},
+
+Congratulations on completing the "${courseName}" course! This is a significant achievement in your healthcare training journey.
+
+You can download your certificate using the link below:
+${certificateUrl}
+
+We hope you found the course valuable and look forward to supporting your continued education.
+
+Best regards,
+The Healthcare Training Team
+      `,
+      html: `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #35dba8; color: white; padding: 20px; text-align: center; }
+    .content { padding: 20px; }
+    .footer { background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 12px; color: #777; }
+    .certificate { background-color: #e8f5e9; padding: 15px; border-radius: 5px; margin: 15px 0; color: #2e7d32; }
+    .button { display: inline-block; background-color: #35dba8; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 15px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Course Completion Certificate</h1>
+    </div>
+    <div class="content">
+      <p>Hello ${userName},</p>
+      <p>Congratulations on completing the <strong>"${courseName}"</strong> course! This is a significant achievement in your healthcare training journey.</p>
+      
+      <div class="certificate">
+        <h3>Your Certificate is Ready!</h3>
+        <p>You can download your certificate using the button below.</p>
+      </div>
+      
+      <a href="${certificateUrl}" class="button">Download Certificate</a>
+      
+      <p style="margin-top: 20px;">We hope you found the course valuable and look forward to supporting your continued education.</p>
+    </div>
+    <div class="footer">
+      <p>Best regards,<br>The Healthcare Training Team</p>
+      <p>© ${new Date().getFullYear()} Healthcare Training. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
+      `,
+    }
+
+    const info = await transporter.sendMail(mailOptions)
+    console.log("Course completion email sent:", info.messageId)
+    return { success: true, messageId: info.messageId }
+  } catch (error) {
+    console.error("Error sending course completion email:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error sending email",
+    }
+  }
+}
+
+/**
+ * Send a general notification email
+ * @param to Email address to send to
+ * @param subject Email subject
+ * @param message Email message
+ * @returns Promise with success status and optional error
+ */
+export async function sendNotificationEmail(to: string, subject: string, message: string): Promise<EmailResult> {
+  try {
+    const transporter = createTransporter()
+
+    const mailOptions = {
+      from: `Healthcare Training <${emailConfig.from}>`,
+      to,
+      subject,
+      text: message,
+      html: `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background-color: #35dba8; color: white; padding: 20px; text-align: center; }
+    .content { padding: 20px; }
+    .footer { background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 12px; color: #777; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>${subject}</h1>
+    </div>
+    <div class="content">
+      ${message}
+    </div>
+    <div class="footer">
+      <p>Best regards,<br>The Healthcare Training Team</p>
+      <p>© ${new Date().getFullYear()} Healthcare Training. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
+      `,
+    }
+
+    const info = await transporter.sendMail(mailOptions)
+    console.log("Notification email sent:", info.messageId)
+    return { success: true, messageId: info.messageId }
+  } catch (error) {
+    console.error("Error sending notification email:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error sending email",
+    }
+  }
+}
+
+/**
+ * Verify email configuration is working
+ * @returns Promise with success status and optional error
+ */
+export async function verifyEmailConfig(): Promise<EmailResult> {
+  try {
+    const transporter = createTransporter()
+    await transporter.verify()
+    return { success: true }
+  } catch (error) {
+    console.error("Email configuration verification failed:", error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error verifying email configuration",
+    }
   }
 }

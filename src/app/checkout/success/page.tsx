@@ -9,19 +9,15 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Stripe from "stripe"
 
-// Update both params and searchParams to be Promises
+// Fix the interface to use correct types
 interface PageProps {
-  params: Promise<Record<string, string>>
-  searchParams: Promise<Record<string, string | string[] | undefined>>
+  params: Record<string, string>
+  searchParams: Record<string, string | string[] | undefined>
 }
 
 export default async function CheckoutSuccessPage({ params, searchParams }: PageProps) {
-  // Await both params and searchParams
-  await params
-  const resolvedSearchParams = await searchParams
-
   const session = await getServerSession(authOptions)
-  const session_id = resolvedSearchParams.session_id as string | undefined
+  const session_id = searchParams.session_id as string | undefined
 
   if (!session?.user?.id) {
     redirect("/log-in?callbackUrl=/checkout/success")
@@ -117,7 +113,10 @@ export default async function CheckoutSuccessPage({ params, searchParams }: Page
         const courseNames = purchasedCourses.map((course) => course.name)
         console.log("Sending email with course names:", courseNames)
 
-        const emailResult = await sendPurchaseConfirmationEmail(user.email, user.name || "", courseNames)
+        // Fix the function call to match the expected parameters
+        // Assuming the function expects (email, userName, courseNames[])
+        const emailResult = await sendPurchaseConfirmationEmail(user.email, user.name || "Student", courseNames)
+
         console.log("Email sending result:", emailResult)
 
         emailSent = emailResult.success
