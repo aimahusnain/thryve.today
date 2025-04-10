@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Trash2 } from "lucide-react"
+import { toast } from "sonner"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,66 +15,75 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { useRouter } from "next/navigation"
 
-export function ClearCartButton() {
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
+interface ClearCartButtonProps {
+  onClearCart?: () => void
+  disabled?: boolean
+}
 
-  async function clearCart() {
-    setIsLoading(true)
+export function ClearCartButton({ onClearCart = () => {}, disabled = false }: ClearCartButtonProps) {
+  const [isClearing, setIsClearing] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
+  const handleClearCart = async () => {
     try {
+      setIsClearing(true)
+
       const response = await fetch("/api/cart/clear", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        method: "DELETE",
       })
 
       if (!response.ok) {
-        throw new Error("Failed to clear cart")
+        const error = await response.json()
+        throw new Error(error.error || "Failed to clear cart")
       }
 
-      router.refresh()
+      toast.success("Cart cleared successfully")
+      onClearCart()
+      setIsOpen(false)
     } catch (error) {
       console.error("Error clearing cart:", error)
+      toast.error("Failed to clear cart")
     } finally {
-      setIsLoading(false)
+      setIsClearing(false)
     }
   }
 
   return (
-    <AlertDialog>
+    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
         <Button
-          variant="ghost"
+          variant="outline"
           size="sm"
-          className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+          className="text-red-500  hover:bg-red-50 hover:text-red-600"
+          disabled={disabled || isClearing}
         >
-          <Trash2 className="h-4 w-4 mr-1" />
-          <span className="text-xs font-medium">Clear Cart</span>
+          <Trash2 className="h-4 w-4 mr-2" />
+          Clear Cart
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Clear your cart?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will remove all courses from your cart. This action cannot be undone.
+            This will remove all items from your cart and delete all associated enrollment forms. This action cannot be
+            undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isClearing}>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            onClick={clearCart}
-            className="bg-destructive hover:bg-destructive/90"
-            disabled={isLoading}
+            onClick={(e) => {
+              e.preventDefault()
+              handleClearCart()
+            }}
+            disabled={isClearing}
+            className="bg-red-500 hover:bg-red-600"
           >
-            {isLoading ? "Clearing..." : "Clear Cart"}
+            {isClearing ? "Clearing..." : "Clear Cart"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   )
 }
-

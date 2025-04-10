@@ -42,64 +42,77 @@ export default function CartPage() {
   const [loading, setLoading] = useState<boolean>(true)
   const [allEnrolled, setAllEnrolled] = useState<boolean>(false)
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        // Fetch cart data
-        const cartResponse = await fetch("/api/cart")
-        if (!cartResponse.ok) {
-          if (cartResponse.status === 401) {
-            // Redirect to login if unauthorized
-            router.push("/log-in?callbackUrl=/cart")
-            return
-          }
-          throw new Error("Failed to fetch cart")
+  const loadCartData = async () => {
+    setLoading(true)
+    try {
+      // Fetch cart data
+      const cartResponse = await fetch("/api/cart")
+      if (!cartResponse.ok) {
+        if (cartResponse.status === 401) {
+          // Redirect to login if unauthorized
+          router.push("/log-in?callbackUrl=/cart")
+          return
         }
-        const cartData = (await cartResponse.json()) as Cart
-        setCart(cartData)
+        throw new Error("Failed to fetch cart")
+      }
+      const cartData = (await cartResponse.json()) as Cart
+      setCart(cartData)
 
-        // Calculate total
-        const totalAmount = cartData.items.reduce(
-          (sum, item) => sum + (item.course?.price || 0) * (item.quantity || 1),
-          0,
-        )
-        setTotal(totalAmount)
+      // Calculate total
+      const totalAmount = cartData.items.reduce(
+        (sum, item) => sum + (item.course?.price || 0) * (item.quantity || 1),
+        0,
+      )
+      setTotal(totalAmount)
 
-        // Check enrollment status for each course
-        if (cartData.items && cartData.items.length > 0) {
-          const enrollmentStatusMap: Record<string, boolean> = {}
-          let allCoursesEnrolled = true
+      // Check enrollment status for each course
+      if (cartData.items && cartData.items.length > 0) {
+        const enrollmentStatusMap: Record<string, boolean> = {}
+        let allCoursesEnrolled = true
 
-          for (const item of cartData.items) {
-            if (item.courseId) {
-              const enrollmentResponse = await fetch(`/api/enrollment/status?courseId=${item.courseId}`)
-              if (enrollmentResponse.ok) {
-                const { completed } = (await enrollmentResponse.json()) as { completed: boolean }
-                enrollmentStatusMap[item.courseId] = completed
-                if (!completed) {
-                  allCoursesEnrolled = false
-                }
-              } else {
-                // If we can't determine enrollment status, assume not enrolled
-                enrollmentStatusMap[item.courseId] = false
+        for (const item of cartData.items) {
+          if (item.courseId) {
+            const enrollmentResponse = await fetch(`/api/enrollment/status?courseId=${item.courseId}`)
+            if (enrollmentResponse.ok) {
+              const { completed } = (await enrollmentResponse.json()) as { completed: boolean }
+              enrollmentStatusMap[item.courseId] = completed
+              if (!completed) {
                 allCoursesEnrolled = false
               }
+            } else {
+              // If we can't determine enrollment status, assume not enrolled
+              enrollmentStatusMap[item.courseId] = false
+              allCoursesEnrolled = false
             }
           }
-
-          setEnrollmentStatus(enrollmentStatusMap)
-          setAllEnrolled(allCoursesEnrolled)
         }
-      } catch (error) {
-        console.error("Error loading cart data:", error)
-        toast.error("Failed to load cart data")
-      } finally {
-        setLoading(false)
-      }
-    }
 
-    loadData()
+        setEnrollmentStatus(enrollmentStatusMap)
+        setAllEnrolled(allCoursesEnrolled)
+      } else {
+        // Empty cart
+        setEnrollmentStatus({})
+        setAllEnrolled(false)
+      }
+    } catch (error) {
+      console.error("Error loading cart data:", error)
+      toast.error("Failed to load cart data")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadCartData()
   }, [router])
+
+  const handleCartItemRemoved = () => {
+    loadCartData()
+  }
+
+  const handleCartCleared = () => {
+    loadCartData()
+  }
 
   const itemCount = cart.items?.reduce((total, item) => total + (item.quantity || 0), 0) || 0
 
@@ -166,18 +179,21 @@ export default function CartPage() {
                     {itemCount} {itemCount === 1 ? "item" : "items"}
                   </Badge>
                 </div>
-                <ClearCartButton />
+                <ClearCartButton onClearCart={handleCartCleared} />
               </CardHeader>
               <CardContent className="p-0">
                 <div className="divide-y">
                   {cart.items.map((item) => (
                     <CartItem
                       key={item.id}
-                      id={item.courseId || item.id}
+                      id={item.id} // Use the cart item ID here
+                      courseId={item.courseId}
                       name={item.course?.name || "Course"}
                       price={item.course?.price || 0}
+                      quantity={item.quantity || 1}
                       duration={item.course?.duration || ""}
                       isEnrolled={!!enrollmentStatus[item.courseId]}
+                      onRemove={handleCartItemRemoved}
                     />
                   ))}
                 </div>
@@ -185,9 +201,7 @@ export default function CartPage() {
             </Card>
 
             {!allEnrolled && (
-              <Alert
-                className="bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800"
-              >
+              <Alert className="bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800">
                 <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-500" />
                 <AlertTitle>Enrollment Required</AlertTitle>
                 <AlertDescription>

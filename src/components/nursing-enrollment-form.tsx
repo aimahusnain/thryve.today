@@ -1,108 +1,61 @@
-"use client";
+"use client"
 
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { useCart } from "@/provider/cart-provider";
-import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { format } from "date-fns";
-import {
-  ArrowRight,
-  CalendarIcon,
-  CheckCircle,
-  LogIn,
-  UserPlus,
-} from "lucide-react";
-import type { Session } from "next-auth";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { Toaster, toast } from "sonner";
-import * as z from "zod";
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
+import { useCart } from "@/provider/cart-provider"
+import { zodResolver } from "@hookform/resolvers/zod"
+import axios from "axios"
+import { format } from "date-fns"
+import { ArrowRight, CalendarIcon, CheckCircle, LogIn, UserPlus } from "lucide-react"
+import type { Session } from "next-auth"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
+import { useForm } from "react-hook-form"
+import { Toaster, toast } from "sonner"
+import * as z from "zod"
 
 // Form schema remains the same
 const formSchema = z.object({
-  // ... your existing schema
-  studentName: z
-    .string()
-    .min(2, { message: "Name must be at least 2 characters." }),
-  dateOfBirth: z
-    .string()
-    .min(5, { message: "Date of birth must be at least 5 characters." }),
-  address: z
-    .string()
-    .min(5, { message: "Address must be at least 5 characters." }),
-  cityStateZip: z
-    .string()
-    .min(5, { message: "City/State/ZIP must be at least 5 characters." }),
-  phoneHome: z
-    .string()
-    .min(10, { message: "Home phone must be at least 10 characters." }),
-  phoneCell: z
-    .string()
-    .min(10, { message: "Cell phone must be at least 10 characters." }),
+  studentName: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  dateOfBirth: z.string().min(5, { message: "Date of birth must be at least 5 characters." }),
+  address: z.string().min(5, { message: "Address must be at least 5 characters." }),
+  cityStateZip: z.string().min(5, { message: "City/State/ZIP must be at least 5 characters." }),
+  phoneHome: z.string().min(10, { message: "Home phone must be at least 10 characters." }),
+  phoneCell: z.string().min(10, { message: "Cell phone must be at least 10 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   socialSecurity: z.string().min(9, {
     message: "Social Security number must be at least 9 characters.",
   }),
   stateId: z.string().min(1, { message: "State ID is required." }),
-  emergencyContact: z
-    .string().optional(),
-  emergencyRelationship: z
-    .string().optional(),
+  emergencyContact: z.string().optional(),
+  emergencyRelationship: z.string().optional(),
   emergencyPhone: z.string().min(10, {
     message: "Emergency contact phone must be at least 10 characters.",
   }),
-  studentSignature: z
-    .string()
-    .min(2, { message: "Student signature is required." }),
+  studentSignature: z.string().min(2, { message: "Student signature is required." }),
   studentSignatureDate: z.date({
     required_error: "Student signature date is required.",
   }),
-  directorSignature: z
-    .string().optional(),
+  directorSignature: z.string().optional(),
   directorSignatureDate: z.date().optional(),
   guardianSignature: z.string().optional(),
   guardianSignatureDate: z.date().optional(),
   courseId: z.string(),
-});
+})
 
 interface NursingEnrollmentFormProps {
-  courseId: string;
-  courseName: string;
-  coursePrice: number;
-  courseDuration: string;
-  session: Session | null;
+  courseId: string
+  courseName: string
+  coursePrice: number
+  courseDuration: string
+  session: Session | null
 }
 
 export function NursingEnrollmentForm({
@@ -112,17 +65,17 @@ export function NursingEnrollmentForm({
   courseDuration,
   session,
 }: NursingEnrollmentFormProps) {
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [showAuthDialog, setShowAuthDialog] = useState(false);
-  const { addToCart } = useCart();
-  const router = useRouter();
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [showAuthDialog, setShowAuthDialog] = useState(false)
+  const { addToCart } = useCart()
+  const router = useRouter()
 
   // Check authentication status as soon as component loads
   useEffect(() => {
     if (!session) {
-      setShowAuthDialog(true);
+      setShowAuthDialog(true)
     }
-  }, [session]);
+  }, [session])
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -144,62 +97,75 @@ export function NursingEnrollmentForm({
       guardianSignature: "",
       courseId: courseId,
     },
-  });
+  })
 
+  // Fixed onSubmit function to match React Hook Form's expected signature
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     // Double check authentication before submitting
     if (!session) {
-      setShowAuthDialog(true);
-      return;
+      setShowAuthDialog(true)
+      return
     }
 
     try {
-      toast.loading("Submitting enrollment form...");
+      toast.loading("Submitting enrollment form...")
 
       const formattedValues = {
         ...values,
         studentSignatureDate: values.studentSignatureDate?.toISOString(),
         dateOfBirth: values.dateOfBirth?.toString(),
-        directorSignatureDate: values.directorSignatureDate?.toISOString(),
-        guardianSignatureDate: values.guardianSignatureDate?.toISOString(),
-      };
+        directorSignatureDate: values.directorSignatureDate
+          ? new Date(values.directorSignatureDate).toISOString()
+          : undefined,
+        guardianSignatureDate: values.guardianSignatureDate
+          ? new Date(values.guardianSignatureDate).toISOString()
+          : undefined,
+      }
 
       const response = await axios.post("/api/enroll", formattedValues, {
         headers: {
           "Content-Type": "application/json",
         },
-      });
+      })
 
       if (response.status === 200 || response.status === 201) {
-        toast.dismiss();
-        toast.success("Enrollment form submitted successfully!");
-        setIsSubmitted(true);
+        toast.dismiss()
+        toast.success("Enrollment form submitted successfully!")
+        setIsSubmitted(true)
 
-        // Add the course to cart
+        // Check if course is already in cart before adding
         try {
-          await addToCart(courseId, courseName, coursePrice, courseDuration);
+          const cartResponse = await fetch("/api/cart")
+          const cartData = await cartResponse.json()
+
+          // Check if the course is already in the cart
+          const courseAlreadyInCart = cartData.items?.some((item: { courseId: string }) => item.courseId === courseId)
+
+          if (!courseAlreadyInCart) {
+            // Only add to cart if not already there
+            await addToCart(courseId, courseName, coursePrice, courseDuration)
+          }
 
           // Wait a moment before redirecting to cart
           setTimeout(() => {
-            router.push("/cart");
-          }, 1500);
+            router.push("/cart")
+          }, 1500)
         } catch (error) {
-          console.error("Error adding course to cart:", error);
-          toast.error("Failed to add course to cart. Please try again.");
+          console.error("Error checking cart:", error)
+          toast.error("Failed to update cart. Please try again.")
         }
       }
     } catch (error) {
-      toast.dismiss();
+      toast.dismiss()
       if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message;
-        toast.error(errorMessage);
+        const errorMessage = error.response?.data?.message
+        toast.error(errorMessage || "An error occurred")
       } else {
-        toast.error("An unexpected error occurred. Please try again.");
+        toast.error("An unexpected error occurred. Please try again.")
       }
     }
-  };
+  }
 
-  // Authentication Dialog Component
   // Authentication Dialog Component
   const AuthDialog = () => (
     <Dialog open={showAuthDialog} onOpenChange={() => {}}>
@@ -211,25 +177,10 @@ export function NursingEnrollmentForm({
 
           {/* Decorative patterns */}
           <div className="absolute inset-0 opacity-10">
-            <svg
-              className="w-full h-full"
-              viewBox="0 0 100 100"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+            <svg className="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
               <defs>
-                <pattern
-                  id="grid"
-                  width="10"
-                  height="10"
-                  patternUnits="userSpaceOnUse"
-                >
-                  <path
-                    d="M 10 0 L 0 0 0 10"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="0.5"
-                    opacity="0.5"
-                  />
+                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+                  <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.5" />
                 </pattern>
               </defs>
               <rect width="100%" height="100%" fill="url(#grid)" />
@@ -279,21 +230,15 @@ export function NursingEnrollmentForm({
                   </svg>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-foreground truncate">
-                    {courseName}
-                  </h4>
+                  <h4 className="font-medium text-foreground truncate">{courseName}</h4>
                   <div className="mt-2 space-y-1.5">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Price:</span>
-                      <span className="font-medium text-foreground">
-                        ${coursePrice.toFixed(2)}
-                      </span>
+                      <span className="font-medium text-foreground">${coursePrice.toFixed(2)}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Duration:</span>
-                      <span className="font-medium text-foreground">
-                        {courseDuration}
-                      </span>
+                      <span className="font-medium text-foreground">{courseDuration}</span>
                     </div>
                   </div>
                 </div>
@@ -318,9 +263,7 @@ export function NursingEnrollmentForm({
               <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
             </svg>
-            <p className="text-xs text-muted-foreground">
-              Your enrollment information is secure
-            </p>
+            <p className="text-xs text-muted-foreground">Your enrollment information is secure</p>
           </div>
 
           {/* Action buttons with fixed height and responsive design */}
@@ -340,9 +283,7 @@ export function NursingEnrollmentForm({
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t border-border"></span>
               </div>
-              <span className="relative px-3 text-xs text-muted-foreground bg-background">
-                or
-              </span>
+              <span className="relative px-3 text-xs text-muted-foreground bg-background">or</span>
             </div>
 
             <Button
@@ -359,7 +300,7 @@ export function NursingEnrollmentForm({
         </div>
       </DialogContent>
     </Dialog>
-  );
+  )
 
   if (isSubmitted) {
     return (
@@ -371,12 +312,9 @@ export function NursingEnrollmentForm({
             <div className="inline-block p-3 rounded-full bg-primary/10 mb-6">
               <CheckCircle className="w-12 h-12 text-primary" />
             </div>
-            <h1 className="text-4xl font-bold text-primary mb-4">
-              Enrollment Submitted Successfully!
-            </h1>
+            <h1 className="text-4xl font-bold text-primary mb-4">Enrollment Submitted Successfully!</h1>
             <p className="text-xl text-muted-foreground mb-8">
-              Your course has been added to your cart. Redirecting to
-              checkout...
+              Your course has been added to your cart. Redirecting to checkout...
             </p>
           </div>
 
@@ -385,18 +323,14 @@ export function NursingEnrollmentForm({
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="text-2xl font-semibold">{courseName}</h2>
-                  <p className="text-muted-foreground">
-                    Duration: {courseDuration}
-                  </p>
+                  <p className="text-muted-foreground">Duration: {courseDuration}</p>
                 </div>
               </div>
 
               <div className="space-y-4 mb-8">
                 <div className="flex justify-between items-center py-2 border-b">
                   <span className="text-muted-foreground">Program Fee</span>
-                  <span className="font-semibold">
-                    ${coursePrice.toFixed(2)}
-                  </span>
+                  <span className="font-semibold">${coursePrice.toFixed(2)}</span>
                 </div>
               </div>
 
@@ -412,15 +346,14 @@ export function NursingEnrollmentForm({
             <div className="bg-muted/30 p-6 mt-4">
               <h3 className="font-semibold mb-2">Important Note:</h3>
               <p className="text-sm text-muted-foreground">
-                Your enrollment will be finalized once the payment is processed.
-                You&apos;ll receive a confirmation email with further
-                instructions after successful payment.
+                Your enrollment will be finalized once the payment is processed. You&apos;ll receive a confirmation
+                email with further instructions after successful payment.
               </p>
             </div>
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -432,19 +365,13 @@ export function NursingEnrollmentForm({
 
       <div className="container mx-auto py-12 px-6 sm:px-8 lg:px-12 max-w-6xl mt-20">
         <div className="flex justify-between items-center sm:flex-row flex-col mb-8">
-          <h1 className="text-4xl font-extrabold text-primary mb-2">
-            Enrollment Form: {courseName}
-          </h1>
-          <p className="text-muted-foreground">
-            Fill out all required information below to enroll in this course.
-          </p>
+          <h1 className="text-4xl font-extrabold text-primary mb-2">Enrollment Form: {courseName}</h1>
+          <p className="text-muted-foreground">Fill out all required information below to enroll in this course.</p>
         </div>
 
         <Card className="mb-8 bg-card">
           <CardHeader className="p-6">
-            <CardTitle className="text-3xl font-bold">
-              Student Enrollment Agreement
-            </CardTitle>
+            <CardTitle className="text-3xl font-bold">Student Enrollment Agreement</CardTitle>
             <CardDescription className="text-lg mt-2">
               Thryve.Today
               <br />
@@ -459,13 +386,9 @@ export function NursingEnrollmentForm({
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-4 bg-muted/30 rounded-lg">
               <div>
                 <h3 className="font-semibold text-lg">{courseName}</h3>
-                <p className="text-muted-foreground">
-                  Duration: {courseDuration}
-                </p>
+                <p className="text-muted-foreground">Duration: {courseDuration}</p>
               </div>
-              <div className="text-2xl font-bold">
-                ${coursePrice.toFixed(2)}
-              </div>
+              <div className="text-2xl font-bold">${coursePrice.toFixed(2)}</div>
             </div>
           </CardContent>
         </Card>
@@ -475,9 +398,7 @@ export function NursingEnrollmentForm({
             {/* Form fields remain the same but with disabled state based on session */}
             <Card className="bg-card">
               <CardHeader className="bg-muted p-6">
-                <CardTitle className="text-2xl font-bold text-primary">
-                  Student Information
-                </CardTitle>
+                <CardTitle className="text-2xl font-bold text-primary">Student Information</CardTitle>
               </CardHeader>
               <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
                 <FormField
@@ -602,8 +523,7 @@ export function NursingEnrollmentForm({
                         />
                       </FormControl>
                       <div className="text-sm text-black mt-1">
-                        
-                      <FormMessage />
+                        <FormMessage />
                       </div>
                     </FormItem>
                   )}
@@ -636,8 +556,7 @@ export function NursingEnrollmentForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Social Security #{" "}
-                        <span className="text-red-500">*</span>
+                        Social Security # <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -658,8 +577,7 @@ export function NursingEnrollmentForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-foreground font-medium">
-                        Student State ID #{" "}
-                        <span className="text-red-500">*</span>
+                        Student State ID # <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input
@@ -679,9 +597,7 @@ export function NursingEnrollmentForm({
                   name="emergencyContact"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground font-medium">
-                        Emergency Contact{" "}
-                      </FormLabel>
+                      <FormLabel className="text-foreground font-medium">Emergency Contact </FormLabel>
                       <FormControl>
                         <Input
                           disabled={!session}
@@ -700,9 +616,7 @@ export function NursingEnrollmentForm({
                   name="emergencyRelationship"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground font-medium">
-                        Relationship
-                      </FormLabel>
+                      <FormLabel className="text-foreground font-medium">Relationship</FormLabel>
                       <FormControl>
                         <Input
                           disabled={!session}
@@ -721,9 +635,7 @@ export function NursingEnrollmentForm({
                   name="emergencyPhone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-foreground font-medium">
-                        Emergency Contact Phone{" "}
-                      </FormLabel>
+                      <FormLabel className="text-foreground font-medium">Emergency Contact Phone </FormLabel>
                       <FormControl>
                         <Input
                           disabled={!session}
@@ -741,15 +653,12 @@ export function NursingEnrollmentForm({
 
             <Card className="bg-card mt-6">
               <CardHeader className="bg-muted p-6">
-                <CardTitle className="text-2xl font-bold text-primary">
-                  Student Acknowledgments
-                </CardTitle>
+                <CardTitle className="text-2xl font-bold text-primary">Student Acknowledgments</CardTitle>
               </CardHeader>
               <CardContent className="p-6">
                 <p className="text-foreground mb-6 leading-relaxed">
-                  By submitting this form, I am providing my digital signature
-                  and agree to the terms and conditions outlined in this
-                  agreement.
+                  By submitting this form, I am providing my digital signature and agree to the terms and conditions
+                  outlined in this agreement.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <FormField
@@ -758,15 +667,10 @@ export function NursingEnrollmentForm({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-foreground font-medium">
-                          Student&apos;s Signature{" "}
-                          <span className="text-red-500">*</span>
+                          Student&apos;s Signature <span className="text-red-500">*</span>
                         </FormLabel>
                         <FormControl>
-                          <Input
-                            disabled={!session}
-                            {...field}
-                            className="bg-background text-foreground"
-                          />
+                          <Input disabled={!session} {...field} className="bg-background text-foreground" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -789,21 +693,17 @@ export function NursingEnrollmentForm({
                                 className={cn(
                                   "w-full pl-3 text-left font-normal",
                                   !field.value && "text-muted-foreground",
-                                  !session && "opacity-50 cursor-not-allowed"
+                                  !session && "opacity-50 cursor-not-allowed",
                                 )}
                                 disabled={!session}
                                 onClick={(e) => {
                                   if (!session) {
-                                    e.preventDefault();
-                                    setShowAuthDialog(true);
+                                    e.preventDefault()
+                                    setShowAuthDialog(true)
                                   }
                                 }}
                               >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
+                                {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
                             </FormControl>
@@ -813,14 +713,10 @@ export function NursingEnrollmentForm({
                               mode="single"
                               selected={field.value}
                               onSelect={(date) => {
-                                if (session) field.onChange(date);
-                                else setShowAuthDialog(true);
+                                if (session) field.onChange(date)
+                                else setShowAuthDialog(true)
                               }}
-                              disabled={(date) =>
-                                date > new Date() ||
-                                date < new Date("1900-01-01") ||
-                                !session
-                              }
+                              disabled={(date) => date > new Date() || date < new Date("1900-01-01") || !session}
                               initialFocus
                             />
                           </PopoverContent>
@@ -835,15 +731,9 @@ export function NursingEnrollmentForm({
                     name="directorSignature"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-foreground font-medium">
-                          Program Director/Director{" "}
-                        </FormLabel>
+                        <FormLabel className="text-foreground font-medium">Program Director/Director </FormLabel>
                         <FormControl>
-                          <Input
-                            disabled={!session}
-                            {...field}
-                            className="bg-background text-foreground"
-                          />
+                          <Input disabled={!session} {...field} className="bg-background text-foreground" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -855,9 +745,7 @@ export function NursingEnrollmentForm({
                     name="directorSignatureDate"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel className="text-foreground font-medium">
-                          Date
-                        </FormLabel>
+                        <FormLabel className="text-foreground font-medium">Date</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild disabled={!session}>
                             <FormControl>
@@ -866,21 +754,17 @@ export function NursingEnrollmentForm({
                                 className={cn(
                                   "w-full pl-3 text-left font-normal",
                                   !field.value && "text-muted-foreground",
-                                  !session && "opacity-50 cursor-not-allowed"
+                                  !session && "opacity-50 cursor-not-allowed",
                                 )}
                                 disabled={!session}
                                 onClick={(e) => {
                                   if (!session) {
-                                    e.preventDefault();
-                                    setShowAuthDialog(true);
+                                    e.preventDefault()
+                                    setShowAuthDialog(true)
                                   }
                                 }}
                               >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
+                                {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
                             </FormControl>
@@ -890,14 +774,10 @@ export function NursingEnrollmentForm({
                               mode="single"
                               selected={field.value}
                               onSelect={(date) => {
-                                if (session) field.onChange(date);
-                                else setShowAuthDialog(true);
+                                if (session) field.onChange(date)
+                                else setShowAuthDialog(true)
                               }}
-                              disabled={(date) =>
-                                date > new Date() ||
-                                date < new Date("1900-01-01") ||
-                                !session
-                              }
+                              disabled={(date) => date > new Date() || date < new Date("1900-01-01") || !session}
                               initialFocus
                             />
                           </PopoverContent>
@@ -916,11 +796,7 @@ export function NursingEnrollmentForm({
                           Parent/Guardian Signature (if applicable)
                         </FormLabel>
                         <FormControl>
-                          <Input
-                            disabled={!session}
-                            {...field}
-                            className="bg-background text-foreground"
-                          />
+                          <Input disabled={!session} {...field} className="bg-background text-foreground" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -932,9 +808,7 @@ export function NursingEnrollmentForm({
                     name="guardianSignatureDate"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
-                        <FormLabel className="text-foreground font-medium">
-                          Date
-                        </FormLabel>
+                        <FormLabel className="text-foreground font-medium">Date</FormLabel>
                         <Popover>
                           <PopoverTrigger asChild disabled={!session}>
                             <FormControl>
@@ -943,21 +817,17 @@ export function NursingEnrollmentForm({
                                 className={cn(
                                   "w-full pl-3 text-left font-normal",
                                   !field.value && "text-muted-foreground",
-                                  !session && "opacity-50 cursor-not-allowed"
+                                  !session && "opacity-50 cursor-not-allowed",
                                 )}
                                 disabled={!session}
                                 onClick={(e) => {
                                   if (!session) {
-                                    e.preventDefault();
-                                    setShowAuthDialog(true);
+                                    e.preventDefault()
+                                    setShowAuthDialog(true)
                                   }
                                 }}
                               >
-                                {field.value ? (
-                                  format(field.value, "PPP")
-                                ) : (
-                                  <span>Pick a date</span>
-                                )}
+                                {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                                 <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                               </Button>
                             </FormControl>
@@ -967,14 +837,10 @@ export function NursingEnrollmentForm({
                               mode="single"
                               selected={field.value}
                               onSelect={(date) => {
-                                if (session) field.onChange(date);
-                                else setShowAuthDialog(true);
+                                if (session) field.onChange(date)
+                                else setShowAuthDialog(true)
                               }}
-                              disabled={(date) =>
-                                date > new Date() ||
-                                date < new Date("1900-01-01") ||
-                                !session
-                              }
+                              disabled={(date) => date > new Date() || date < new Date("1900-01-01") || !session}
                               initialFocus
                             />
                           </PopoverContent>
@@ -999,5 +865,5 @@ export function NursingEnrollmentForm({
         </Form>
       </div>
     </div>
-  );
+  )
 }

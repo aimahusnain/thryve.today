@@ -65,7 +65,32 @@ export async function getUserCart() {
   return cart
 }
 
-// Add a course to the cart
+// Check if a course is already in the cart
+export async function isInCart(courseId: string) {
+  try {
+    const session = await getServerSession(authOptions)
+
+    if (!session?.user?.id) {
+      throw new Error("User not authenticated")
+    }
+
+    const cart = await prisma.cart.findUnique({
+      where: { userId: session.user.id },
+      include: {
+        items: {
+          where: { courseId },
+        },
+      },
+    })
+
+    return  (cart?.items?.length ?? 0) > 0
+  } catch (error) {
+    console.error("Error checking if course is in cart:", error)
+    return false
+  }
+}
+
+// Modify the addToCart function to prevent duplicates
 export async function addToCart(courseId: string) {
   const session = await getServerSession(authOptions)
 
@@ -120,12 +145,9 @@ export async function addToCart(courseId: string) {
   })
 
   if (existingItem) {
-    // Update quantity if item already exists
-    return prisma.cartItem.update({
+    // Return the existing item without changing quantity
+    return prisma.cartItem.findUnique({
       where: { id: existingItem.id },
-      data: {
-        quantity: existingItem.quantity + 1,
-      },
       include: {
         course: true,
       },
@@ -153,6 +175,25 @@ export async function removeItemFromCart(cartItemId: string) {
     throw new Error("User not authenticated")
   }
 
+  // First get the cart item to know which course it is
+  const cartItem = await prisma.cartItem.findUnique({
+    where: { id: cartItemId },
+    select: { courseId: true },
+  })
+
+  if (!cartItem) {
+    throw new Error("Cart item not found")
+  }
+
+  // Delete the enrollment record for this user and course
+  await prisma.enrollment.deleteMany({
+    where: {
+      userId: session.user.id,
+      courseId: cartItem.courseId,
+    },
+  })
+
+  // Then delete the cart item
   return prisma.cartItem.delete({
     where: { id: cartItemId },
   })
@@ -207,13 +248,103 @@ export async function clearCart() {
 
   const cart = await prisma.cart.findUnique({
     where: { userId },
+    include: {
+      items: {
+        select: { courseId: true },
+      },
+    },
   })
 
   if (cart) {
+    // Get all course IDs in the cart
+    const courseIds = cart.items.map((item) => item.courseId)
+
+    // Delete all enrollment records for these courses
+    if (courseIds.length > 0) {
+      await prisma.enrollment.deleteMany({
+        where: {
+          userId: session.user.id,
+          courseId: {
+            in: courseIds,
+          },
+        },
+      })
+    }
+
+    // Delete all cart items
     await prisma.cartItem.deleteMany({
       where: { cartId: cart.id },
     })
   }
 
   return { success: true }
+}
+
+// Check if a user has completed enrollment for a specific course
+export async function checkEnrollmentStatus(courseId: string) {
+  const session = await getServerSession(authOptions)
+
+  if (!session?.user?.id) {
+    throw new Error("User not authenticated")
+  }
+
+  const enrollment = await prisma.enrollment.findFirst({
+    where: {
+      userId: session.user.id,
+      courseId: courseId,
+    },
+  })
+
+  return {
+    completed: !!enrollment,
+    enrollmentId: enrollment?.id || null,
+  }
+}
+
+// Check enrollment status for all courses in cart
+export async function checkCartEnrollmentStatus() {
+  try {
+    const cart = await getUserCart()
+    const session = await getServerSession(authOptions)
+
+    if (!session?.user?.id) {
+      throw new Error("User not authenticated")
+    }
+
+    const courseIds = cart.items.map((item) => item.course.id)
+
+    const enrollments = await prisma.enrollment.findMany({
+      where: {
+        userId: session.user.id,
+        courseId: {
+          in: courseIds,
+        },
+      },
+      select: {
+        courseId: true,
+      },
+    })
+
+    const enrolledCourseIds = enrollments.map((e) => e.courseId)
+
+    const enrollmentStatus: Record<string, boolean> = {}
+    let allEnrolled = true
+
+    for (const item of cart.items) {
+      const isEnrolled = enrolledCourseIds.includes(item.course.id)
+      enrollmentStatus[item.course.id] = isEnrolled
+      if (!isEnrolled) allEnrolled = false
+    }
+
+    return {
+      enrollmentStatus,
+      allEnrolled,
+    }
+  } catch (error) {
+    console.error("Error checking enrollment status:", error)
+    return {
+      enrollmentStatus: {},
+      allEnrolled: false,
+    }
+  }
 }

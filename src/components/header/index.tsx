@@ -1,77 +1,96 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { AnimatePresence, motion } from "framer-motion";
-import {
-  Menu,
-  X,
-  Mail,
-  Copy,
-  Check,
-  ChevronRight,
-  PhoneCall,
-  ShoppingCart,
-} from "lucide-react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme-toggler";
-import { UserNav } from "./user-nav";
-import Goy from "@/components/goy";
+import { useState, useEffect } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useSession } from "next-auth/react"
+import { AnimatePresence, motion } from "framer-motion"
+import { Menu, X, Mail, Copy, Check, ChevronRight, PhoneCall, ShoppingCart } from "lucide-react"
+import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme-toggler"
+import { UserNav } from "./user-nav"
+import Goy from "@/components/goy"
 
 interface NavLink {
-  title: string;
-  href: string;
+  title: string
+  href: string
 }
 
 const navLinks: NavLink[] = [
   { title: "Home", href: "home" },
   { title: "Why Us", href: "why-us" },
   { title: "Contact", href: "contact" },
-];
+]
 
 export default function Navbar() {
-  const [scrollPosition, setScrollPosition] = useState(0);
-  const [showCTAInNav, setShowCTAInNav] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { data: session, status } = useSession();
-  const isLoading = status === "loading";
-  const pathname = usePathname();
-  const isHomePage = pathname === "/" || pathname === "/home";
+  const [scrollPosition, setScrollPosition] = useState(0)
+  const [showCTAInNav, setShowCTAInNav] = useState(false)
+  const [copied, setCopied] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { data: session, status } = useSession()
+  const isLoading = status === "loading"
+  const pathname = usePathname()
+  const isHomePage = pathname === "/" || pathname === "/home"
+  const [cartItemsCount, setCartItemsCount] = useState(0)
 
   useEffect(() => {
     const handleScroll = () => {
-      const position = window.scrollY;
-      const pageHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const scrollPercentage = (position / pageHeight) * 100;
+      const position = window.scrollY
+      const pageHeight = document.documentElement.scrollHeight - window.innerHeight
+      const scrollPercentage = (position / pageHeight) * 100
 
-      setScrollPosition(position);
-      setShowCTAInNav(scrollPercentage > 7.2);
-    };
+      setScrollPosition(position)
+      setShowCTAInNav(scrollPercentage > 7.2)
+    }
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  useEffect(() => {
+    const fetchCartItemsCount = async () => {
+      if (session?.user) {
+        try {
+          const response = await fetch("/api/cart/count")
+          const data = await response.json()
+          setCartItemsCount(data.count)
+        } catch (error) {
+          console.error("Failed to fetch cart count:", error)
+        }
+      }
+    }
+
+    // Initial fetch
+    fetchCartItemsCount()
+
+    // Set up interval to check every second
+    const intervalId = setInterval(fetchCartItemsCount, 1000)
+
+    // Set up event listener for cart updates
+    window.addEventListener("cart-updated", fetchCartItemsCount)
+
+    return () => {
+      clearInterval(intervalId)
+      window.removeEventListener("cart-updated", fetchCartItemsCount)
+    }
+  }, [session])
 
   // Hide navbar on /dashboard/* routes
   // if (pathname.startsWith("/dashboard")) return null;
-  if (pathname.startsWith("/admin-dashboard")) return null;
+  if (pathname.startsWith("/admin-dashboard")) return null
 
   const copyEmail = async () => {
-    const email = "infor@thryve.today";
-    await navigator.clipboard.writeText(email);
-    setCopied(true);
+    const email = "infor@thryve.today"
+    await navigator.clipboard.writeText(email)
+    setCopied(true)
     toast.success("Email copied to clipboard!", {
       duration: 2000,
       position: "top-right",
-    });
-    setTimeout(() => setCopied(false), 2000);
-  };
+    })
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   // Render either Goy component (for home page) or Link to home page section (for other pages)
   const renderNavLink = (link: { href: string; title: string }) => {
@@ -84,7 +103,7 @@ export default function Navbar() {
         >
           {link.title}
         </Goy>
-      );
+      )
     } else {
       return (
         <Link
@@ -94,14 +113,11 @@ export default function Navbar() {
         >
           {link.title}
         </Link>
-      );
+      )
     }
-  };
+  }
 
-  const renderMobileNavLink = (
-    link: { href: string; title: string },
-    index: number
-  ) => {
+  const renderMobileNavLink = (link: { href: string; title: string }, index: number) => {
     if (isHomePage) {
       return (
         <motion.div
@@ -111,14 +127,9 @@ export default function Navbar() {
           transition={{ delay: index * 0.1 }}
         >
           <Goy id={link.href} className="w-full">
-            <div
-              className="flex items-center justify-between group w-full"
-              onClick={() => setIsMenuOpen(false)}
-            >
+            <div className="flex items-center justify-between group w-full" onClick={() => setIsMenuOpen(false)}>
               <div className="flex flex-col items-start">
-                <span className="text-2xl font-medium text-foreground">
-                  {link.title}
-                </span>
+                <span className="text-2xl font-medium text-foreground">{link.title}</span>
                 <span className="text-sm text-muted-foreground group-hover:text-[#2db188] transition-colors">
                   Explore {link.title.toLowerCase()}
                 </span>
@@ -129,7 +140,7 @@ export default function Navbar() {
             </div>
           </Goy>
         </motion.div>
-      );
+      )
     } else {
       return (
         <motion.div
@@ -139,14 +150,9 @@ export default function Navbar() {
           transition={{ delay: index * 0.1 }}
         >
           <Link href={`/#${link.href}`} className="w-full">
-            <div
-              className="flex items-center justify-between group w-full"
-              onClick={() => setIsMenuOpen(false)}
-            >
+            <div className="flex items-center justify-between group w-full" onClick={() => setIsMenuOpen(false)}>
               <div className="flex flex-col items-start">
-                <span className="text-2xl font-medium text-foreground">
-                  {link.title}
-                </span>
+                <span className="text-2xl font-medium text-foreground">{link.title}</span>
                 <span className="text-sm text-muted-foreground group-hover:text-[#2db188] transition-colors">
                   Explore {link.title.toLowerCase()}
                 </span>
@@ -157,9 +163,9 @@ export default function Navbar() {
             </div>
           </Link>
         </motion.div>
-      );
+      )
     }
-  };
+  }
 
   return (
     <div className="fixed top-0 sm:top-4 left-0 right-0 z-[60]">
@@ -175,27 +181,16 @@ export default function Navbar() {
             transition={{ duration: 0.3 }}
             className="hidden lg:flex bg-background rounded-full px-6 py-2.5 shadow-sm"
           >
-            <div
-              className="flex items-center space-x-2 text-foreground cursor-pointer"
-              onClick={copyEmail}
-            >
+            <div className="flex items-center space-x-2 text-foreground cursor-pointer" onClick={copyEmail}>
               <Mail className="w-4 h-4" />
               <span>infor@thryve.today</span>
               <AnimatePresence>
                 {!copied ? (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                  >
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
                     <Copy className="w-4 h-4 text-muted-foreground" />
                   </motion.div>
                 ) : (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    exit={{ scale: 0 }}
-                  >
+                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
                     <Check className="w-4 h-4 text-green-500" />
                   </motion.div>
                 )}
@@ -213,13 +208,7 @@ export default function Navbar() {
             <div className="flex items-center justify-between h-full">
               {/* Logo */}
               <Link href="/" className="flex items-center">
-                <Image
-                  src="/logo (2).png"
-                  className="z-30"
-                  alt="Thryve Logo"
-                  width={90}
-                  height={90}
-                />
+                <Image src="/logo (2).png" className="z-30" alt="Thryve Logo" width={90} height={90} />
               </Link>
 
               {/* Desktop Navigation Links */}
@@ -252,7 +241,7 @@ export default function Navbar() {
                     >
                       {link.title}
                     </Link>
-                  )
+                  ),
                 )}
                 <Link
                   href="/courses"
@@ -260,10 +249,7 @@ export default function Navbar() {
                 >
                   Courses
                 </Link>
-                <button
-                  className="text-foreground hover:text-[#2db188]"
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
-                >
+                <button className="text-foreground hover:text-[#2db188]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                   <Menu className="w-5 h-5" />
                 </button>
               </div>
@@ -274,11 +260,7 @@ export default function Navbar() {
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               >
-                {isMenuOpen ? (
-                  <X className="w-5 h-5 text-foreground" />
-                ) : (
-                  <Menu className="w-5 h-5 text-foreground" />
-                )}
+                {isMenuOpen ? <X className="w-5 h-5 text-foreground" /> : <Menu className="w-5 h-5 text-foreground" />}
               </button>
 
               {/* Desktop CTA Container - Appears on scroll */}
@@ -309,28 +291,24 @@ export default function Navbar() {
                     <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
                   ) : session ? (
                     <>
-                      <Link
-                        href={
-                          session.user.role === "ADMIN"
-                            ? "/admin-dashboard"
-                            : "/dashboard"
-                        }
-                      >
+                      <Link href={session.user.role === "ADMIN" ? "/admin-dashboard" : "/dashboard"}>
                         <Button variant="default">Dashboard</Button>
                       </Link>
                       <Link href="/cart">
-                        <Button>
+                        <Button className="relative" size="sm">
                           <ShoppingCart />
+                          {cartItemsCount > 0 && (
+                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center z-50 transform scale-110">
+                              {cartItemsCount}
+                            </span>
+                          )}
                         </Button>
                       </Link>
                       <UserNav />
                     </>
                   ) : (
                     <>
-                      <Link
-                        href="/log-in"
-                        className="text-foreground mx-2 hover:text-[#2db188] transition-colors"
-                      >
+                      <Link href="/log-in" className="text-foreground mx-2 hover:text-[#2db188] transition-colors">
                         Sign In
                       </Link>
                       <Link href="/signup">
@@ -364,29 +342,26 @@ export default function Navbar() {
               ) : session ? (
                 <>
                   <UserNav />
-                  
+
                   <Link href="/cart" className="relative">
                     <Button>
                       <ShoppingCart />
+                      {cartItemsCount > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center z-50 transform scale-110">
+                          {cartItemsCount}
+                        </span>
+                      )}
                     </Button>
                   </Link>
-                  
-                  <Link
-                    href={
-                      session.user.role === "ADMIN"
-                        ? "/admin-dashboard"
-                        : "/dashboard"
-                    }
-                  >
+
+                  <Link href={session.user.role === "ADMIN" ? "/admin-dashboard" : "/dashboard"}>
                     <Button variant="default">Dashboard</Button>
                   </Link>
                 </>
               ) : (
                 <>
                   <Link href="/signup">
-                    <Button className="bg-[#2db188] text-white hover:bg-[#35dba8] rounded-full">
-                      Get Started
-                    </Button>
+                    <Button className="bg-[#2db188] text-white hover:bg-[#35dba8] rounded-full">Get Started</Button>
                   </Link>
                   <Link href="/log-in">
                     <Button variant="ghost" className="rounded-full">
@@ -420,9 +395,7 @@ export default function Navbar() {
                 {/* Navigation Links with Animations */}
                 <div className="px-8 py-8 space-y-6">
                   {/* Main navigation links (using Goy or Link based on current page) */}
-                  {navLinks.map((link, index) =>
-                    renderMobileNavLink(link, index)
-                  )}
+                  {navLinks.map((link, index) => renderMobileNavLink(link, index))}
 
                   {/* Courses link (direct link) */}
                   <motion.div
@@ -436,17 +409,12 @@ export default function Navbar() {
                         onClick={() => setIsMenuOpen(false)}
                       >
                         <div className="flex flex-col items-start">
-                          <span className="text-2xl font-medium text-foreground">
-                            Courses
-                          </span>
+                          <span className="text-2xl font-medium text-foreground">Courses</span>
                           <span className="text-sm text-muted-foreground group-hover:text-[#2db188] transition-colors">
                             Explore our courses
                           </span>
                         </div>
-                        <motion.div
-                          whileHover={{ x: 5 }}
-                          className="text-[#2db188]"
-                        >
+                        <motion.div whileHover={{ x: 5 }} className="text-[#2db188]">
                           <ChevronRight />
                         </motion.div>
                       </div>
@@ -507,18 +475,17 @@ export default function Navbar() {
                         <div className="h-12 w-full rounded-full bg-muted animate-pulse" />
                       ) : session ? (
                         <div className="flex gap-4 items-center justify-center w-full">
-                          <Link
-                            href={
-                              session.user.role === "ADMIN"
-                                ? "/admin-dashboard"
-                                : "/dashboard"
-                            }
-                          >
+                          <Link href={session.user.role === "ADMIN" ? "/admin-dashboard" : "/dashboard"}>
                             <Button>Dashboard</Button>
                           </Link>
                           <Link href="/cart">
-                            <Button>
+                            <Button className="relative" size="sm">
                               <ShoppingCart />
+                              {cartItemsCount > 0 && (
+                                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center z-50 transform scale-110">
+                                  {cartItemsCount}
+                                </span>
+                              )}
                             </Button>
                           </Link>
                         </div>
@@ -552,5 +519,5 @@ export default function Navbar() {
         </AnimatePresence>
       </div>
     </div>
-  );
+  )
 }

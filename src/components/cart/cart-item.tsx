@@ -1,65 +1,99 @@
 "use client"
 
-import { RemoveFromCartButton } from "@/components/cart/remove-from-cart-button"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Clock, Trash2, FileText, CheckCircle } from "lucide-react"
+import { Trash } from "lucide-react"
+import { toast } from "sonner"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 
 interface CartItemProps {
   id: string
+  courseId: string
   name: string
   price: number
-  duration: string
+  quantity: number
+  duration?: string
   isEnrolled?: boolean
+  onRemove: () => void
 }
 
-export function CartItem({ id, name, price, duration, isEnrolled = false }: CartItemProps) {
+export function CartItem({
+  id,
+  courseId,
+  name,
+  price,
+  quantity,
+  duration,
+  isEnrolled = false,
+  onRemove,
+}: CartItemProps) {
+  const [isRemoving, setIsRemoving] = useState(false)
+
+  const handleRemove = async () => {
+    try {
+      setIsRemoving(true)
+
+      const response = await fetch(`/api/cart/remove?cartItemId=${id}`, {
+        method: "DELETE",
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || "Failed to remove item")
+      }
+
+      toast.success(`${name} removed from cart`)
+      onRemove()
+    } catch (error) {
+      console.error("Error removing item:", error)
+      toast.error("Failed to remove item from cart")
+    } finally {
+      setIsRemoving(false)
+    }
+  }
+
   return (
-    <div className="p-6 flex flex-col sm:flex-row gap-4 group hover:bg-muted/50 transition-colors">
-      <div className="flex-1 flex flex-col">
-        <div className="flex justify-between items-start">
-          <h3 className="font-medium text-2xl line-clamp-2">{name}</h3>
-          <div className="font-bold text-lg">${price.toFixed(2)}</div>
-        </div>
-
-        <div className="mt-1 flex items-center text-sm text-muted-foreground">
-          <Clock className="h-4 w-4 mr-1" />
-          <span>{duration}</span>
-        </div>
-
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            {isEnrolled ? (
-              <Badge
-                variant="outline"
-                className="bg-green-50 text-green-700 border-green-200 flex items-center gap-1.5 py-1.5"
-              >
-                <CheckCircle className="h-3.5 w-3.5" />
-                <span>Enrolled</span>
-              </Badge>
-            ) : (
-              <Link href={`/courses/${id}`}>
-                <Button variant="outline" size="sm" className="flex items-center gap-1.5">
-                  <FileText className="h-3.5 w-3.5" />
-                  <span>Complete Enrollment</span>
-                </Button>
-              </Link>
-            )}
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-b">
+      <div className="flex-1 mb-3 sm:mb-0">
+        <div className="flex items-start">
+          <div className="flex-1">
+            <h3 className="font-medium">{name}</h3>
+            {duration && <p className="text-sm text-muted-foreground">Duration: {duration}</p>}
+            <div className="flex items-center mt-2">
+              <p className="text-sm text-muted-foreground mr-3">
+                ${price.toFixed(2)}
+              </p>
+              {isEnrolled ? (
+                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                  Enrolled
+                </Badge>
+              ) : (
+                <Link href={`/courses/${courseId}`}>
+                  <Button
+                  size="sm"
+                    variant="outline"
+                  >
+                    Enrollment Required
+                  </Button>
+                </Link>
+              )}
+            </div>
           </div>
-
-          {/* Use the RemoveFromCartButton component */}
-          <RemoveFromCartButton id={id}>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 px-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-            >
-              <Trash2 className="h-4 w-4 mr-1" />
-              <span className="text-xs">Remove</span>
-            </Button>
-          </RemoveFromCartButton>
         </div>
+      </div>
+      <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4">
+        <p className="font-medium">${(price).toFixed(2)}</p>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleRemove}
+          disabled={isRemoving}
+          className="text-red-500 hover:text-red-700 hover:bg-red-50"
+        >
+          <Trash className="h-4 w-4" />
+          <span className="sr-only">Remove</span>
+        </Button>
       </div>
     </div>
   )

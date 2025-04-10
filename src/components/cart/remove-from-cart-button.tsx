@@ -43,4 +43,3 @@ export function RemoveFromCartButton({ id, children }: RemoveFromCartButtonProps
     </div>
   )
 }
-

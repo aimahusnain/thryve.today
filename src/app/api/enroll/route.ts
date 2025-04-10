@@ -61,33 +61,47 @@ export async function POST(request: Request) {
       updatedAt: new Date(),
     }
 
+    let enrollment
+
     if (existingEnrollment) {
       // Update existing enrollment
-      const updatedEnrollment = await prisma.enrollment.update({
+      enrollment = await prisma.enrollment.update({
         where: { id: existingEnrollment.id },
         data: enrollmentData,
       })
-
-      return NextResponse.json({
-        success: true,
-        message: "Enrollment updated successfully",
-        enrollment: updatedEnrollment,
-      })
     } else {
       // Create new enrollment
-      const newEnrollment = await prisma.enrollment.create({
+      enrollment = await prisma.enrollment.create({
         data: {
           ...enrollmentData,
           createdAt: new Date(),
         },
       })
 
+      // Check if course is already in cart
+      const cart = await prisma.cart.findUnique({
+        where: { userId: session.user.id },
+        include: {
+          items: {
+            where: { courseId: data.courseId },
+          },
+        },
+      })
+
+      // Return information about cart status
       return NextResponse.json({
         success: true,
         message: "Enrollment created successfully",
-        enrollment: newEnrollment,
+        enrollment,
+isInCart: (cart?.items?.length ?? 0) > 0
       })
     }
+
+    return NextResponse.json({
+      success: true,
+      message: existingEnrollment ? "Enrollment updated successfully" : "Enrollment created successfully",
+      enrollment,
+    })
   } catch (error) {
     console.error("Error creating/updating enrollment:", error)
     return NextResponse.json(

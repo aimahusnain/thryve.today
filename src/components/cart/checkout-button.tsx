@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { CreditCard } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 interface CheckoutButtonProps {
   total: number
@@ -12,6 +13,7 @@ interface CheckoutButtonProps {
 
 export function CheckoutButton({ total, disabled = false }: CheckoutButtonProps) {
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const handleCheckout = async () => {
     if (disabled) return
@@ -26,16 +28,28 @@ export function CheckoutButton({ total, disabled = false }: CheckoutButtonProps)
         },
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || "Failed to create checkout session")
+        if (response.status === 400 && data.missingCourseIds) {
+          // Handle missing enrollment forms
+          toast.error("Enrollment Required", {
+            description: data.message || "Please complete enrollment forms for all courses in your cart",
+          })
+
+          // If there's only one missing course, redirect to its enrollment form
+          if (data.missingCourseIds.length === 1) {
+            router.push(`/courses/${data.missingCourseIds[0]}`)
+          }
+          return
+        }
+
+        throw new Error(data.error || "Failed to create checkout session")
       }
 
-      const { checkoutUrl } = await response.json()
-
-      if (checkoutUrl) {
+      if (data.checkoutUrl) {
         // Redirect to Stripe checkout
-        window.location.href = checkoutUrl
+        window.location.href = data.checkoutUrl
       } else {
         throw new Error("No checkout URL returned")
       }
