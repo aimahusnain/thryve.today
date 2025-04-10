@@ -13,7 +13,7 @@ const createTransporter = () => {
 }
 
 // Send purchase confirmation email
-export async function sendPurchaseConfirmationEmail(email: string, name: string, courseNames: string[]) {
+export async function sendPurchaseConfirmationEmail(email: string, courseNames: string[]) {
   console.log(`Attempting to send purchase confirmation email to: ${email}`)
   console.log(`Courses purchased: ${JSON.stringify(courseNames)}`)
 
@@ -67,8 +67,6 @@ export async function sendPurchaseConfirmationEmail(email: string, name: string,
 
   <!-- Body -->
   <div style="padding: 45px 35px; background-color: #ffffff;">
-    <p style="font-size: 18px; color: #333333; line-height: 1.6; margin-top: 0; font-weight: 600;">Hello ${name || "there"},</p>
-
     <p style="font-size: 16px; color: #444444; line-height: 1.8; margin-bottom: 20px;">
       Welcome to the <strong>Thryve.Today Training Center!</strong> We are thrilled to have you embark on this unique journey to becoming a skilled and compassionate healthcare professional.
     </p>
