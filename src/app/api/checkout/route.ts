@@ -15,7 +15,7 @@ export async function POST() {
 
     const userId = session.user.id
     const userEmail = session.user.email || ""
-    const userName = session.user.name || "Customer"
+    // const userName = session.user.name || "Customer"
 
     // Get the user's cart
     const cart = await getUserCart()

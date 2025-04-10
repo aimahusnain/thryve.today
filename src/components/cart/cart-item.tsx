@@ -12,7 +12,7 @@ interface CartItemProps {
   courseId: string
   name: string
   price: number
-  quantity: number
+  // quantity: number
   duration?: string
   isEnrolled?: boolean
   onRemove: () => void
@@ -23,7 +23,7 @@ export function CartItem({
   courseId,
   name,
   price,
-  quantity,
+  // quantity,
   duration,
   isEnrolled = false,
   onRemove,
