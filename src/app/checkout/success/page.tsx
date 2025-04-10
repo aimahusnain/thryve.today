@@ -15,7 +15,7 @@ interface PageProps {
   searchParams: Record<string, string | string[] | undefined>
 }
 
-export default async function CheckoutSuccessPage({ params, searchParams }: PageProps) {
+export default async function CheckoutSuccessPage({ searchParams }: PageProps) {
   const session = await getServerSession(authOptions)
   const session_id = searchParams.session_id as string | undefined
 
