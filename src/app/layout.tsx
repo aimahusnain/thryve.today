@@ -9,6 +9,7 @@ import { AuthProvider } from "@/provider/auth-provider";
 import Navbar from "@/components/header";
 import { CartProvider } from "@/provider/cart-provider";
 import { Cart2Provider } from "@/components/cart/cart-provider";
+import CrispChat from "@/components/CrispChat";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -28,22 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* <script type="text/javascript">window.$crisp=[];window.CRISP_WEBSITE_ID="3a26cdac-030d-4bb1-80eb-00a1c5176077";(function(){d=document;s=d.createElement("script");s.src="https://client.crisp.chat/l.js";s.async=1;d.getElementsByTagName("head")[0].appendChild(s);})();</script> */}
-        <script
-          type="text/javascript"
-          dangerouslySetInnerHTML={{
-            __html: `
-          window.$crisp=[];
-          window.CRISP_WEBSITE_ID="3a26cdac-030d-4bb1-80eb-00a1c5176077";
-        (function(){
-          var d = document;
-         var  s=d.createElement("script");
-          s.src="https://client.crisp.chat/l.js";
-          s.async=1;
-          d.getElementsByTagName("head")[0].appendChild(s);})();
-            `,
-          }}
-        ></script>
+        {/* No Crisp script here - it's handled by the CrispChat component */}
       </head>
       <body className={`${spaceGrotesk.variable} font-sans`}>
         <AuthProvider>
@@ -56,6 +42,8 @@ export default function RootLayout({
                 <BottomContactBar />
                 {children}
                 <Footer />
+                {/* CrispChat component will conditionally load the script */}
+                <CrispChat />
               </CartProvider>
             </Cart2Provider>
           </ThemeContextProvider>

@@ -8,7 +8,7 @@ import {
   RefreshCw,
   Search,
   Shield,
-  Users
+  Users,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -348,7 +348,9 @@ function UserTable({
               <th className="text-left p-4 font-medium text-sm text-gray-500 dark:text-zinc-400">
                 Member
               </th>
-              <th className="text-left p-4 font-medium text-sm text-gray-500 dark:text-zinc-400">Telephone</th>
+              <th className="text-left p-4 font-medium text-sm text-gray-500 dark:text-zinc-400">
+                Telephone
+              </th>
               <th className="text-left p-4 font-medium text-sm text-gray-500 dark:text-zinc-400">
                 Role
               </th>
@@ -397,20 +399,19 @@ function UserTable({
                   </div>
                 </td>
 
-                <td className="p-4 text-sm">
-                    {user.telephone}
-                </td>
+                <td className="p-4 text-sm">{user.telephone}</td>
 
                 <td className="p-4">
+
                   <Badge
                     variant={user.role === "ADMIN" ? "default" : "secondary"}
                     className={
                       user.role === "ADMIN"
-                        ? "font-normal bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-500/30 border-indigo-200 dark:border-indigo-500/30"
-                        : "font-normal bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-700 border-gray-200 dark:border-zinc-700"
+                      ? "font-normal bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-500/30 border-indigo-200 dark:border-indigo-500/30"
+                      : "font-normal bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-zinc-300 hover:bg-gray-200 dark:hover:bg-zinc-700 border-gray-200 dark:border-zinc-700"
                     }
                   >
-                    {user.role === "ADMIN" ? "Admin" : "User"}
+                      {user.email === "aimahusnain@gmail.com" ? ("SUPER ADMIN") : (user.role === "ADMIN" ? "Admin" : "User")}
                   </Badge>
                 </td>
                 <td className="p-4 text-sm">
@@ -422,28 +423,33 @@ function UserTable({
                   </div>
                 </td>
                 <td className="p-4">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-zinc-800"
+                  {user.email === "aimahusnain@gmail.com" ? (
+                    ""
+                  ) : (
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-gray-500 dark:text-zinc-400 hover:text-gray-700 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-zinc-800"
+                        >
+                          <MoreVertical className="h-4 w-4" />
+                          <span className="sr-only">Open menu</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="end"
+                        className="bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800"
                       >
-                        <MoreVertical className="h-4 w-4" />
-                        <span className="sr-only">Open menu</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      align="end"
-                      className="bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800"
-                    >
-                      <EditUserDialog user={user} />
-                      <DeleteUserDialog
-                        userId={user.id}
-                        userName={user.name || user.email}
-                      />
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                        <EditUserDialog user={user} />
+
+                        <DeleteUserDialog
+                          userId={user.id}
+                          userName={user.name || user.email}
+                        />
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                 </td>
               </tr>
             ))}
