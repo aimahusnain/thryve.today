@@ -82,7 +82,7 @@ export default function Navbar() {
   if (pathname.startsWith("/admin-dashboard")) return null
 
   const copyEmail = async () => {
-    const email = "infor@thryve.today"
+    const email = "info@thryve.today"
     await navigator.clipboard.writeText(email)
     setCopied(true)
     toast.success("Email copied to clipboard!", {
@@ -183,7 +183,7 @@ export default function Navbar() {
           >
             <div className="flex items-center space-x-2 text-foreground cursor-pointer" onClick={copyEmail}>
               <Mail className="w-4 h-4" />
-              <span>infor@thryve.today</span>
+              <span>info@thryve.today</span>
               <AnimatePresence>
                 {!copied ? (
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
@@ -438,7 +438,7 @@ export default function Navbar() {
                         </div>
                         <div className="flex flex-col">
                           <span className="text-sm font-medium">Email Us</span>
-                          <span className="text-xs">infor@thryve.today</span>
+                          <span className="text-xs">info@thryve.today</span>
                         </div>
                         {copied ? (
                           <Check className="w-5 h-5 text-green-500 ml-auto" />

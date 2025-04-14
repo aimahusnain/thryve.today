@@ -32,7 +32,7 @@ const Footer = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 items-start gap-4 sm:gap-6">
               <div>
                 <p className="text-[14px] text-zinc-900 dark:text-zinc-100 mb-1">Email</p>
-                <Link href="mailto:hello@thryve.today" className="text-[14px] text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors">infor@thryve.today</Link>
+                <Link href="mailto:hello@thryve.today" className="text-[14px] text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white transition-colors">info@thryve.today</Link>
               </div>
               <div>
                 <p className="text-[14px] text-zinc-900 dark:text-zinc-100 mb-1">Phone Number</p>
