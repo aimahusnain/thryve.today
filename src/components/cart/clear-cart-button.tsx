@@ -32,6 +32,12 @@ export function ClearCartButton({ onClearCart = () => {}, disabled = false }: Cl
       const response = await fetch("/api/cart/clear", {
         method: "DELETE",
       })
+      
+      // Handle authentication issues
+      if (response.status === 401) {
+        window.location.href = "/log-in?callbackUrl=/cart"
+        return
+      }
 
       if (!response.ok) {
         const error = await response.json()

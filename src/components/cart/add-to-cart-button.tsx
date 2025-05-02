@@ -8,15 +8,28 @@ import { useRouter } from "next/navigation"
 interface AddToCartButtonProps {
   courseId: string
   className?: string
+  isLoggedIn?: boolean // Add prop to check login status
 }
 
-export function AddToCartButton({ courseId, className }: AddToCartButtonProps) {
+export function AddToCartButton({ 
+  courseId, 
+  className,
+  isLoggedIn = false // Default to not logged in
+}: AddToCartButtonProps) {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const handleClick = () => {
     setIsLoading(true)
-    // Redirect to the enrollment form for this course
+    
+    // Check if user is logged in
+    if (!isLoggedIn) {
+      // Redirect to login page if not logged in
+      router.push(`/signup`)
+      return
+    }
+    
+    // If logged in, proceed to enrollment
     router.push(`/courses/${courseId}`)
   }
 
