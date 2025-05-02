@@ -6,6 +6,7 @@ import { SpinningText } from "@/components/ui/spinning-text";
 import WhyChooseUsSection from "@/components/why-choose-us";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -168,7 +169,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.3 }}
               >
-                <Goy id="contact">
+                <Link href="/signup">
                   <button className="group relative inline-flex h-12 items-center justify-center rounded-md bg-neutral-950 dark:bg-white px-6 font-medium text-neutral-200 dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-zinc-200 transition-colors duration-200">
                     <span>Get Started Today</span>
                     <div className="relative ml-1 h-5 w-5 overflow-hidden">
@@ -206,7 +207,7 @@ export default function Home() {
                       </div>
                     </div>
                   </button>
-                </Goy>
+                </Link>
               </motion.div>
             </div>
 
