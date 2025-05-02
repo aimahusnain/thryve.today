@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "@/lib/prisma"
 import { CheckCircle, Clock, DollarSign, GraduationCap } from "lucide-react"
 import { CourseCart2Button } from "@/components/cart/course-cart-button"
-
-const prisma = new PrismaClient()
 
 export default async function CoursesPage() {
   const courses = await prisma.courses.findMany({
@@ -18,6 +16,7 @@ export default async function CoursesPage() {
       ProgramHighlights: true,
     },
   })
+
   return (
     <div className="mt-[50px] py-10">
       <div className="bg-white mb-6 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800">
@@ -32,6 +31,7 @@ export default async function CoursesPage() {
           </div>
         </div>
       </div>
+
       <div className="grid mx-[30px] grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {courses.map((course) => (
           <div
@@ -63,14 +63,16 @@ export default async function CoursesPage() {
                 </div>
               </div>
 
-              <p className="text-sm md:text-base text-zinc-600 dark:text-zinc-400 line-clamp-3">{course.description}</p>
+              <p className="text-sm md:text-base text-zinc-600 dark:text-zinc-400 line-clamp-3">
+                {course.description}
+              </p>
+
               <div className="space-y-3 mt-0">
                 <h4 className="text-sm font-semibold text-zinc-900 dark:text-white flex items-center gap-2">
                   <GraduationCap className="w-4 h-4 text-[#35dba8] dark:text-[#2db188]" /> Program Highlights
                 </h4>
                 <ul className="grid gap-2 md:gap-3">
                   {course.ProgramHighlights && course.ProgramHighlights.length > 0 ? (
-                    // Limit to 4 highlights
                     course.ProgramHighlights.slice(0, 4).map((highlight, index) => (
                       <li
                         key={index}
@@ -88,7 +90,6 @@ export default async function CoursesPage() {
             </div>
 
             <div className="mt-auto pt-6">
-              {/* Only show the Add to Cart button */}
               <CourseCart2Button
                 courseId={course.id}
                 courseName={course.name}

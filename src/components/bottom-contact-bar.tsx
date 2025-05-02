@@ -71,8 +71,8 @@ const BottomContactBar = () => {
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
           </Goy>
 
-          <Goy
-            id="courses"
+          <Link
+            href="/courses"
             className="flex items-center justify-center p-2.5
                      bg-zinc-800 text-zinc-100 dark:bg-zinc-700
                      hover:bg-zinc-900 dark:hover:bg-zinc-600
@@ -80,7 +80,7 @@ const BottomContactBar = () => {
                      border border-zinc-700 dark:border-zinc-600"
           >
             <BookOpen className="w-5 h-5" />
-          </Goy>
+          </Link>
         </div>
 
         {/* Desktop Design */}
@@ -98,8 +98,8 @@ const BottomContactBar = () => {
             <span className="text-sm font-medium">+1 (979) 484-7983</span>
           </Link>
 
-          <Goy
-            id="courses"
+          <Link
+            href="/courses"
             className="group flex items-center gap-2 px-4 py-2.5 
                      bg-zinc-800 text-zinc-100 dark:bg-zinc-700
                      hover:bg-zinc-900 dark:hover:bg-zinc-600
@@ -109,7 +109,7 @@ const BottomContactBar = () => {
           >
             <BookOpen className="w-4 h-4 transition-transform duration-300 group-hover:scale-110" />
             <span className="text-sm font-medium">View Courses</span>
-          </Goy>
+          </Link>
 
           <Goy
             id="contact"
