@@ -1,7 +1,6 @@
 "use client";
 
 import ContactSection from "@/components/contact/contact_section";
-import Goy from "@/components/goy";
 import { SpinningText } from "@/components/ui/spinning-text";
 import WhyChooseUsSection from "@/components/why-choose-us";
 import { motion } from "framer-motion";
