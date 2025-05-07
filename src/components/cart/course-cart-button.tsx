@@ -4,7 +4,7 @@ import { useState } from "react"
 import { ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useCart2 } from "@/components/cart/cart-provider"
-import { useRouter } from "next/navigation"
+// import { useRouter } from "next/navigation"
 
 interface CourseCart2ButtonProps {
   courseId: string
@@ -23,7 +23,9 @@ export function CourseCart2Button({
 }: CourseCart2ButtonProps) {
   const [isAdding, setIsAdding] = useState(false)
   const { addToCart2 } = useCart2()
-  const router = useRouter()
+  // const router = useRouter()
+
+  console.log(isLoggedIn)
 
   const handleAddToCart2 = async () => {
     setIsAdding(true)
