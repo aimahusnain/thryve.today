@@ -29,12 +29,12 @@ export function CourseCart2Button({
     setIsAdding(true)
     
     // Check if user is logged in
-    if (!isLoggedIn) {
-      // Redirect to login page if not logged in
-      router.push(`/log-in`)
-      setIsAdding(false)
-      return
-    }
+    // if (!isLoggedIn) {
+    //   // Redirect to login page if not logged in
+    //   router.push(`/log-in`)
+    //   setIsAdding(false)
+    //   return
+    // }
     
     try {
       await addToCart2(courseId, courseName, coursePrice, courseDuration || "")
