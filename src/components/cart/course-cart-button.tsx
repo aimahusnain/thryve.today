@@ -4,7 +4,7 @@ import { useState } from "react"
 import { ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useCart2 } from "@/components/cart/cart-provider"
-// import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 interface CourseCart2ButtonProps {
   courseId: string
@@ -23,7 +23,7 @@ export function CourseCart2Button({
 }: CourseCart2ButtonProps) {
   const [isAdding, setIsAdding] = useState(false)
   const { addToCart2 } = useCart2()
-  // const router = useRouter()
+  const router = useRouter()
 
   console.log(isLoggedIn)
 
@@ -31,12 +31,12 @@ export function CourseCart2Button({
     setIsAdding(true)
     
     // Check if user is logged in
-    // if (!isLoggedIn) {
-    //   // Redirect to login page if not logged in
-    //   router.push(`/log-in`)
-    //   setIsAdding(false)
-    //   return
-    // }
+    if (!isLoggedIn) {
+      // Redirect to login page if not logged in
+      router.push(`/log-in`)
+      setIsAdding(false)
+      return
+    }
     
     try {
       await addToCart2(courseId, courseName, coursePrice, courseDuration || "")

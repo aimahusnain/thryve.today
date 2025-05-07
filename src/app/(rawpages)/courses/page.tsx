@@ -1,8 +1,14 @@
 import { prisma } from "@/lib/prisma"
 import { CheckCircle, Clock, DollarSign, GraduationCap } from "lucide-react"
 import { CourseCart2Button } from "@/components/cart/course-cart-button"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth" // Adjust path as per your setup
 
 export default async function CoursesPage() {
+    const session = await getServerSession(authOptions)
+    const user = session?.user
+    const isLoggedIn = !!(user?.email || user?.name)
+
   const courses = await prisma.courses.findMany({
     where: {
       status: "ACTIVE",
@@ -95,6 +101,7 @@ export default async function CoursesPage() {
                 courseName={course.name}
                 coursePrice={course.price}
                 courseDuration={course.duration || ""}
+                isLoggedIn={isLoggedIn}
               />
             </div>
           </div>
