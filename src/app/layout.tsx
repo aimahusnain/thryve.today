@@ -29,8 +29,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* No Crisp script here - it's handled by the CrispChat component */}
-      </head>
+<script async type='text/javascript' src='https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=Y7sDva'></script>
+    </head>
       <body className={`${spaceGrotesk.variable} font-sans`}>
         <AuthProvider>
           <ThemeContextProvider>
