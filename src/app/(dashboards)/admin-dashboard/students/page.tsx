@@ -258,7 +258,7 @@ export default function TeamMembersPage() {
                           // Prepare CSV content
                           const csvRows = [
                             ["email"],
-                            ...emailList.map((u: any) => [u.email])
+                            ...emailList.map((u) => [u.email])
                           ];
                           const csvContent = csvRows.map(row => row.join(",")).join("\r\n");
                           // Create blob and trigger download
