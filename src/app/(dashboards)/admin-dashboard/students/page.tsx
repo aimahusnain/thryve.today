@@ -245,34 +245,34 @@ export default function TeamMembersPage() {
                       size="sm"
                       className="gap-1.5 bg-white/70 dark:bg-zinc-900/70 border-gray-200 dark:border-zinc-700 hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-600 dark:text-zinc-300 ml-2"
                       onClick={async () => {
-                        // Fetch users if not already loaded
-                        let emailList = users;
-                        if (!users || users.length === 0) {
-                          try {
-                            const response = await fetch("/api/users");
-                            emailList = await response.json();
-                          } catch {
-                            toast.error("Failed to fetch users for export");
-                            return;
-                          }
+                      // Fetch users if not already loaded
+                      let emailList = users;
+                      if (!users || users.length === 0) {
+                        try {
+                        const response = await fetch("/api/users");
+                        emailList = await response.json();
+                        } catch {
+                        toast.error("Failed to fetch users for export");
+                        return;
                         }
-                        // Prepare CSV content
-                        const csvRows = [
-                          ["email"],
-                          ...emailList.map((u) => [u.email])
-                        ];
-                        const csvContent = csvRows.map(row => row.join(",")).join("\r\n");
-                        // Create blob and trigger download
-                        const blob = new Blob([csvContent], { type: "text/csv" });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement("a");
-                        a.href = url;
-                        a.download = "emails.csv";
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
-                        toast.success("Emails exported!");
+                      }
+                      // Prepare CSV content with Consent column
+                      const csvRows = [
+                        ["email", "Consent"],
+                        ...emailList.map((u) => [u.email, "true"])
+                      ];
+                      const csvContent = csvRows.map(row => row.join(",")).join("\r\n");
+                      // Create blob and trigger download
+                      const blob = new Blob([csvContent], { type: "text/csv" });
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = "emails.csv";
+                      document.body.appendChild(a);
+                      a.click();
+                      document.body.removeChild(a);
+                      URL.revokeObjectURL(url);
+                      toast.success("Emails exported!");
                       }}
                     >
                       Export Emails
