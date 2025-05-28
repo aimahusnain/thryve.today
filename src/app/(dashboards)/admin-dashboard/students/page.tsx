@@ -239,44 +239,44 @@ export default function TeamMembersPage() {
                         <span>Filter</span>
                         <ChevronDown className="h-3.5 w-3.5" />
                       </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-1.5 bg-white/70 dark:bg-zinc-900/70 border-gray-200 dark:border-zinc-700 hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-600 dark:text-zinc-300 ml-2"
-                        onClick={async () => {
-                          // Fetch users if not already loaded
-                          let emailList = users;
-                          if (!users || users.length === 0) {
-                            try {
-                              const response = await fetch("/api/users");
-                              emailList = await response.json();
-                            } catch {
-                              toast.error("Failed to fetch users for export");
-                              return;
-                            }
-                          }
-                          // Prepare CSV content
-                          const csvRows = [
-                            ["email"],
-                            ...emailList.map((u) => [u.email])
-                          ];
-                          const csvContent = csvRows.map(row => row.join(",")).join("\r\n");
-                          // Create blob and trigger download
-                          const blob = new Blob([csvContent], { type: "text/csv" });
-                          const url = URL.createObjectURL(blob);
-                          const a = document.createElement("a");
-                          a.href = url;
-                          a.download = "emails.csv";
-                          document.body.appendChild(a);
-                          a.click();
-                          document.body.removeChild(a);
-                          URL.revokeObjectURL(url);
-                          toast.success("Emails exported!");
-                        }}
-                      >
-                        Export Emails
-                      </Button>
                     </DropdownMenuTrigger>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-1.5 bg-white/70 dark:bg-zinc-900/70 border-gray-200 dark:border-zinc-700 hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-600 dark:text-zinc-300 ml-2"
+                      onClick={async () => {
+                        // Fetch users if not already loaded
+                        let emailList = users;
+                        if (!users || users.length === 0) {
+                          try {
+                            const response = await fetch("/api/users");
+                            emailList = await response.json();
+                          } catch {
+                            toast.error("Failed to fetch users for export");
+                            return;
+                          }
+                        }
+                        // Prepare CSV content
+                        const csvRows = [
+                          ["email"],
+                          ...emailList.map((u) => [u.email])
+                        ];
+                        const csvContent = csvRows.map(row => row.join(",")).join("\r\n");
+                        // Create blob and trigger download
+                        const blob = new Blob([csvContent], { type: "text/csv" });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = "emails.csv";
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        toast.success("Emails exported!");
+                      }}
+                    >
+                      Export Emails
+                    </Button>
                     <DropdownMenuContent
                       align="end"
                       className="bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800"
