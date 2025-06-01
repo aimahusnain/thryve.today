@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
           
           <!-- Footer spacing -->
           <div style="text-align: center; margin-top: 20px; color: #94a3b8; font-size: 12px;">
-            <p style="margin: 0;">Powered by Team Dashboard</p>
+            <p style="margin: 0;">Powered by Thryve.Today1</p>
           </div>
         </body>
       </html>
@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
         console.log(`Sending email ${i + 1}/${to.length} to: ${email}`)
 
         const result = await transporter.sendMail({
-          from: `"Team Dashboard" <${process.env.EMAIL_USER}>`,
+          from: `"Thryve.Today" <${process.env.EMAIL_USER}>`,
           to: email,
           subject: subject,
           html: emailTemplate,
