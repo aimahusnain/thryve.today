@@ -4,8 +4,16 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const Footer = () => {
+    useEffect(() => {
+    // Klaviyo form loader
+    const script = document.createElement('script');
+    script.src = 'https://www.klaviyo.com/media/js/forms/embed.js';
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
   const year = new Date().getFullYear();
   const pathname = usePathname();
   const router = useRouter();
