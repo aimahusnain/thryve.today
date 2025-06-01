@@ -8,19 +8,22 @@ import {
   Italic,
   Mail,
   MoreVertical,
+  Plus,
   RefreshCw,
   Search,
   Shield,
   Underline,
   Users,
   X,
+  UserPlus,
+  Trash2,
 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 import { AppSidebar } from "@/components/dashboard/sidebar"
-import { DeleteUserDialog } from "./dashboard/delete-user-dialog"
-import { EditUserDialog } from "./dashboard/team-members/edit-user-dialog"
+import { DeleteUserDialog } from "@/components/dashboard/delete-user-dialog"
+import { EditUserDialog } from "@/components/dashboard/edit-user-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -38,6 +41,8 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
@@ -58,6 +63,13 @@ interface User {
   createdAt?: Date | string | null
 }
 
+interface EmailGroup {
+  id: string
+  name: string
+  userIds: string[]
+  createdAt: Date
+}
+
 // Format date for display
 const formatDate = (dateString?: Date | string | null): string => {
   if (!dateString) return ""
@@ -73,6 +85,7 @@ const getTimeSince = (dateString?: Date | string | null): string => {
 export default function TeamMembersPage() {
   const [users, setUsers] = useState<User[]>([])
   const [selectedUsers, setSelectedUsers] = useState<string[]>([])
+  const [emailGroups, setEmailGroups] = useState<EmailGroup[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
@@ -82,9 +95,29 @@ export default function TeamMembersPage() {
     users: true,
   })
   const [isEmailDialogOpen, setIsEmailDialogOpen] = useState(false)
+  const [isGroupDialogOpen, setIsGroupDialogOpen] = useState(false)
+  const [groupName, setGroupName] = useState("")
   const [emailSubject, setEmailSubject] = useState("")
   const [emailContent, setEmailContent] = useState("")
   const [isSendingEmail, setIsSendingEmail] = useState(false)
+
+  // Load email groups from localStorage
+  useEffect(() => {
+    const savedGroups = localStorage.getItem("emailGroups")
+    if (savedGroups) {
+      try {
+        const parsedGroups = JSON.parse(savedGroups)
+        setEmailGroups(parsedGroups)
+      } catch (error) {
+        console.error("Error loading email groups:", error)
+      }
+    }
+  }, [])
+
+  // Save email groups to localStorage
+  const saveGroupsToStorage = (groups: EmailGroup[]) => {
+    localStorage.setItem("emailGroups", JSON.stringify(groups))
+  }
 
   const fetchUsers = async (showToast = false) => {
     try {
@@ -166,6 +199,61 @@ export default function TeamMembersPage() {
     return users.filter((user) => selectedUsers.includes(user.id))
   }
 
+  // Create email group
+  const handleCreateGroup = () => {
+    if (!groupName.trim()) {
+      toast.error("Group name is required")
+      return
+    }
+
+    if (selectedUsers.length === 0) {
+      toast.error("Please select at least one user")
+      return
+    }
+
+    // Check if group name already exists
+    if (emailGroups.some((group) => group.name.toLowerCase() === groupName.toLowerCase())) {
+      toast.error("Group name already exists")
+      return
+    }
+
+    const newGroup: EmailGroup = {
+      id: Date.now().toString(),
+      name: groupName.trim(),
+      userIds: [...selectedUsers],
+      createdAt: new Date(),
+    }
+
+    const updatedGroups = [...emailGroups, newGroup]
+    setEmailGroups(updatedGroups)
+    saveGroupsToStorage(updatedGroups)
+
+    toast.success(`Group "${groupName}" created with ${selectedUsers.length} members`)
+    setGroupName("")
+    setIsGroupDialogOpen(false)
+  }
+
+  // Select group
+  const handleSelectGroup = (group: EmailGroup) => {
+    // Filter out users that no longer exist
+    const validUserIds = group.userIds.filter((userId) => users.some((user) => user.id === userId))
+
+    if (validUserIds.length !== group.userIds.length) {
+      toast.warning(`Some users from group "${group.name}" no longer exist`)
+    }
+
+    setSelectedUsers(validUserIds)
+    toast.success(`Selected ${validUserIds.length} users from group "${group.name}"`)
+  }
+
+  // Delete group
+  const handleDeleteGroup = (groupId: string) => {
+    const updatedGroups = emailGroups.filter((group) => group.id !== groupId)
+    setEmailGroups(updatedGroups)
+    saveGroupsToStorage(updatedGroups)
+    toast.success("Group deleted successfully")
+  }
+
   // Handle email sending
   const handleSendEmail = async () => {
     if (!emailSubject.trim() || !emailContent.trim()) {
@@ -178,8 +266,6 @@ export default function TeamMembersPage() {
       const selectedUsersData = getSelectedUsersData()
       const emailAddresses = selectedUsersData.map((user) => user.email)
 
-      // Here you would implement your email sending logic
-      // For now, we'll simulate the API call
       const response = await fetch("/api/send-email", {
         method: "POST",
         headers: {
@@ -234,7 +320,6 @@ export default function TeamMembersPage() {
     const newContent = emailContent.substring(0, start) + formattedText + emailContent.substring(end)
     setEmailContent(newContent)
 
-    // Focus back to textarea
     setTimeout(() => {
       textarea.focus()
       const newCursorPos = start + formattedText.length
@@ -282,7 +367,7 @@ export default function TeamMembersPage() {
               </div>
 
               {/* Stats cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-4">
                 <Card className="bg-white/80 dark:bg-zinc-900/70 backdrop-blur-sm border border-gray-200/70 dark:border-zinc-800/70 shadow-md shadow-black/5 dark:shadow-black/10">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm font-medium text-gray-500 dark:text-zinc-400">
@@ -315,9 +400,20 @@ export default function TeamMembersPage() {
                     </div>
                   </CardContent>
                 </Card>
+                <Card className="bg-white/80 dark:bg-zinc-900/70 backdrop-blur-sm border border-gray-200/70 dark:border-zinc-800/70 shadow-md shadow-black/5 dark:shadow-black/10">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-500 dark:text-zinc-400">Email Groups</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center gap-2">
+                      <UserPlus className="h-5 w-5 text-indigo-600 dark:text-indigo-500" />
+                      <div className="text-2xl font-bold text-gray-900 dark:text-white">{emailGroups.length}</div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
 
-              {/* Selected users info and Send Email button */}
+              {/* Selected users info and action buttons */}
               {selectedUsers.length > 0 && (
                 <Card className="bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
                   <CardContent className="pt-6">
@@ -329,7 +425,7 @@ export default function TeamMembersPage() {
                             {selectedUsers.length} user{selectedUsers.length > 1 ? "s" : ""} selected
                           </span>
                         </div>
-                        <div className="text-sm text-blue-700 dark:text-blue-300">
+                        <div className="text-sm text-blue-700 dark:text-blue-300 max-w-md truncate">
                           {getSelectedUsersData()
                             .map((user) => user.name || user.email)
                             .join(", ")}
@@ -344,6 +440,15 @@ export default function TeamMembersPage() {
                         >
                           <X className="h-4 w-4 mr-1" />
                           Clear
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setIsGroupDialogOpen(true)}
+                          className="text-green-700 dark:text-green-300 border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-950/20"
+                        >
+                          <Plus className="h-4 w-4 mr-1" />
+                          Make a Group
                         </Button>
                         <Button
                           onClick={() => setIsEmailDialogOpen(true)}
@@ -382,6 +487,62 @@ export default function TeamMembersPage() {
                     </TabsTrigger>
                   </TabsList>
                   <div className="flex items-center gap-2">
+                    {/* Groups Dropdown */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="gap-1.5 bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900/30 text-green-700 dark:text-green-300"
+                          disabled={emailGroups.length === 0}
+                        >
+                          <UserPlus className="h-3.5 w-3.5" />
+                          <span>Groups ({emailGroups.length})</span>
+                          <ChevronDown className="h-3.5 w-3.5" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="end"
+                        className="bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800 w-64"
+                      >
+                        {emailGroups.length === 0 ? (
+                          <div className="p-4 text-center text-gray-500 dark:text-zinc-400">
+                            <UserPlus className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                            <p className="text-sm">No groups created yet</p>
+                            <p className="text-xs">Select users and create a group</p>
+                          </div>
+                        ) : (
+                          emailGroups.map((group) => (
+                            <div key={group.id}>
+                              <DropdownMenuItem
+                                className="cursor-pointer flex items-center justify-between p-3"
+                                onClick={() => handleSelectGroup(group)}
+                              >
+                                <div className="flex-1">
+                                  <div className="font-medium text-gray-900 dark:text-white">{group.name}</div>
+                                  <div className="text-xs text-gray-500 dark:text-zinc-400">
+                                    {group.userIds.length} members • {formatDate(group.createdAt)}
+                                  </div>
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 w-6 p-0 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleDeleteGroup(group.id)
+                                  }}
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                            </div>
+                          ))
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -480,6 +641,61 @@ export default function TeamMembersPage() {
           </main>
         </div>
 
+        {/* Create Group Dialog */}
+        <Dialog open={isGroupDialogOpen} onOpenChange={setIsGroupDialogOpen}>
+          <DialogContent className="sm:max-w-[400px]">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <UserPlus className="h-5 w-5" />
+                Create Email Group
+              </DialogTitle>
+              <DialogDescription>
+                Create a group with {selectedUsers.length} selected user{selectedUsers.length > 1 ? "s" : ""} for easy
+                email sending.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="group-name">Group Name</Label>
+                <Input
+                  id="group-name"
+                  placeholder="Enter group name..."
+                  value={groupName}
+                  onChange={(e) => setGroupName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      handleCreateGroup()
+                    }
+                  }}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Selected Members ({selectedUsers.length})</Label>
+                <div className="max-h-32 overflow-y-auto p-2 bg-gray-50 dark:bg-zinc-800/50 rounded border text-sm">
+                  {getSelectedUsersData().map((user, index) => (
+                    <div key={user.id} className="flex items-center gap-2 py-1">
+                      <span className="text-gray-600 dark:text-zinc-400">{index + 1}.</span>
+                      <span>{user.name || user.email}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsGroupDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleCreateGroup} disabled={!groupName.trim()}>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Group
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         {/* Email Dialog */}
         <Dialog open={isEmailDialogOpen} onOpenChange={setIsEmailDialogOpen}>
           <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
@@ -507,7 +723,6 @@ export default function TeamMembersPage() {
               <div className="space-y-2">
                 <Label htmlFor="email-content">Message</Label>
                 <div className="border rounded-md">
-                  {/* Rich text toolbar */}
                   <div className="flex items-center gap-1 p-2 border-b bg-gray-50 dark:bg-zinc-800/50">
                     <Button
                       type="button"
@@ -550,7 +765,6 @@ export default function TeamMembersPage() {
                 </p>
               </div>
 
-              {/* Recipients preview */}
               <div className="space-y-2">
                 <Label>Recipients ({selectedUsers.length})</Label>
                 <div className="max-h-24 overflow-y-auto p-2 bg-gray-50 dark:bg-zinc-800/50 rounded border text-sm">
@@ -636,7 +850,9 @@ function UserTable({ users, isLoading, selectedUsers, onSelectAll, onUserSelect 
                   className="border-gray-300 dark:border-zinc-700 data-[state=checked]:bg-indigo-600 data-[state=checked]:border-indigo-600"
                   checked={isAllSelected}
                   ref={(el) => {
-                    if (el) (el as HTMLInputElement).indeterminate = isIndeterminate
+                    if (el && "indeterminate" in el) {
+                      (el as HTMLInputElement).indeterminate = isIndeterminate
+                    }
                   }}
                   onCheckedChange={onSelectAll}
                 />
@@ -713,19 +929,7 @@ function UserTable({ users, isLoading, selectedUsers, onSelectAll, onUserSelect 
                         align="end"
                         className="bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800"
                       >
-                        <EditUserDialog
-                          user={{
-                            ...user,
-                            name: user.name ?? null,
-                            telephone: user.telephone ?? null,
-                            createdAt:
-                              user.createdAt == null
-                                ? undefined
-                                : user.createdAt instanceof Date
-                                ? user.createdAt
-                                : new Date(user.createdAt),
-                          }}
-                        />
+                        <EditUserDialog user={user} />
                         <DeleteUserDialog userId={user.id} userName={user.name || user.email} />
                       </DropdownMenuContent>
                     </DropdownMenu>
