@@ -15,27 +15,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Subject and content are required" }, { status: 400 })
     }
 
-    // Check if SMTP credentials are configured
-    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
-      return NextResponse.json(
-        {
-          error:
-            "SMTP credentials not configured. Please set SMTP_HOST, SMTP_USER, and SMTP_PASS environment variables.",
-        },
-        { status: 500 },
-      )
-    }
-
-    // Create transporter with better error handling
+    // Create transporter using your Gmail credentials
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number.parseInt(process.env.SMTP_PORT || "587"),
-      secure: process.env.SMTP_SECURE === "true", // true for 465, false for other ports
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // true for 465, false for other ports
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: process.env.EMAIL_USER, // klreid0215@gmail.com
+        pass: process.env.EMAIL_PASS, // ghyj uknt tmgz coky
       },
-      // Additional options for better compatibility
       tls: {
         rejectUnauthorized: false,
       },
@@ -44,12 +32,13 @@ export async function POST(request: NextRequest) {
     // Verify SMTP connection
     try {
       await transporter.verify()
-      console.log("SMTP connection verified successfully")
+      console.log("Gmail SMTP connection verified successfully")
     } catch (verifyError) {
-      console.error("SMTP verification failed:", verifyError)
+      console.error("Gmail SMTP verification failed:", verifyError)
       return NextResponse.json(
         {
-          error: "SMTP connection failed. Please check your email configuration.",
+          error: "Gmail SMTP connection failed. Please check your email configuration.",
+          details: typeof verifyError === "object" && verifyError !== null && "message" in verifyError ? (verifyError as { message?: string }).message : String(verifyError),
         },
         { status: 500 },
       )
@@ -62,7 +51,7 @@ export async function POST(request: NextRequest) {
       .replace(/<u>(.*?)<\/u>/g, "<u>$1</u>")
       .replace(/\n/g, "<br>")
 
-    // Create email template
+    // Create professional email template
     const emailTemplate = `
       <!DOCTYPE html>
       <html>
@@ -71,30 +60,52 @@ export async function POST(request: NextRequest) {
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>${subject}</title>
         </head>
-        <body style="margin: 0; padding: 20px; font-family: Arial, sans-serif; background-color: #f5f5f5;">
-          <div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-            <div style="border-bottom: 2px solid #e5e7eb; padding-bottom: 20px; margin-bottom: 30px;">
-              <h1 style="color: #1f2937; margin: 0; font-size: 24px;">${subject}</h1>
+        <body style="margin: 0; padding: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; color: #334155;">
+          <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); overflow: hidden;">
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
+              <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                ${subject}
+              </h1>
             </div>
-            <div style="line-height: 1.6; color: #374151; font-size: 16px;">
-              ${htmlContent}
+            
+            <!-- Content -->
+            <div style="padding: 40px 30px;">
+              <div style="line-height: 1.7; color: #475569; font-size: 16px; margin-bottom: 30px;">
+                ${htmlContent}
+              </div>
             </div>
-            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px;">
-              <p>This email was sent from your team management dashboard.</p>
+            
+            <!-- Footer -->
+            <div style="background-color: #f1f5f9; padding: 25px 30px; border-top: 1px solid #e2e8f0;">
+              <div style="text-align: center; color: #64748b; font-size: 14px;">
+                <p style="margin: 0 0 8px 0; font-weight: 500;">📧 Team Management Dashboard</p>
+                <p style="margin: 0; opacity: 0.8;">This email was sent from your team management system</p>
+              </div>
             </div>
+          </div>
+          
+          <!-- Footer spacing -->
+          <div style="text-align: center; margin-top: 20px; color: #94a3b8; font-size: 12px;">
+            <p style="margin: 0;">Powered by Team Dashboard</p>
           </div>
         </body>
       </html>
     `
 
-    // Send emails with better error handling
+    // Send emails with detailed tracking
     const emailResults = []
     const failedEmails = []
 
-    for (const email of to) {
+    console.log(`Starting to send emails to ${to.length} recipients...`)
+
+    for (let i = 0; i < to.length; i++) {
+      const email = to[i]
       try {
+        console.log(`Sending email ${i + 1}/${to.length} to: ${email}`)
+
         const result = await transporter.sendMail({
-          from: `"Team Dashboard" <${process.env.FROM_EMAIL || process.env.SMTP_USER}>`,
+          from: `"Team Dashboard" <${process.env.EMAIL_USER}>`,
           to: email,
           subject: subject,
           html: emailTemplate,
@@ -105,15 +116,26 @@ export async function POST(request: NextRequest) {
           email,
           messageId: result.messageId,
           status: "sent",
+          timestamp: new Date().toISOString(),
         })
 
-        console.log(`Email sent successfully to ${email}:`, result.messageId)
+        console.log(`✅ Email sent successfully to ${email} - Message ID: ${result.messageId}`)
       } catch (emailError) {
-        console.error(`Failed to send email to ${email}:`, emailError)
+        const errorMsg =
+          typeof emailError === "object" && emailError !== null && "message" in emailError
+            ? (emailError as { message?: string }).message
+            : String(emailError)
+        console.error(`❌ Failed to send email to ${email}:`, errorMsg)
         failedEmails.push({
           email,
-          error: (emailError instanceof Error ? emailError.message : String(emailError)),
+          error: errorMsg,
+          timestamp: new Date().toISOString(),
         })
+      }
+
+      // Add small delay between emails to avoid rate limiting
+      if (i < to.length - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 100))
       }
     }
 
@@ -121,12 +143,14 @@ export async function POST(request: NextRequest) {
     const successCount = emailResults.length
     const failureCount = failedEmails.length
 
+    console.log(`Email sending completed: ${successCount} successful, ${failureCount} failed`)
+
     if (successCount === 0) {
       return NextResponse.json(
         {
           error: "Failed to send emails to all recipients",
           failedEmails,
-          details: failedEmails,
+          totalAttempted: to.length,
         },
         { status: 500 },
       )
@@ -136,7 +160,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: true,
-          message: `Email sent to ${successCount} recipients, ${failureCount} failed`,
+          message: `Email sent to ${successCount} out of ${to.length} recipients`,
           recipients: successCount,
           totalAttempted: to.length,
           successfulEmails: emailResults,
@@ -151,14 +175,15 @@ export async function POST(request: NextRequest) {
       success: true,
       message: `Email sent successfully to all ${successCount} recipients`,
       recipients: successCount,
+      totalAttempted: to.length,
       emailResults,
     })
   } catch (error) {
-    console.error("Email sending error:", error)
+    console.error("❌ Email sending error:", error)
     return NextResponse.json(
       {
         error: "Internal server error while sending email",
-        details: error instanceof Error ? error.message : String(error),
+        details: typeof error === "object" && error !== null && "message" in error ? (error as { message?: string }).message : String(error),
       },
       { status: 500 },
     )
