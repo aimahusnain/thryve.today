@@ -1058,7 +1058,7 @@ function UserTable({ users, isLoading, selectedUsers, onSelectAll, onUserSelect 
                   className="border-gray-300 dark:border-zinc-700 data-[state=checked]:bg-indigo-600 data-[state=checked]:border-indigo-600"
                   checked={isAllSelected}
                   ref={(el) => {
-                    if (el) el.indeterminate = isIndeterminate
+                    if (el) (el as HTMLInputElement).indeterminate = isIndeterminate
                   }}
                   onCheckedChange={onSelectAll}
                 />
