@@ -8,6 +8,7 @@ import {
   Italic,
   Mail,
   MoreVertical,
+  Pencil,
   Plus,
   RefreshCw,
   Search,
@@ -96,10 +97,15 @@ export default function TeamMembersPage() {
   })
   const [isEmailDialogOpen, setIsEmailDialogOpen] = useState(false)
   const [isGroupDialogOpen, setIsGroupDialogOpen] = useState(false)
+  const [isEditGroupDialogOpen, setIsEditGroupDialogOpen] = useState(false)
   const [groupName, setGroupName] = useState("")
   const [emailSubject, setEmailSubject] = useState("")
   const [emailContent, setEmailContent] = useState("")
   const [isSendingEmail, setIsSendingEmail] = useState(false)
+  const [currentEditingGroup, setCurrentEditingGroup] = useState<EmailGroup | null>(null)
+  const [editGroupMembers, setEditGroupMembers] = useState<string[]>([])
+  const [editGroupName, setEditGroupName] = useState("")
+  const [groupSearchQuery, setGroupSearchQuery] = useState("")
 
   // Load email groups from localStorage
   useEffect(() => {
@@ -174,7 +180,18 @@ export default function TeamMembersPage() {
     })
   }
 
+  // Filter users for group editing
+  const filterUsersForGroup = (users: User[]) => {
+    return users.filter((user) => {
+      const matchesSearch =
+        user.name?.toLowerCase().includes(groupSearchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(groupSearchQuery.toLowerCase())
+      return matchesSearch
+    })
+  }
+
   const filteredUsers = filterUsers(users)
+  const filteredUsersForGroup = filterUsersForGroup(users)
 
   // Handle select all checkbox
   const handleSelectAll = (checked: boolean) => {
@@ -191,6 +208,15 @@ export default function TeamMembersPage() {
       setSelectedUsers((prev) => [...prev, userId])
     } else {
       setSelectedUsers((prev) => prev.filter((id) => id !== userId))
+    }
+  }
+
+  // Handle group member selection for editing
+  const handleGroupMemberSelect = (userId: string, checked: boolean) => {
+    if (checked) {
+      setEditGroupMembers((prev) => [...prev, userId])
+    } else {
+      setEditGroupMembers((prev) => prev.filter((id) => id !== userId))
     }
   }
 
@@ -231,6 +257,61 @@ export default function TeamMembersPage() {
     toast.success(`Group "${groupName}" created with ${selectedUsers.length} members`)
     setGroupName("")
     setIsGroupDialogOpen(false)
+  }
+
+  // Open edit group dialog
+  const handleOpenEditGroup = (group: EmailGroup) => {
+    setCurrentEditingGroup(group)
+    setEditGroupName(group.name)
+    setEditGroupMembers([...group.userIds])
+    setGroupSearchQuery("")
+    setIsEditGroupDialogOpen(true)
+  }
+
+  // Save edited group
+  const handleSaveEditedGroup = () => {
+    if (!editGroupName.trim()) {
+      toast.error("Group name is required")
+      return
+    }
+
+    if (editGroupMembers.length === 0) {
+      toast.error("Please select at least one user")
+      return
+    }
+
+    if (!currentEditingGroup) {
+      toast.error("No group selected for editing")
+      return
+    }
+
+    // Check if group name already exists (excluding current group)
+    if (
+      emailGroups.some(
+        (group) => group.id !== currentEditingGroup.id && group.name.toLowerCase() === editGroupName.toLowerCase(),
+      )
+    ) {
+      toast.error("Group name already exists")
+      return
+    }
+
+    const updatedGroups = emailGroups.map((group) => {
+      if (group.id === currentEditingGroup.id) {
+        return {
+          ...group,
+          name: editGroupName.trim(),
+          userIds: [...editGroupMembers],
+        }
+      }
+      return group
+    })
+
+    setEmailGroups(updatedGroups)
+    saveGroupsToStorage(updatedGroups)
+
+    toast.success(`Group "${editGroupName}" updated successfully`)
+    setIsEditGroupDialogOpen(false)
+    setCurrentEditingGroup(null)
   }
 
   // Select group
@@ -524,17 +605,30 @@ export default function TeamMembersPage() {
                                     {group.userIds.length} members • {formatDate(group.createdAt)}
                                   </div>
                                 </div>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-6 w-6 p-0 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    handleDeleteGroup(group.id)
-                                  }}
-                                >
-                                  <Trash2 className="h-3 w-3" />
-                                </Button>
+                                <div className="flex items-center gap-1">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-6 w-6 p-0 text-blue-500 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-950/20"
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      handleOpenEditGroup(group)
+                                    }}
+                                  >
+                                    <Pencil className="h-3 w-3" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-6 w-6 p-0 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20"
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      handleDeleteGroup(group.id)
+                                    }}
+                                  >
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                </div>
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                             </div>
@@ -696,6 +790,120 @@ export default function TeamMembersPage() {
           </DialogContent>
         </Dialog>
 
+        {/* Edit Group Dialog */}
+        <Dialog open={isEditGroupDialogOpen} onOpenChange={setIsEditGroupDialogOpen}>
+          <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Pencil className="h-5 w-5" />
+                Edit Email Group
+              </DialogTitle>
+              <DialogDescription>
+                Edit group name and members for {currentEditingGroup?.name || "selected group"}.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-group-name">Group Name</Label>
+                <Input
+                  id="edit-group-name"
+                  placeholder="Enter group name..."
+                  value={editGroupName}
+                  onChange={(e) => setEditGroupName(e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label>Group Members ({editGroupMembers.length})</Label>
+                  <div className="relative w-[200px]">
+                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400 dark:text-zinc-500" />
+                    <Input
+                      placeholder="Search members..."
+                      className="pl-9 w-full"
+                      value={groupSearchQuery}
+                      onChange={(e) => setGroupSearchQuery(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="border rounded-md max-h-64 overflow-y-auto">
+                  <div className="p-2 border-b bg-gray-50 dark:bg-zinc-800/50 flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700 dark:text-zinc-300">Select Members</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-7 text-xs"
+                      onClick={() => {
+                        if (editGroupMembers.length === users.length) {
+                          setEditGroupMembers([])
+                        } else {
+                          setEditGroupMembers(users.map((user) => user.id))
+                        }
+                      }}
+                    >
+                      {editGroupMembers.length === users.length ? "Deselect All" : "Select All"}
+                    </Button>
+                  </div>
+                  <div className="p-2 space-y-2">
+                    {filteredUsersForGroup.map((user) => (
+                      <div
+                        key={user.id}
+                        className="flex items-center space-x-2 py-1 px-1 hover:bg-gray-50 dark:hover:bg-zinc-800/50 rounded"
+                      >
+                        <Checkbox
+                          id={`user-${user.id}`}
+                          checked={editGroupMembers.includes(user.id)}
+                          onCheckedChange={(checked) => handleGroupMemberSelect(user.id, checked as boolean)}
+                          className="border-gray-300 dark:border-zinc-700 data-[state=checked]:bg-indigo-600 data-[state=checked]:border-indigo-600"
+                        />
+                        <div className="flex items-center gap-2 flex-1">
+                          <Avatar className="w-6 h-6">
+                            <AvatarImage src={user.image || undefined} alt={user.name || "User"} />
+                            <AvatarFallback className="text-xs bg-indigo-100 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                              {user.name ? user.name.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <Label
+                            htmlFor={`user-${user.id}`}
+                            className="text-sm font-normal cursor-pointer flex-1 flex flex-col"
+                          >
+                            <span className="text-gray-900 dark:text-white">{user.name || "Unnamed User"}</span>
+                            <span className="text-xs text-gray-500 dark:text-zinc-400">{user.email}</span>
+                          </Label>
+                          <Badge
+                            variant={user.role === "ADMIN" ? "default" : "secondary"}
+                            className="ml-auto text-xs h-5 px-1.5"
+                          >
+                            {user.role}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                    {filteredUsersForGroup.length === 0 && (
+                      <div className="py-8 text-center text-gray-500 dark:text-zinc-400">
+                        <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                        <p className="text-sm">No users found</p>
+                        <p className="text-xs">Try adjusting your search</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setIsEditGroupDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleSaveEditedGroup} disabled={!editGroupName.trim() || editGroupMembers.length === 0}>
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         {/* Email Dialog */}
         <Dialog open={isEmailDialogOpen} onOpenChange={setIsEmailDialogOpen}>
           <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
@@ -850,9 +1058,7 @@ function UserTable({ users, isLoading, selectedUsers, onSelectAll, onUserSelect 
                   className="border-gray-300 dark:border-zinc-700 data-[state=checked]:bg-indigo-600 data-[state=checked]:border-indigo-600"
                   checked={isAllSelected}
                   ref={(el) => {
-                    if (el && "indeterminate" in el) {
-                      (el as HTMLInputElement).indeterminate = isIndeterminate
-                    }
+                    if (el) el.indeterminate = isIndeterminate
                   }}
                   onCheckedChange={onSelectAll}
                 />
