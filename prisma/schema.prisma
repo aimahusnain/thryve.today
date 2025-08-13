@@ -17,10 +17,6 @@ model Enrollment {
   phoneCell             String
   email                 String
   socialSecurity        String
-  stateId               String
-  emergencyContact      String
-  emergencyRelationship String
-  emergencyPhone        String
   studentSignature      String
   studentSignatureDate  DateTime
   directorSignature     String
@@ -136,3 +132,4 @@ model CartItem {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
