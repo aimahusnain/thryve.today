@@ -1,6 +1,5 @@
 "use client"
 import { Eye, EyeOff } from "lucide-react" // you can use any icon lib
-
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -22,6 +21,7 @@ import { useForm } from "react-hook-form"
 import { Toaster, toast } from "sonner"
 import * as z from "zod"
 
+
 const formSchema = z.object({
   studentName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   dateOfBirth: z.string().min(5, { message: "Date of birth must be at least 5 characters." }),
@@ -33,10 +33,6 @@ const formSchema = z.object({
   socialSecurity: z.string().min(9, {
     message: "Social Security number must be at least 9 characters.",
   }),
-  stateId: z.string().optional(), // Made stateId optional since it's commented out in form
-  emergencyContact: z.string().optional(),
-  emergencyRelationship: z.string().optional(),
-  emergencyPhone: z.string().optional(), // Made emergency phone optional
   studentSignature: z.string().min(2, { message: "Student signature is required." }),
   studentSignatureDate: z.date({
     required_error: "Student signature date is required.",
@@ -48,6 +44,7 @@ const formSchema = z.object({
   courseId: z.string(),
 })
 
+
 interface NursingEnrollmentFormProps {
   courseId: string
   courseName: string
@@ -55,6 +52,7 @@ interface NursingEnrollmentFormProps {
   courseDuration: string
   session: Session | null
 }
+
 
 export function NursingEnrollmentForm({
   courseId,
@@ -69,12 +67,14 @@ export function NursingEnrollmentForm({
   const router = useRouter()
   const [show, setShow] = useState(false)
 
+
   // Check authentication status as soon as component loads
   useEffect(() => {
     if (!session) {
       setShowAuthDialog(true)
     }
   }, [session])
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -87,16 +87,13 @@ export function NursingEnrollmentForm({
       phoneCell: "",
       email: "",
       socialSecurity: "",
-      stateId: "", // Added default value for stateId
-      emergencyContact: "",
-      emergencyRelationship: "",
-      emergencyPhone: "",
       studentSignature: "",
       directorSignature: "",
       guardianSignature: "",
       courseId: courseId,
     },
   })
+
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     // Double check authentication before submitting
@@ -105,6 +102,7 @@ export function NursingEnrollmentForm({
       return
     }
 
+
     try {
       const isValid = await form.trigger()
       if (!isValid) {
@@ -112,7 +110,9 @@ export function NursingEnrollmentForm({
         return
       }
 
+
       toast.loading("Submitting enrollment form...")
+
 
       const formattedValues = {
         ...values,
@@ -126,7 +126,9 @@ export function NursingEnrollmentForm({
           : undefined,
       }
 
+
       console.log("Submitting form data:", formattedValues) // Added debug logging
+
 
       const response = await axios.post("/api/enroll", formattedValues, {
         headers: {
@@ -134,23 +136,28 @@ export function NursingEnrollmentForm({
         },
       })
 
+
       if (response.status === 200 || response.status === 201) {
         toast.dismiss()
         toast.success("Enrollment form submitted successfully!")
         setIsSubmitted(true)
+
 
         // Check if course is already in cart before adding
         try {
           const cartResponse = await fetch("/api/cart")
           const cartData = await cartResponse.json()
 
+
           // Check if the course is already in the cart
           const courseAlreadyInCart = cartData.items?.some((item: { courseId: string }) => item.courseId === courseId)
+
 
           if (!courseAlreadyInCart) {
             // Only add to cart if not already there
             await addToCart(courseId, courseName, coursePrice, courseDuration)
           }
+
 
           // Wait a moment before redirecting to cart
           setTimeout(() => {
@@ -173,6 +180,7 @@ export function NursingEnrollmentForm({
     }
   }
 
+
   // Authentication Dialog Component
   const AuthDialog = () => (
     <Dialog open={showAuthDialog} onOpenChange={() => {}}>
@@ -181,6 +189,7 @@ export function NursingEnrollmentForm({
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background to-primary/10 z-0 overflow-hidden">
           <div className="absolute top-[-100px] right-[-100px] w-[300px] h-[300px] rounded-full bg-primary/5 animate-pulse-slow"></div>
           <div className="absolute bottom-[-50px] left-[-50px] w-[200px] h-[200px] rounded-full bg-primary/10 animate-pulse-slower"></div>
+
 
           {/* Decorative patterns */}
           <div className="absolute inset-0 opacity-10">
@@ -195,6 +204,7 @@ export function NursingEnrollmentForm({
           </div>
         </div>
 
+
         <div className="relative z-10 px-6 py-8">
           <DialogHeader className="text-center mb-2">
             {/* Custom icon container with subtle animation */}
@@ -205,15 +215,18 @@ export function NursingEnrollmentForm({
               </div>
             </div>
 
+
             {/* Title with gradient effect */}
             <DialogTitle className="text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80 pb-1">
               Authentication Required
             </DialogTitle>
 
+
             <DialogDescription className="text-foreground/80 text-base max-w-xs mx-auto">
               Sign in or create an account to complete your enrollment
             </DialogDescription>
           </DialogHeader>
+
 
           {/* Course information with custom styling */}
           <div className="mt-5 mb-7">
@@ -253,6 +266,7 @@ export function NursingEnrollmentForm({
             </div>
           </div>
 
+
           {/* Security notice with subtle hover effect */}
           <div className="flex items-center justify-center p-2 rounded-lg bg-muted/20 mb-6 hover:bg-muted/30 transition-colors duration-200">
             <svg
@@ -273,6 +287,7 @@ export function NursingEnrollmentForm({
             <p className="text-xs text-muted-foreground">Your enrollment information is secure</p>
           </div>
 
+
           {/* Action buttons with fixed height and responsive design */}
           <div className="space-y-3 pt-1">
             <Button
@@ -285,6 +300,7 @@ export function NursingEnrollmentForm({
               </Link>
             </Button>
 
+
             {/* Divider with text */}
             <div className="relative w-full flex items-center justify-center py-1">
               <div className="absolute inset-0 flex items-center">
@@ -292,6 +308,7 @@ export function NursingEnrollmentForm({
               </div>
               <span className="relative px-3 text-xs text-muted-foreground bg-background">or</span>
             </div>
+
 
             <Button
               asChild
@@ -309,10 +326,12 @@ export function NursingEnrollmentForm({
     </Dialog>
   )
 
+
   if (isSubmitted) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-primary/5 to-background py-12 pt-32">
         <Toaster />
+
 
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center mb-12">
@@ -325,6 +344,7 @@ export function NursingEnrollmentForm({
             </p>
           </div>
 
+
           <div className="bg-card rounded-xl shadow-lg overflow-hidden">
             <div className="p-8">
               <div className="flex items-center justify-between mb-6">
@@ -334,12 +354,14 @@ export function NursingEnrollmentForm({
                 </div>
               </div>
 
+
               <div className="space-y-4 mb-8">
                 <div className="flex justify-between items-center py-2 border-b">
                   <span className="text-muted-foreground">Program Fee</span>
                   <span className="font-semibold">${coursePrice.toFixed(2)}</span>
                 </div>
               </div>
+
 
               <Button
                 onClick={() => router.push("/cart")}
@@ -349,6 +371,7 @@ export function NursingEnrollmentForm({
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </div>
+
 
             <div className="bg-muted/30 p-6 mt-4">
               <h3 className="font-semibold mb-2">Important Note:</h3>
@@ -363,18 +386,22 @@ export function NursingEnrollmentForm({
     )
   }
 
+
   return (
     <div className={cn("min-h-screen transition-colors duration-300")}>
       <Toaster />
 
+
       {/* Authentication Dialog */}
       <AuthDialog />
+
 
       <div className="container mx-auto py-12 px-6 sm:px-8 lg:px-12 max-w-6xl mt-20">
         <div className="flex justify-between items-center sm:flex-row flex-col mb-8">
           <h1 className="text-4xl font-extrabold text-primary mb-2">Enrollment Form: {courseName}</h1>
           <p className="text-muted-foreground">Fill out all required information below to enroll in this course.</p>
         </div>
+
 
         <Card className="mb-8 bg-card">
           <CardHeader className="p-6">
@@ -399,6 +426,7 @@ export function NursingEnrollmentForm({
             </div>
           </CardContent>
         </Card>
+
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -429,6 +457,7 @@ export function NursingEnrollmentForm({
                   )}
                 />
 
+
                 <FormField
                   control={form.control}
                   name="dateOfBirth"
@@ -449,6 +478,7 @@ export function NursingEnrollmentForm({
                     </FormItem>
                   )}
                 />
+
 
                 <FormField
                   control={form.control}
@@ -471,6 +501,7 @@ export function NursingEnrollmentForm({
                   )}
                 />
 
+
                 <FormField
                   control={form.control}
                   name="cityStateZip"
@@ -492,6 +523,7 @@ export function NursingEnrollmentForm({
                   )}
                 />
 
+
                 <FormField
                   control={form.control}
                   name="phoneHome"
@@ -512,6 +544,7 @@ export function NursingEnrollmentForm({
                     </FormItem>
                   )}
                 />
+
 
                 <FormField
                   control={form.control}
@@ -536,6 +569,7 @@ export function NursingEnrollmentForm({
                   )}
                 />
 
+
                 <FormField
                   control={form.control}
                   name="email"
@@ -556,6 +590,7 @@ export function NursingEnrollmentForm({
                     </FormItem>
                   )}
                 />
+
 
                 <FormField
                   control={form.control}
@@ -589,6 +624,7 @@ export function NursingEnrollmentForm({
                   )}
                 />
 
+
                 {/* <FormField
                   control={form.control}
                   name="stateId"
@@ -610,6 +646,7 @@ export function NursingEnrollmentForm({
                   )}
                 /> */}
 
+
                 {/* <FormField
                   control={form.control}
                   name="emergencyContact"
@@ -629,6 +666,7 @@ export function NursingEnrollmentForm({
                   )}
                 /> */}
 
+
                 {/* <FormField
                   control={form.control}
                   name="emergencyRelationship"
@@ -647,6 +685,7 @@ export function NursingEnrollmentForm({
                     </FormItem>
                   )}
                 /> */}
+
 
                 {/* <FormField
                   control={form.control}
@@ -668,6 +707,7 @@ export function NursingEnrollmentForm({
                 /> */}
               </CardContent>
             </Card>
+
 
             <Card className="bg-card mt-6">
               <CardHeader className="bg-muted p-6">
@@ -694,6 +734,7 @@ export function NursingEnrollmentForm({
                       </FormItem>
                     )}
                   />
+
 
                   <FormField
                     control={form.control}
@@ -744,6 +785,7 @@ export function NursingEnrollmentForm({
                     )}
                   />
 
+
                   <FormField
                     control={form.control}
                     name="directorSignature"
@@ -757,6 +799,7 @@ export function NursingEnrollmentForm({
                       </FormItem>
                     )}
                   />
+
 
                   <FormField
                     control={form.control}
@@ -805,6 +848,7 @@ export function NursingEnrollmentForm({
                     )}
                   />
 
+
                   <FormField
                     control={form.control}
                     name="guardianSignature"
@@ -820,6 +864,7 @@ export function NursingEnrollmentForm({
                       </FormItem>
                     )}
                   />
+
 
                   <FormField
                     control={form.control}
@@ -870,6 +915,7 @@ export function NursingEnrollmentForm({
                 </div>
               </CardContent>
             </Card>
+
 
             <Button
               type="submit"

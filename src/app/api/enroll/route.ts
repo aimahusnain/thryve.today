@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 
+
 export async function POST(request: Request) {
   try {
     const session = await getServerSession(authOptions)
@@ -10,7 +11,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+
     const data = await request.json()
+
 
     // Validate required fields
     const requiredFields = [
@@ -22,10 +25,9 @@ export async function POST(request: Request) {
       "phoneCell",
       "email",
       "socialSecurity",
-      "stateId",
-      "emergencyPhone",
       "studentSignature",
-    ]
+    ] // Add any other required fields here
+
 
     for (const field of requiredFields) {
       if (!data[field]) {
@@ -38,6 +40,7 @@ export async function POST(request: Request) {
       }
     }
 
+
     // Check if an enrollment already exists
     const existingEnrollment = await prisma.enrollment.findFirst({
       where: {
@@ -45,6 +48,7 @@ export async function POST(request: Request) {
         courseId: data.courseId,
       },
     })
+
 
     // Prepare data with proper date handling
     const enrollmentData = {
@@ -61,7 +65,9 @@ export async function POST(request: Request) {
       updatedAt: new Date(),
     }
 
+
     let enrollment
+
 
     if (existingEnrollment) {
       // Update existing enrollment
@@ -78,6 +84,7 @@ export async function POST(request: Request) {
         },
       })
 
+
       // Check if course is already in cart
       const cart = await prisma.cart.findUnique({
         where: { userId: session.user.id },
@@ -88,6 +95,7 @@ export async function POST(request: Request) {
         },
       })
 
+
       // Return information about cart status
       return NextResponse.json({
         success: true,
@@ -96,6 +104,7 @@ export async function POST(request: Request) {
 isInCart: (cart?.items?.length ?? 0) > 0
       })
     }
+
 
     return NextResponse.json({
       success: true,
