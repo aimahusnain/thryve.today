@@ -1,4 +1,5 @@
 "use client"
+import { Eye, EyeOff } from "lucide-react"; // you can use any icon lib
 
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -69,6 +70,7 @@ export function NursingEnrollmentForm({
   const [showAuthDialog, setShowAuthDialog] = useState(false)
   const { addToCart } = useCart()
   const router = useRouter()
+  const [show, setShow] = useState(false);
 
   // Check authentication status as soon as component loads
   useEffect(() => {
@@ -559,19 +561,30 @@ export function NursingEnrollmentForm({
                         Social Security # <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input
-                          disabled={!session}
-                          placeholder="XXX-XX-XXXX"
-                          {...field}
-                          className="bg-background text-foreground"
-                        />
+                        <div className="relative">
+      <input
+        type={show ? "text" : "password"}
+        disabled={!session}
+        placeholder="XXX-XX-XXXX"
+        {...field}
+        className="bg-background text-foreground pr-10 w-full rounded-md border border-gray-300 p-2"
+      />
+      <button
+        type="button"
+        onClick={() => setShow(!show)}
+        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500"
+        tabIndex={-1}
+      >
+        {show ? <EyeOff size={18} /> : <Eye size={18} />}
+      </button>
+    </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="stateId"
                   render={({ field }) => (
@@ -590,8 +603,8 @@ export function NursingEnrollmentForm({
                       <FormMessage />
                     </FormItem>
                   )}
-                />
-
+                /> */}
+{/* 
                 <FormField
                   control={form.control}
                   name="emergencyContact"
@@ -609,8 +622,8 @@ export function NursingEnrollmentForm({
                       <FormMessage />
                     </FormItem>
                   )}
-                />
-
+                /> */}
+{/* 
                 <FormField
                   control={form.control}
                   name="emergencyRelationship"
@@ -628,9 +641,9 @@ export function NursingEnrollmentForm({
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                /> */}
 
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="emergencyPhone"
                   render={({ field }) => (
@@ -647,7 +660,7 @@ export function NursingEnrollmentForm({
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                /> */}
               </CardContent>
             </Card>
 
