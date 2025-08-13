@@ -28,7 +28,7 @@ export function DeleteUserDialog({ userId, userName }: DeleteUserDialogProps) {
   const handleDelete = async () => {
     setIsDeleting(true)
     try {
-      const response = await fetch(`/api/users/${userId}`, {
+      const response = await fetch(`/api/users/delete/${userId}`, {
         method: "DELETE",
       })
 
