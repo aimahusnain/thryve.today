@@ -1,5 +1,5 @@
 "use client"
-import { Eye, EyeOff } from "lucide-react"; // you can use any icon lib
+import { Eye, EyeOff } from "lucide-react" // you can use any icon lib
 
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
@@ -22,7 +22,6 @@ import { useForm } from "react-hook-form"
 import { Toaster, toast } from "sonner"
 import * as z from "zod"
 
-// Form schema remains the same
 const formSchema = z.object({
   studentName: z.string().min(2, { message: "Name must be at least 2 characters." }),
   dateOfBirth: z.string().min(5, { message: "Date of birth must be at least 5 characters." }),
@@ -34,12 +33,10 @@ const formSchema = z.object({
   socialSecurity: z.string().min(9, {
     message: "Social Security number must be at least 9 characters.",
   }),
-  stateId: z.string().min(1, { message: "State ID is required." }),
+  stateId: z.string().optional(), // Made stateId optional since it's commented out in form
   emergencyContact: z.string().optional(),
   emergencyRelationship: z.string().optional(),
-  emergencyPhone: z.string().min(10, {
-    message: "Emergency contact phone must be at least 10 characters.",
-  }),
+  emergencyPhone: z.string().optional(), // Made emergency phone optional
   studentSignature: z.string().min(2, { message: "Student signature is required." }),
   studentSignatureDate: z.date({
     required_error: "Student signature date is required.",
@@ -70,7 +67,7 @@ export function NursingEnrollmentForm({
   const [showAuthDialog, setShowAuthDialog] = useState(false)
   const { addToCart } = useCart()
   const router = useRouter()
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false)
 
   // Check authentication status as soon as component loads
   useEffect(() => {
@@ -90,7 +87,7 @@ export function NursingEnrollmentForm({
       phoneCell: "",
       email: "",
       socialSecurity: "",
-      stateId: "",
+      stateId: "", // Added default value for stateId
       emergencyContact: "",
       emergencyRelationship: "",
       emergencyPhone: "",
@@ -101,7 +98,6 @@ export function NursingEnrollmentForm({
     },
   })
 
-  // Fixed onSubmit function to match React Hook Form's expected signature
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     // Double check authentication before submitting
     if (!session) {
@@ -110,6 +106,12 @@ export function NursingEnrollmentForm({
     }
 
     try {
+      const isValid = await form.trigger()
+      if (!isValid) {
+        toast.error("Please fill in all required fields correctly.")
+        return
+      }
+
       toast.loading("Submitting enrollment form...")
 
       const formattedValues = {
@@ -123,6 +125,8 @@ export function NursingEnrollmentForm({
           ? new Date(values.guardianSignatureDate).toISOString()
           : undefined,
       }
+
+      console.log("Submitting form data:", formattedValues) // Added debug logging
 
       const response = await axios.post("/api/enroll", formattedValues, {
         headers: {
@@ -159,9 +163,10 @@ export function NursingEnrollmentForm({
       }
     } catch (error) {
       toast.dismiss()
+      console.error("Form submission error:", error) // Added error logging
       if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message
-        toast.error(errorMessage || "An error occurred")
+        const errorMessage = error.response?.data?.message || error.message
+        toast.error(errorMessage || "An error occurred during submission")
       } else {
         toast.error("An unexpected error occurred. Please try again.")
       }
@@ -562,22 +567,22 @@ export function NursingEnrollmentForm({
                       </FormLabel>
                       <FormControl>
                         <div className="relative">
-      <input
-        type={show ? "text" : "password"}
-        disabled={!session}
-        placeholder="XXX-XX-XXXX"
-        {...field}
-        className="bg-background text-foreground pr-10 w-full rounded-md border border-gray-300 p-2"
-      />
-      <button
-        type="button"
-        onClick={() => setShow(!show)}
-        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500"
-        tabIndex={-1}
-      >
-        {show ? <EyeOff size={18} /> : <Eye size={18} />}
-      </button>
-    </div>
+                          <input
+                            type={show ? "text" : "password"}
+                            disabled={!session}
+                            placeholder="XXX-XX-XXXX"
+                            {...field}
+                            className="bg-background text-foreground pr-10 w-full rounded-md border border-gray-300 p-2"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShow(!show)}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500"
+                            tabIndex={-1}
+                          >
+                            {show ? <EyeOff size={18} /> : <Eye size={18} />}
+                          </button>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -604,8 +609,8 @@ export function NursingEnrollmentForm({
                     </FormItem>
                   )}
                 /> */}
-{/* 
-                <FormField
+
+                {/* <FormField
                   control={form.control}
                   name="emergencyContact"
                   render={({ field }) => (
@@ -623,8 +628,8 @@ export function NursingEnrollmentForm({
                     </FormItem>
                   )}
                 /> */}
-{/* 
-                <FormField
+
+                {/* <FormField
                   control={form.control}
                   name="emergencyRelationship"
                   render={({ field }) => (
@@ -869,10 +874,10 @@ export function NursingEnrollmentForm({
             <Button
               type="submit"
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-lg py-6 mt-6"
-              disabled={!session}
+              disabled={!session || form.formState.isSubmitting} // Added isSubmitting state
               onClick={() => !session && setShowAuthDialog(true)}
             >
-              Submit Enrollment
+              {form.formState.isSubmitting ? "Submitting..." : "Submit Enrollment"} {/* Added loading state */}
             </Button>
           </form>
         </Form>
