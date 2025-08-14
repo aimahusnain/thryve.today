@@ -9,6 +9,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
+    
     <main
       id="home"
       className="overflow-hidden min-h-screen p-4 sm:p-6 md:p-8 lg:p-12 bg-gradient-to-br from-zinc-50 to-white dark:from-zinc-950 dark:to-black"
