@@ -16,11 +16,11 @@ model Enrollment {
   phoneHome             String
   phoneCell             String
   email                 String
-  socialSecurity        String
-  stateId               String
-  emergencyContact      String
-  emergencyRelationship String
-  emergencyPhone        String
+  socialSecurity        String?
+  stateId               String?
+  emergencyContact      String?
+  emergencyRelationship String?
+  emergencyPhone        String?
   studentSignature      String
   studentSignatureDate  DateTime
   directorSignature     String
