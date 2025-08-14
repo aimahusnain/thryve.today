@@ -21,6 +21,7 @@ export async function POST(request: Request) {
       "phoneHome",
       "phoneCell",
       "email",
+      "socialSecurity",
       "studentSignature",
     ]
 

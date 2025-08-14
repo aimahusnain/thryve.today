@@ -12,7 +12,7 @@ import { useCart } from "@/provider/cart-provider"
 import { zodResolver } from "@hookform/resolvers/zod"
 import axios from "axios"
 import { format } from "date-fns"
-import { ArrowRight, CalendarIcon, CheckCircle, LogIn, UserPlus } from "lucide-react"
+import { ArrowRight, CalendarIcon, CheckCircle, Eye, EyeOff, LogIn, UserPlus } from "lucide-react"
 import type { Session } from "next-auth"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -33,6 +33,9 @@ const formSchema = z.object({
   studentSignature: z.string().min(2, { message: "Student signature is required." }),
   studentSignatureDate: z.date({
     required_error: "Student signature date is required.",
+  }),
+  socialSecurity: z.string().min(9, {
+    message: "Social Security number must be at least 9 characters.",
   }),
   directorSignature: z.string().optional(),
   directorSignatureDate: z.date().optional(),
@@ -68,6 +71,12 @@ export function NursingEnrollmentForm({
     }
   }, [session])
 
+    const [showValue, setShowValue] = useState(false);
+
+  const toggleVisibility = () => {
+    setShowValue(!showValue);
+  };
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -78,6 +87,7 @@ export function NursingEnrollmentForm({
       phoneHome: "",
       phoneCell: "",
       email: "",
+      socialSecurity: "",
       studentSignature: "",
       directorSignature: "",
       guardianSignature: "",
@@ -536,7 +546,7 @@ export function NursingEnrollmentForm({
                   )}
                 />
 
-                {/* <FormField
+                <FormField
                   control={form.control}
                   name="socialSecurity"
                   render={({ field }) => (
@@ -545,17 +555,39 @@ export function NursingEnrollmentForm({
                         Social Security # <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input
+                        {/* <Input
                           disabled={!session}
                           placeholder="XXX-XX-XXXX"
                           {...field}
                           className="bg-background text-foreground"
-                        />
+                        /> */}
+                          <div className="relative">
+      <Input
+        disabled={!session}
+        placeholder="XXX-XX-XXXX"
+        type={showValue ? "text" : "password"}
+        {...field}
+        className="bg-background text-foreground pr-10"
+      />
+      <button
+        type="button"
+        onClick={toggleVisibility}
+        disabled={!session}
+        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+        aria-label={showValue ? "Hide value" : "Show value"}
+      >
+        {showValue ? (
+          <EyeOff className="h-4 w-4" />
+        ) : (
+          <Eye className="h-4 w-4" />
+        )}
+      </button>
+    </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
-                /> */}
+                />
 
                 {/* <FormField
                   control={form.control}
