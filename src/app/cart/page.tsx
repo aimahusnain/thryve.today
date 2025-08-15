@@ -1,127 +1,152 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { ShoppingBag, ArrowLeft, ShoppingCart, AlertCircle } from "lucide-react"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  ShoppingBag,
+  ArrowLeft,
+  ShoppingCart,
+  AlertCircle,
+  ExternalLink,
+} from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { CartItem } from "@/components/cart/cart-item"
-import { ClearCartButton } from "@/components/cart/clear-cart-button"
-import { CheckoutButton } from "@/components/cart/checkout-button"
-import { toast } from "sonner"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { CartItem } from "@/components/cart/cart-item";
+import { ClearCartButton } from "@/components/cart/clear-cart-button";
+import { CheckoutButton } from "@/components/cart/checkout-button";
+import { toast } from "sonner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // Define types for our data structures
 interface Course {
-  id: string
-  name: string
-  price: number
-  duration?: string
+  id: string;
+  name: string;
+  price: number;
+  duration?: string;
 }
 
 interface Item {
-  id: string
-  courseId: string
-  quantity: number
-  course?: Course
+  id: string;
+  courseId: string;
+  quantity: number;
+  course?: Course;
 }
 
 interface Cart {
-  items: Item[]
+  items: Item[];
 }
 
 export default function CartPage() {
-  const router = useRouter()
-  const [cart, setCart] = useState<Cart>({ items: [] })
-  const [total, setTotal] = useState<number>(0)
-  const [enrollmentStatus, setEnrollmentStatus] = useState<Record<string, boolean>>({})
-  const [loading, setLoading] = useState<boolean>(true)
-  const [allEnrolled, setAllEnrolled] = useState<boolean>(false)
+  const router = useRouter();
+  const [cart, setCart] = useState<Cart>({ items: [] });
+  const [total, setTotal] = useState<number>(0);
+  const [enrollmentStatus, setEnrollmentStatus] = useState<
+    Record<string, boolean>
+  >({});
+  const [loading, setLoading] = useState<boolean>(true);
+  const [allEnrolled, setAllEnrolled] = useState<boolean>(false);
 
   const loadCartData = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       // Fetch cart data
-      const cartResponse = await fetch("/api/cart")
+      const cartResponse = await fetch("/api/cart");
       if (!cartResponse.ok) {
         if (cartResponse.status === 401) {
           // Redirect to login if unauthorized
-          router.push("/log-in?callbackUrl=/cart")
-          return
+          router.push("/log-in?callbackUrl=/cart");
+          return;
         }
-        throw new Error("Failed to fetch cart")
+        throw new Error("Failed to fetch cart");
       }
-      const cartData = (await cartResponse.json()) as Cart
-      setCart(cartData)
+      const cartData = (await cartResponse.json()) as Cart;
+      setCart(cartData);
 
       // Calculate total
       const totalAmount = cartData.items.reduce(
         (sum, item) => sum + (item.course?.price || 0) * (item.quantity || 1),
-        0,
-      )
-      setTotal(totalAmount)
+        0
+      );
+      setTotal(totalAmount);
 
       // Check enrollment status for each course
       if (cartData.items && cartData.items.length > 0) {
-        const enrollmentStatusMap: Record<string, boolean> = {}
-        let allCoursesEnrolled = true
+        const enrollmentStatusMap: Record<string, boolean> = {};
+        let allCoursesEnrolled = true;
 
         for (const item of cartData.items) {
           if (item.courseId) {
-            const enrollmentResponse = await fetch(`/api/enrollment/status?courseId=${item.courseId}`)
+            const enrollmentResponse = await fetch(
+              `/api/enrollment/status?courseId=${item.courseId}`
+            );
             if (enrollmentResponse.ok) {
-              const { completed } = (await enrollmentResponse.json()) as { completed: boolean }
-              enrollmentStatusMap[item.courseId] = completed
+              const { completed } = (await enrollmentResponse.json()) as {
+                completed: boolean;
+              };
+              enrollmentStatusMap[item.courseId] = completed;
               if (!completed) {
-                allCoursesEnrolled = false
+                allCoursesEnrolled = false;
               }
             } else {
               // If we can't determine enrollment status, assume not enrolled
-              enrollmentStatusMap[item.courseId] = false
-              allCoursesEnrolled = false
+              enrollmentStatusMap[item.courseId] = false;
+              allCoursesEnrolled = false;
             }
           }
         }
 
-        setEnrollmentStatus(enrollmentStatusMap)
-        setAllEnrolled(allCoursesEnrolled)
+        setEnrollmentStatus(enrollmentStatusMap);
+        setAllEnrolled(allCoursesEnrolled);
       } else {
         // Empty cart
-        setEnrollmentStatus({})
-        setAllEnrolled(false)
+        setEnrollmentStatus({});
+        setAllEnrolled(false);
       }
     } catch (error) {
-      console.error("Error loading cart data:", error)
-      toast.error("Failed to load cart data")
+      console.error("Error loading cart data:", error);
+      toast.error("Failed to load cart data");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    loadCartData()
-  }, [router])
+    loadCartData();
+  }, [router]);
 
   const handleCartItemRemoved = () => {
-    loadCartData()
-  }
+    loadCartData();
+  };
 
   const handleCartCleared = () => {
-    loadCartData()
-  }
+    loadCartData();
+  };
 
-  const itemCount = cart.items?.reduce((total, item) => total + (item.quantity || 0), 0) || 0
+  const itemCount =
+    cart.items?.reduce((total, item) => total + (item.quantity || 0), 0) || 0;
+
+  // Get courses that are not enrolled
+  const notEnrolledCourses =
+    cart.items?.filter(
+      (item) => item.courseId && !enrollmentStatus[item.courseId]
+    ) || [];
 
   if (loading) {
     return (
       <div className="container pt-[100px] mx-auto py-10 px-4 sm:px-6 flex justify-center items-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>
-    )
+    );
   }
 
   return (
@@ -157,8 +182,8 @@ export default function CartPage() {
               </div>
               <h2 className="text-2xl font-bold">Your cart is empty</h2>
               <p className="text-muted-foreground max-w-md">
-                Looks like you haven&apos;t added any courses to your cart yet. Discover our top-rated courses and start
-                learning today!
+                Looks like you haven&apos;t added any courses to your cart yet.
+                Discover our top-rated courses and start learning today!
               </p>
               <Link href="/courses">
                 <Button size="lg" className="mt-2 rounded-full px-8">
@@ -204,13 +229,17 @@ export default function CartPage() {
                 <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-500" />
                 <AlertTitle>Enrollment Required</AlertTitle>
                 <AlertDescription>
-                  Please complete enrollment for all courses in your cart before proceeding to checkout.
+                  Please complete enrollment for all courses in your cart before
+                  proceeding to checkout.
                 </AlertDescription>
               </Alert>
             )}
 
             <div className="flex justify-between items-center px-4">
-              <Link href="/courses" className="text-sm font-medium text-primary hover:underline">
+              <Link
+                href="/courses"
+                className="text-sm font-medium text-primary hover:underline"
+              >
                 Add more courses
               </Link>
             </div>
@@ -232,18 +261,57 @@ export default function CartPage() {
                   <Separator />
                   <div className="flex justify-between font-medium text-lg">
                     <span>Total</span>
-                    <span className="text-primary font-bold">${total.toFixed(2)}</span>
+                    <span className="text-primary font-bold">
+                      ${total.toFixed(2)}
+                    </span>
                   </div>
                 </div>
               </CardContent>
 
               <CardFooter className="bg-gradient-to-r from-primary/5 to-primary/10 flex flex-col gap-4 pt-6">
                 <CheckoutButton total={total} disabled={!allEnrolled} />
-                {!allEnrolled && (
-                  <p className="text-sm text-muted-foreground text-center">
-                    Please complete enrollment for all courses to proceed to checkout
-                  </p>
+
+                {!allEnrolled && notEnrolledCourses.length > 0 && (
+                  <>
+                    <Separator />
+
+                    <p className="text-xs text-white font-bold italic text-center">
+                      {notEnrolledCourses.length === 1
+                        ? "Enroll in the course below to proceed to checkout"
+                        : "Enroll in all courses below to proceed to checkout"}
+                    </p>
+                    {/* Enrollment Links Table */}
+                    {!allEnrolled && notEnrolledCourses.length > 0 && (
+                      <div className="w-full space-y-3">
+                        <div className="space-y-2">
+                          {notEnrolledCourses.map((item) => (
+                            <div
+                              key={item.courseId}
+                              className="flex items-center justify-between py-2 px-3 bg-muted/50 rounded-lg"
+                            >
+                              <div className="flex-1 min-w-0 mr-3">
+                                <p
+                                  className="text-sm font-medium text-foreground truncate"
+                                  title={item.course?.name || "Course"}
+                                >
+                                  {item.course?.name || "Course"}
+                                </p>
+                              </div>
+                              <Link
+                                href={`/courses/${item.courseId}`}
+                                className="flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors whitespace-nowrap"
+                              >
+                                Enroll Now
+                                <ExternalLink className="ml-1 h-3 w-3" />
+                              </Link>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
+
                 <div className="flex items-center justify-center w-full gap-2 text-xs text-muted-foreground">
                   <span>Secure Checkout</span>
                   <span>•</span>
@@ -255,5 +323,5 @@ export default function CartPage() {
         </div>
       )}
     </div>
-  )
+  );
 }
