@@ -60,7 +60,7 @@ export async function generateEnrollmentPDF(enrollment: EnrollmentData) {
     // Fill the form fields with student data
     const fields = form.getFields()
     console.log(
-      "[v0] Available form fields:",
+      "Available form fields:",
       fields.map((field) => field.getName()),
     )
 
@@ -88,7 +88,8 @@ export async function generateEnrollmentPDF(enrollment: EnrollmentData) {
           field.setText(value)
         }
       } catch (error) {
-        console.log(`[v0] Field "${fieldName}" not found or not a text field`)
+        console.log(`Field "${fieldName}" not found or not a text field`)
+        console.log(error)
       }
     })
 
@@ -99,7 +100,7 @@ export async function generateEnrollmentPDF(enrollment: EnrollmentData) {
     const pdfBytes = await pdfDoc.save()
     return new Uint8Array(pdfBytes)
   } catch (error) {
-    console.error("[v0] Error generating PDF:", error)
+    console.error("Error generating PDF:", error)
     if (error instanceof Error) {
       throw error
     }
@@ -122,7 +123,7 @@ export async function downloadEnrollmentPDF(enrollment: EnrollmentData) {
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
   } catch (error) {
-    console.error("[v0] Error downloading PDF:", error)
+    console.error("Error downloading PDF:", error)
     if (error instanceof Error) {
       throw new Error(`Failed to download PDF: ${error.message}`)
     }
@@ -154,7 +155,7 @@ export async function downloadAllEnrollmentsPDF(enrollments: EnrollmentData[]) {
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
   } catch (error) {
-    console.error("[v0] Error downloading combined PDF:", error)
+    console.error("Error downloading combined PDF:", error)
     if (error instanceof Error) {
       throw new Error(`Failed to download combined PDF: ${error.message}`)
     }
