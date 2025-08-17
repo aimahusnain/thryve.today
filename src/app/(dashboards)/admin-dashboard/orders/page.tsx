@@ -2,7 +2,8 @@
 
 import React from "react"
 import { useState, useEffect } from "react"
-import { getEnrollmentDetails, deleteEnrollment } from "@/lib/enrollment-actions"
+import { getEnrollmentDetails, deleteEnrollment, getFullEnrollmentById } from "@/lib/enrollment-actions"
+import { downloadEnrollmentPDF } from "@/lib/pdf-generator"
 import { AppSidebar } from "@/components/dashboard/sidebar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -22,6 +23,7 @@ import {
   CreditCard,
   Clock,
   RefreshCcw,
+  FileText,
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -45,6 +47,7 @@ export default function OrdersPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [enrollments, setEnrollments] = useState<Enrollment[]>([])
   const [loading, setLoading] = useState(true)
+  const [downloadingPdf, setDownloadingPdf] = useState<string | null>(null)
 
   // Fetch enrollment data
   useEffect(() => {
@@ -58,6 +61,7 @@ export default function OrdersPage() {
         setLoading(false)
       }
     }
+
     fetchData()
   }, [])
 
@@ -89,6 +93,37 @@ export default function OrdersPage() {
   // Toggle expanded row
   const toggleExpand = (id: string) => {
     setExpandedId(expandedId === id ? null : id)
+  }
+
+  const handleDownloadPDF = async (enrollmentId: string) => {
+    try {
+      setDownloadingPdf(enrollmentId)
+
+      // Get full enrollment data
+      const fullEnrollment = await getFullEnrollmentById(enrollmentId)
+
+      // Generate and download PDF
+      downloadEnrollmentPDF(fullEnrollment)
+
+      toast.success("PDF Downloaded", {
+        description: "The enrollment agreement has been downloaded successfully.",
+        action: {
+          label: "Close",
+          onClick: () => console.log("Close"),
+        },
+      })
+    } catch (error) {
+      console.error("Error downloading PDF:", error)
+      toast.error("Download Failed", {
+        description: "Failed to download the enrollment agreement. Please try again.",
+        action: {
+          label: "Close",
+          onClick: () => console.log("Close"),
+        },
+      })
+    } finally {
+      setDownloadingPdf(null)
+    }
   }
 
   // Handle delete enrollment
@@ -133,7 +168,7 @@ export default function OrdersPage() {
               </Button>
               <Button
                 variant="outline"
-                className="flex flex-row gap-2 "
+                className="flex flex-row gap-2  bg-transparent"
                 onClick={() => {
                   setLoading(true)
                   getEnrollmentDetails().then((data) => {
@@ -142,7 +177,8 @@ export default function OrdersPage() {
                   })
                 }}
               >
-                <RefreshCcw /> Refresh
+                <RefreshCcw />
+                Refresh
               </Button>
             </div>
           </div>
@@ -243,12 +279,33 @@ export default function OrdersPage() {
                                       : "bg-orange-100 uppercase text-orange-800 hover:bg-orange-100"
                                 }`}
                               >
-                                {enrollment.paymentStatus === "COMPLETED" ? "Completed/PAID" : enrollment.paymentStatus === "PENDING" ? "Pending/UNPAID" : "Failed/CANNOT PAY"}
+                                {enrollment.paymentStatus === "COMPLETED"
+                                  ? "Completed/PAID"
+                                  : enrollment.paymentStatus === "PENDING"
+                                    ? "Pending/UNPAID"
+                                    : "Failed/CANNOT PAY"}
                               </Badge>
                             </TableCell>
                             <TableCell>{formatCurrency(enrollment.paymentAmount)}</TableCell>
                             <TableCell>
                               <div className="flex items-center gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 w-8 p-0"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleDownloadPDF(enrollment.id)
+                                  }}
+                                  disabled={downloadingPdf === enrollment.id}
+                                >
+                                  {downloadingPdf === enrollment.id ? (
+                                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                                  ) : (
+                                    <FileText className="h-4 w-4" />
+                                  )}
+                                  <span className="sr-only">Download PDF</span>
+                                </Button>
                                 <DeleteConfirmationDialog
                                   id={enrollment.id}
                                   name={enrollment.studentName}
@@ -282,7 +339,8 @@ export default function OrdersPage() {
                                   {/* Student Information */}
                                   <div className="space-y-3">
                                     <h3 className="font-semibold flex items-center gap-2">
-                                      <User className="h-4 w-4" /> Student Information
+                                      <User className="h-4 w-4" />
+                                      Student Information
                                     </h3>
                                     <div className="space-y-2">
                                       <div className="flex items-start gap-2">
@@ -312,7 +370,8 @@ export default function OrdersPage() {
                                   {/* Payment Details */}
                                   <div className="space-y-3">
                                     <h3 className="font-semibold flex items-center gap-2">
-                                      <CreditCard className="h-4 w-4" /> Payment Details
+                                      <CreditCard className="h-4 w-4" />
+                                      Payment Details
                                     </h3>
                                     <div className="space-y-2">
                                       <div className="flex items-start gap-2">
@@ -330,7 +389,11 @@ export default function OrdersPage() {
                                                     : "bg-orange-100 text-orange-800 hover:bg-orange-100"
                                               }`}
                                             >
-                                              {enrollment.paymentStatus === "COMPLETED" ? "Completed/PAID" : enrollment.paymentStatus === "PENDING" ? "Pending/UNPAID" : "Failed/CANNOT PAY"}
+                                              {enrollment.paymentStatus === "COMPLETED"
+                                                ? "Completed/PAID"
+                                                : enrollment.paymentStatus === "PENDING"
+                                                  ? "Pending/UNPAID"
+                                                  : "Failed/CANNOT PAY"}
                                             </Badge>
                                           </p>
                                         </div>
@@ -392,4 +455,3 @@ export default function OrdersPage() {
     </SidebarProvider>
   )
 }
-
