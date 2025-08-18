@@ -273,7 +273,7 @@ export default function CartPage() {
 
                 {!allEnrolled && notEnrolledCourses.length > 0 && (
                   <>
-                    <p className="text-xs text-white font-bold italic text-center">
+                    <p className="text-xs text-black dark:text-white font-bold italic text-center">
                       {notEnrolledCourses.length === 1
                         ? "Enroll in the course below to proceed to checkout"
                         : "Enroll in all courses below to proceed to checkout"}
