@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggler"
 import { UserNav } from "./user-nav"
 import Goy from "@/components/goy"
+import CoursesDropdown from "./courses-button"
 
 interface NavLink {
   title: string
@@ -214,12 +215,7 @@ export default function Navbar() {
               {/* Desktop Navigation Links */}
               <div className="hidden lg:flex items-center space-x-8 ml-8">
                 {navLinks.map((link) => renderNavLink(link))}
-                <Link
-                  href="/courses"
-                  className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-[#2DB188] after:transition-transform after:duration-300 after:ease-&lsqb;cubic-bezier(0.65_0.05_0.36_1)&rsqb; hover:after:origin-bottom-left hover:after:scale-x-100"
-                >
-                  Courses
-                </Link>
+                <CoursesDropdown />
               </div>
 
               {/* Tablet Navigation Links */}
