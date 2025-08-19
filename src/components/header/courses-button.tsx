@@ -78,8 +78,7 @@ type Course = {
 function CourseListItem({ course }: { course: Course }) {
   return (
     <NavigationMenuLink asChild>
-      <Link 
-        href={course.link}
+      <div 
         className="block select-none space-y-2 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground dark:hover:bg-accent dark:hover:text-accent-foreground"
       >
         <div className="flex items-start justify-between gap-2">
@@ -88,7 +87,7 @@ function CourseListItem({ course }: { course: Course }) {
               {course.title}
             </div>
             <p className="text-xs leading-snug text-muted-foreground dark:text-muted-foreground mb-2">
-              {truncateText(course.description)}
+              {truncateText(course.description, 120)}
             </p>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -106,7 +105,7 @@ function CourseListItem({ course }: { course: Course }) {
             </div>
           </div>
         </div>
-      </Link>
+      </div>
     </NavigationMenuLink>
   )
 }
@@ -124,7 +123,7 @@ export function CoursesDropdown() {
             Courses
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <div className="w-[800px] p-4">
+            <div className="w-[400px] p-4">
               <div className="mb-4">
                 <Link
                   href="/courses"
@@ -137,7 +136,7 @@ export function CoursesDropdown() {
                 </p>
               </div>
               
-              <div className="grid grid-cols-2 gap-6">
+              <div className="max-h-[400px] overflow-y-auto space-y-4">
                 {/* Certification Programs */}
                 <div>
                   <h3 className="text-sm font-semibold text-foreground dark:text-foreground mb-3 pb-2 border-b border-border dark:border-border">
