@@ -27,20 +27,23 @@ export async function GET(request: Request) {
       return NextResponse.json(course);
     } else {
       // Build the where clause for filtering
-      const whereClause: any = {};
-      
-      // If status parameter is provided, filter by it
-      if (status) {
-        whereClause.status = status.toUpperCase();
-      }
-      
-      // Get all courses with optional filtering
-      const courses = await prisma.courses.findMany({
-        where: whereClause,
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
+    // Import your Status enum from Prisma client
+    // import { Status } from "@prisma/client"; // Uncomment if needed
+
+    let whereClause: any = {};
+    
+    // If status parameter is provided, filter by it
+    if (status) {
+      whereClause.status = { equals: status.toUpperCase() }; // Use EnumStatusFilter
+    }
+    
+    // Get all courses with optional filtering
+    const courses = await prisma.courses.findMany({
+      where: whereClause,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
       
       return NextResponse.json(courses);
     }

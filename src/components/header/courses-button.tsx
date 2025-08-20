@@ -30,16 +30,6 @@ type Course = {
   updatedAt?: string;
 };
 
-// Helper function to generate course slug from name
-function generateCourseSlug(courseName: string): string {
-  return courseName
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .trim();
-}
-
 // Helper function to determine course category based on name
 function getCourseCategory(courseName: string): string {
   const name = courseName.toLowerCase();
@@ -51,7 +41,6 @@ function getCourseCategory(courseName: string): string {
 }
 
 function CourseListItem({ course }: { course: Course }) {
-  const courseSlug = generateCourseSlug(course.name);
   const category = getCourseCategory(course.name);
   
   return (
