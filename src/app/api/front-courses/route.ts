@@ -28,13 +28,8 @@ export async function GET(request: Request) {
     } else {
       // Build the where clause for filtering
       
-      const whereClause: any = {}; // @ts-expect-error
-      
-      // If status parameter is provided, filter by it
-      if (status) {
-        whereClause.status = status.toUpperCase();
-      }
-      
+      const whereClause = {};
+
       // Get all courses with optional filtering
       const courses = await prisma.courses.findMany({
         where: whereClause,
