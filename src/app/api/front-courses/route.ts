@@ -7,7 +7,6 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    const status = searchParams.get('status'); // New parameter for filtering by status
     
     if (id) {
       // Get a specific course by ID
