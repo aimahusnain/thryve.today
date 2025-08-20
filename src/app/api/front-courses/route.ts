@@ -27,8 +27,8 @@ export async function GET(request: Request) {
       return NextResponse.json(course);
     } else {
       // Build the where clause for filtering
-    //   @ts-ignore
-      const whereClause: any = {};
+      
+      const whereClause: any = {}; // @ts-expect-error
       
       // If status parameter is provided, filter by it
       if (status) {
