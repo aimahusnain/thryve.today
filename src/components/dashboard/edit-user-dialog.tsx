@@ -45,7 +45,7 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
     setIsUpdating(true)
     try {
       const response = await fetch(`/api/users/update?id=${user.id}`, {
-        method: "PATCH",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
