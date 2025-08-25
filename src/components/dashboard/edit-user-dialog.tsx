@@ -43,7 +43,7 @@ export function EditUserDialog({ user }: EditUserDialogProps) {
 
   const handleUpdate = async () => {
     setIsUpdating(true)
-    try {
+    try { 
       const response = await fetch(`/api/users/update?id=${user.id}`, {
         method: "PUT",
         headers: {
