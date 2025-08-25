@@ -2,15 +2,15 @@
 
 import type React from "react"
 
-import { GalleryVerticalEnd } from "lucide-react"
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import Link from "next/link"
+import { cn } from "@/lib/utils"
+import { GalleryVerticalEnd } from "lucide-react"
 import { signIn, useSession } from "next-auth/react"
-import { useState, useEffect } from "react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
 export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
@@ -99,43 +99,6 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
     } finally {
       setLoading(false)
     }
-  }
-
-  const handleGoogleSignIn = () => {
-    setLoading(true)
-    signIn("google", { redirect: false })
-      .then((response) => {
-        if (response?.error) {
-          toast.error("Failed to sign in with Google")
-          setLoading(false)
-          return
-        }
-
-        // Get the session to check user role
-        fetch("/api/auth/session")
-          .then((res) => res.json())
-          .then((sessionData) => {
-            if (sessionData?.user?.role === "ADMIN") {
-              router.push("/admin-dashboard")
-            } else {
-              router.push("/dashboard")
-            }
-            router.refresh()
-          })
-          .catch((error) => {
-            console.error("Error fetching session:", error)
-            // Default redirect if something goes wrong
-            router.push("/dashboard")
-          })
-          .finally(() => {
-            setLoading(false)
-          })
-      })
-      .catch((error) => {
-        console.error("Google sign-in error:", error)
-        toast.error("Failed to sign in with Google")
-        setLoading(false)
-      })
   }
 
   return (
