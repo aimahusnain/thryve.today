@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
-import { Clock } from "lucide-react"
+import { Clock, ShoppingCart } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -11,6 +12,9 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
+import { useCart2 } from "@/components/cart/cart-provider"
+import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 // Type definition based on your Prisma schema
 type Course = {
@@ -40,39 +44,111 @@ function getCourseCategory(courseName: string): string {
   return 'certification';
 }
 
+// Enroll Now Button Component
+function EnrollNowButton({ course }: { course: Course }) {
+  const [isAdding, setIsAdding] = useState(false)
+  const cartContext = useCart2()
+  const router = useRouter()
+  const { data: session } = useSession()
+  
+  const isLoggedIn = !!(session?.user?.email || session?.user?.name)
+  
+  // Debug: Log available cart context properties
+  console.log('Cart context:', Object.keys(cartContext))
+  
+  // Use available cart context properties for cart items
+  const cartItems = cartContext.items || []
+  const addToCart2 = cartContext.addToCart2
+  
+  // Check if course is already in cart
+  const isInCart = Array.isArray(cartItems) && cartItems.some(item => 
+    item.courseId === course.id || item.id === course.id
+  )
+
+  const handleEnroll = async (e: React.MouseEvent) => {
+    e.preventDefault() // Prevent NavigationMenuLink default behavior
+    e.stopPropagation()
+    
+    // If already in cart, do nothing
+    if (isInCart) return
+    
+    setIsAdding(true)
+    
+    // Check if user is logged in
+    if (!isLoggedIn) {
+      // Redirect to login page if not logged in
+      router.push(`/log-in`)
+      setIsAdding(false)
+      return
+    }
+    
+    try {
+      await addToCart2(course.id, course.name, course.price, course.duration || "")
+    } catch (error) {
+      console.error("Failed to add to cart:", error)
+    } finally {
+      setIsAdding(false)
+    }
+  }
+
+  return (
+    <Button
+      onClick={handleEnroll}
+      disabled={isAdding || isInCart}
+      size="sm"
+      className={`w-full mt-3 border-0 transition-all duration-300 ease-in-out font-medium
+        ${isInCart 
+          ? "bg-gray-100 hover:bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 cursor-not-allowed" 
+          : "bg-[#2db188] hover:bg-[#2db188]/90 text-white transform hover:scale-[1.02] shadow-md hover:shadow-lg"
+        }`}
+    >
+      <ShoppingCart className="w-4 h-4 mr-2" />
+      {isAdding ? "Adding..." : isInCart ? "Already in Cart" : "Enroll Now"}
+    </Button>
+  )
+}
+
 function CourseListItem({ course }: { course: Course }) {
   const category = getCourseCategory(course.name);
   
   return (
-    <NavigationMenuLink asChild>
-      <div>
-        <div 
-          className="block select-none space-y-2 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground dark:hover:bg-accent dark:hover:text-accent-foreground"
-        >
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex-1">
-              <div className="text-sm font-medium leading-none group-hover:text-[#2db188] dark:group-hover:text-[#2db188] transition-colors mb-2">
-                {course.name}
+    <div className="group">
+      <div 
+        className="block select-none space-y-3 rounded-lg p-4 leading-none no-underline outline-none 
+                   transition-all duration-300 hover:bg-accent hover:text-accent-foreground 
+                   focus:bg-accent focus:text-accent-foreground dark:hover:bg-accent 
+                   dark:hover:text-accent-foreground border border-transparent 
+                   hover:border-[#2db188]/20 hover:shadow-sm"
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 space-y-2">
+            <div className="text-sm font-semibold leading-tight group-hover:text-[#2db188] 
+                           dark:group-hover:text-[#2db188] transition-colors duration-300">
+              {course.name}
+            </div>
+            
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center rounded-full bg-[#2db188]/10 px-2.5 py-1 
+                               text-xs font-medium text-[#2db188] dark:bg-[#2db188]/20 dark:text-[#2db188]">
+                  {category === 'certification' ? 'Certification' : 'Life Support'}
+                </span>
+                <div className="flex items-center text-xs text-muted-foreground dark:text-muted-foreground">
+                  <Clock className="w-3 h-3 mr-1" />
+                  {course.duration}
+                </div>
               </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center rounded-full bg-[#2db188]/10 px-2 py-1 text-xs font-medium text-[#2db188] dark:bg-[#2db188]/20 dark:text-[#2db188]">
-                    {category === 'certification' ? 'Certification' : 'Life Support'}
-                  </span>
-                  <div className="flex items-center text-xs text-muted-foreground dark:text-muted-foreground">
-                    <Clock className="w-3 h-3 mr-1" />
-                    {course.duration}
-                  </div>
-                </div>
-                <div className="text-sm font-bold text-[#2db188]">
-                  ${course.price}
-                </div>
+              
+              <div className="text-sm font-bold text-[#2db188] bg-[#2db188]/5 px-2 py-1 rounded-md">
+                ${course.price.toFixed(2)}
               </div>
             </div>
+
+            <EnrollNowButton course={course} />
           </div>
         </div>
       </div>
-    </NavigationMenuLink>
+    </div>
   )
 }
 
@@ -96,13 +172,9 @@ export function CoursesDropdown() {
         console.log('Fetched courses:', data); // Debug log
         console.log('Course statuses:', data.map((c: Course) => ({ name: c.name, status: c.status }))); // Debug log
         
-        // Remove the PUBLISHED filter for now - show all courses
-        // You can add filtering back later when you know the correct status values
-        setCourses(data);
-        
-        // If you want to filter by status, uncomment this and update the status value:
-        // const publishedCourses = data.filter((course: Course) => course.status === 'ACTIVE'); // or whatever status you use
-        // setCourses(publishedCourses);
+        // Filter by ACTIVE status to match your courses page
+        const activeCourses = data.filter((course: Course) => course.status === 'ACTIVE');
+        setCourses(activeCourses);
         
       } catch (error) {
         console.error('Error fetching courses:', error);
@@ -131,15 +203,15 @@ export function CoursesDropdown() {
             Courses
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <div className="w-[400px] p-4">
-              <div className="mb-4">
+            <div className="w-[450px] p-6">
+              <div className="mb-6">
                 <Link
                   href="/courses"
                   className="text-lg font-semibold text-foreground dark:text-foreground hover:text-[#2db188] dark:hover:text-[#2db188] transition-colors"
                 >
                   View All Courses →
                 </Link>
-                <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-1">
+                <p className="text-sm text-muted-foreground dark:text-muted-foreground mt-2">
                   Advance your healthcare career with our comprehensive training programs
                 </p>
               </div>
@@ -153,14 +225,14 @@ export function CoursesDropdown() {
                   <div className="text-sm text-red-500">{error}</div>
                 </div>
               ) : (
-                <div className="max-h-[400px] overflow-y-auto space-y-4">
+                <div className="max-h-[500px] overflow-y-auto space-y-6 pr-2">
                   {/* Certification Programs */}
                   {certificationCourses.length > 0 && (
                     <div>
-                      <h3 className="text-sm font-semibold text-foreground dark:text-foreground mb-3 pb-2 border-b border-border dark:border-border">
+                      <h3 className="text-sm font-semibold text-foreground dark:text-foreground mb-4 pb-2 border-b border-border dark:border-border">
                         Certification Programs ({certificationCourses.length})
                       </h3>
-                      <ul className="space-y-2">
+                      <ul className="space-y-3">
                         {certificationCourses.map((course) => (
                           <li key={course.id}>
                             <CourseListItem course={course} />
@@ -173,10 +245,10 @@ export function CoursesDropdown() {
                   {/* Life Support Courses */}
                   {lifeSupportCourses.length > 0 && (
                     <div>
-                      <h3 className="text-sm font-semibold text-foreground dark:text-foreground mb-3 pb-2 border-b border-border dark:border-border">
+                      <h3 className="text-sm font-semibold text-foreground dark:text-foreground mb-4 pb-2 border-b border-border dark:border-border">
                         Life Support Courses ({lifeSupportCourses.length})
                       </h3>
-                      <ul className="space-y-2">
+                      <ul className="space-y-3">
                         {lifeSupportCourses.map((course) => (
                           <li key={course.id}>
                             <CourseListItem course={course} />
