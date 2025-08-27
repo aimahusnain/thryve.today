@@ -1,28 +1,28 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { GalleryVerticalEnd } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp"
-import { Label } from "@/components/ui/label"
-import Link from "next/link"
-import { toast } from "sonner"
-import { useRouter, useSearchParams } from "next/navigation"
+import type React from "react";
+import { useState } from "react";
+import { GalleryVerticalEnd } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp";
+import { Label } from "@/components/ui/label";
+import Link from "next/link";
+import { toast } from "sonner";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export function VerifyOtpForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const email = searchParams.get("email") || ""
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email") || "";
 
-  const [loading, setLoading] = useState(false)
-  const [otp, setOtp] = useState("")
+  const [loading, setLoading] = useState(false);
+  const [otp, setOtp] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await fetch("/api/auth/verify-otp", {
@@ -31,22 +31,24 @@ export function VerifyOtpForm({ className, ...props }: React.ComponentPropsWitho
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, otp }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Invalid OTP")
+        throw new Error(data.error || "Invalid OTP");
       }
 
-      toast.success("OTP verified successfully")
-      router.push(`/reset-password?token=${data.resetToken}&email=${email}`)
+      toast.success("OTP verified successfully");
+
+      // ✅ redirect with token + email
+      router.push(`/reset-password?token=${encodeURIComponent(data.resetToken)}&email=${encodeURIComponent(email)}`);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to verify OTP")
+      toast.error(error instanceof Error ? error.message : "Failed to verify OTP");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -84,7 +86,6 @@ export function VerifyOtpForm({ className, ...props }: React.ComponentPropsWitho
                   <InputOTPSlot index={1} />
                   <InputOTPSlot index={2} />
                   <InputOTPSeparator />
-
                   <InputOTPSlot index={3} />
                   <InputOTPSlot index={4} />
                   <InputOTPSlot index={5} />
@@ -105,5 +106,5 @@ export function VerifyOtpForm({ className, ...props }: React.ComponentPropsWitho
         </div>
       </div>
     </div>
-  )
+  );
 }

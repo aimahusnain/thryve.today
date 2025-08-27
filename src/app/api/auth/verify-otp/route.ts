@@ -1,44 +1,30 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request) {
   try {
-    const { email, otp } = await req.json()
+    const { email, otp } = await req.json();
 
     if (!email || !otp) {
-      return NextResponse.json({ error: "Email and OTP are required" }, { status: 400 })
+      return NextResponse.json({ error: "Email and OTP are required" }, { status: 400 });
     }
 
-    // Get stored OTP data
-    const passwordResets = global.passwordResets || {}
-    const resetData = passwordResets[email]
-
-    if (!resetData) {
-      return NextResponse.json({ error: "No OTP request found for this email" }, { status: 404 })
+    // Access stored reset data
+    const storedData = global.passwordResets?.[email];
+    if (!storedData) {
+      return NextResponse.json({ error: "No OTP request found" }, { status: 400 });
     }
 
-    // Check if OTP has expired
-    if (new Date() > resetData.expiresAt) {
-      delete passwordResets[email]
-      return NextResponse.json({ error: "OTP has expired" }, { status: 400 })
+    if (storedData.otp !== otp) {
+      return NextResponse.json({ error: "Invalid OTP" }, { status: 400 });
     }
 
-    // Verify OTP
-    if (resetData.otp !== otp) {
-      return NextResponse.json({ error: "Invalid OTP" }, { status: 400 })
-    }
-
-    // Return reset token for the next step
-    return NextResponse.json(
-      {
-        success: true,
-        message: "OTP verified successfully",
-        resetToken: resetData.resetToken,
-      },
-      { status: 200 },
-    )
-  } catch (error) {
-    console.error("Error in verify-otp:", error)
-    return NextResponse.json({ error: "Failed to verify OTP" }, { status: 500 })
+    // If OTP matches → return the reset token
+    return NextResponse.json({
+      success: true,
+      message: "OTP verified",
+      resetToken: storedData.resetToken,
+    });
+  } catch (err) {
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }
-
