@@ -25,6 +25,7 @@ export async function POST(req: Request) {
       resetToken: storedData.resetToken,
     });
   } catch (err) {
+    console.error("Error in OTP verification:", err);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }
