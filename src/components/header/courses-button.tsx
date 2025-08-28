@@ -2,13 +2,12 @@
 
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
-import { Clock, ShoppingCart } from "lucide-react"
+import { Clock, ShoppingCart, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
@@ -23,6 +22,7 @@ type Course = {
   price: number;
   duration: string;
   status: string;
+  startingDates?: string; // Added starting dates
   description?: string;
   classroom?: string;
   Lab?: string;
@@ -122,10 +122,19 @@ function CourseListItem({ course }: { course: Course }) {
       >
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 space-y-2">
-            <div className="text-sm font-semibold leading-tight group-hover:text-[#2db188] 
+            {/* Course Name - Now Bold */}
+            <div className="font-bold text-sm leading-tight group-hover:text-[#2db188] 
                            dark:group-hover:text-[#2db188] transition-colors duration-300">
               {course.name}
             </div>
+            
+            {/* Starting Dates - Display below name if available */}
+            {course.startingDates && (
+              <div className="flex items-center text-xs text-muted-foreground dark:text-muted-foreground">
+                <Calendar className="w-3 h-3 mr-1 text-[#2db188]" />
+                <span className="text-[#2db188] font-medium">Starting: {course.startingDates}</span>
+              </div>
+            )}
             
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">

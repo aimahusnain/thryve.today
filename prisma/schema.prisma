@@ -94,7 +94,7 @@ model User {
 }
 
 model Courses {
-  id                String   @id @default(uuid()) @map("_id") @db.Uuid
+  id                String     @id @default(uuid()) @map("_id") @db.Uuid
   name              String
   duration          String
   price             Float
@@ -104,12 +104,13 @@ model Courses {
   Clinic            String?
   WhoShouldAttend   String[]
   ProgramHighlights String[]
-  status            Status   @default(DRAFT)
+  startingDates     String?    // New optional field for multiple starting dates
+  status            Status     @default(DRAFT)
   Note              String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 
-    cartItems         CartItem[]
+  cartItems         CartItem[]
 }
 
 enum Status {

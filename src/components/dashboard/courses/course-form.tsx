@@ -15,6 +15,7 @@ import {
   ChevronRight,
   PenLine,
   CircleCheck,
+  Calendar,
 } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
@@ -51,6 +52,7 @@ export function CourseForm({ open, onOpenChange, course, onSuccess }: CourseForm
     status: "DRAFT",
     WhoShouldAttend: [],
     ProgramHighlights: [],
+    startingDates: "",
   })
 
   useEffect(() => {
@@ -68,6 +70,7 @@ export function CourseForm({ open, onOpenChange, course, onSuccess }: CourseForm
         status: "DRAFT",
         WhoShouldAttend: [],
         ProgramHighlights: [],
+        startingDates: "",
       })
     }
     setCurrentStep(1)
@@ -141,6 +144,7 @@ export function CourseForm({ open, onOpenChange, course, onSuccess }: CourseForm
         WhoShouldAttend: formData.WhoShouldAttend || [],
         ProgramHighlights: formData.ProgramHighlights || [],
         Note: formData.Note,
+        startingDates: formData.startingDates || null,
       }
 
       let response
@@ -445,6 +449,27 @@ export function CourseForm({ open, onOpenChange, course, onSuccess }: CourseForm
                       </div>
                     </div>
                   </div>
+
+                  {/* Starting Dates Field */}
+                  <div className="space-y-2">
+                    <Label htmlFor="startingDates" className="text-base font-medium text-zinc-800 dark:text-zinc-200">
+                      Starting Dates <span className="text-sm text-zinc-500 dark:text-zinc-400 font-normal">(Optional)</span>
+                    </Label>
+                    <div className="relative">
+                      <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-emerald-500 dark:text-emerald-400" />
+                      <Input
+                        id="startingDates"
+                        name="startingDates"
+                        placeholder="e.g. January 15, March 1, May 20"
+                        value={formData.startingDates || ""}
+                        onChange={handleInputChange}
+                        className="h-12 pl-10 transition-all focus-within:ring-2 focus-within:ring-emerald-500 focus-visible:ring-offset-0 dark:bg-zinc-900 dark:border-zinc-800"
+                      />
+                    </div>
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                      Enter multiple starting dates separated by commas
+                    </p>
+                  </div>
                 </motion.div>
               )}
 
@@ -632,6 +657,12 @@ export function CourseForm({ open, onOpenChange, course, onSuccess }: CourseForm
                         <p className="text-zinc-500 dark:text-zinc-400">Classroom</p>
                         <p className="font-medium text-zinc-900 dark:text-white">{formData.classroom || "Virtual"}</p>
                       </div>
+                      {formData.startingDates && (
+                        <div>
+                          <p className="text-zinc-500 dark:text-zinc-400">Starting Dates</p>
+                          <p className="font-medium text-zinc-900 dark:text-white">{formData.startingDates}</p>
+                        </div>
+                      )}
                     </div>
 
                     <Separator className="bg-emerald-100 dark:bg-emerald-900/30" />
@@ -745,4 +776,3 @@ export function CourseForm({ open, onOpenChange, course, onSuccess }: CourseForm
     </Dialog>
   )
 }
-
