@@ -453,7 +453,7 @@ export function CourseForm({ open, onOpenChange, course, onSuccess }: CourseForm
                   {/* Starting Dates Field */}
                   <div className="space-y-2">
                     <Label htmlFor="startingDates" className="text-base font-medium text-zinc-800 dark:text-zinc-200">
-                      Starting Dates <span className="text-sm text-zinc-500 dark:text-zinc-400 font-normal">(Optional)</span>
+                      Schedule Dates <span className="text-sm text-zinc-500 dark:text-zinc-400 font-normal">(Optional)</span>
                     </Label>
                     <div className="relative">
                       <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-emerald-500 dark:text-emerald-400" />
@@ -467,7 +467,7 @@ export function CourseForm({ open, onOpenChange, course, onSuccess }: CourseForm
                       />
                     </div>
                     <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                      Enter multiple starting dates separated by commas
+                      Enter multiple Schedule dates separated by commas
                     </p>
                   </div>
                 </motion.div>
@@ -659,7 +659,7 @@ export function CourseForm({ open, onOpenChange, course, onSuccess }: CourseForm
                       </div>
                       {formData.startingDates && (
                         <div>
-                          <p className="text-zinc-500 dark:text-zinc-400">Starting Dates</p>
+                          <p className="text-zinc-500 dark:text-zinc-400">Schedule Dates</p>
                           <p className="font-medium text-zinc-900 dark:text-white">{formData.startingDates}</p>
                         </div>
                       )}

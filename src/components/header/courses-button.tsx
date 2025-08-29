@@ -76,8 +76,8 @@ function EnrollNowButton({ course }: { course: Course }) {
     
     // Check if user is logged in
     if (!isLoggedIn) {
-      // Redirect to login page if not logged in
-      router.push(`/log-in`)
+      // Redirect to signup page if not logged in
+      router.push(`/signup`)
       setIsAdding(false)
       return
     }
@@ -123,16 +123,16 @@ function CourseListItem({ course }: { course: Course }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 space-y-2">
             {/* Course Name - Now Bold */}
-            <div className="font-bold text-sm leading-tight group-hover:text-[#2db188] 
+            <Link href="/courses" className="font-bold text-sm leading-tight group-hover:text-[#2db188] 
                            dark:group-hover:text-[#2db188] transition-colors duration-300">
               {course.name}
-            </div>
+            </Link>
             
             {/* Starting Dates - Display below name if available */}
             {course.startingDates && (
               <div className="flex items-center text-xs text-muted-foreground dark:text-muted-foreground">
                 <Calendar className="w-3 h-3 mr-1 text-[#2db188]" />
-                <span className="text-[#2db188] font-medium">Starting: {course.startingDates}</span>
+                <span className="text-[#2db188] font-medium">Schedule Dates: {course.startingDates}</span>
               </div>
             )}
             
