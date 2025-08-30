@@ -111,20 +111,20 @@ const BottomContactBar = () => {
             <span className="text-sm font-medium">View Courses</span>
           </Link>
 
-          <Goy
-            id="contact"
+          <Link
+            href="/#contact"
             className="group flex items-center gap-2 px-6 py-2.5
-                     bg-gradient-to-r from-[#2db188] to-[#35dba8]
-                     hover:from-[#35dba8] hover:to-[#29a680]
-                     text-white font-medium rounded-xl
-                     transition-all duration-500 
-                     shadow-lg shadow-[#2db188]/20 dark:shadow-[#2db188]/10
-                     hover:shadow-xl hover:shadow-[#35dba8]/30 dark:hover:shadow-[#35dba8]/20
-                     border border-[#2db188]/50"
+             bg-gradient-to-r from-[#2db188] to-[#35dba8]
+             hover:from-[#35dba8] hover:to-[#29a680]
+             text-white font-medium rounded-xl
+             transition-all duration-500 
+             shadow-lg shadow-[#2db188]/20 dark:shadow-[#2db188]/10
+             hover:shadow-xl hover:shadow-[#35dba8]/30 dark:hover:shadow-[#35dba8]/20
+             border border-[#2db188]/50"
           >
             <span className="text-sm">Contact Now</span>
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
-          </Goy>
+          </Link>
         </div>
       </div>
     </div>

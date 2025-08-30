@@ -33,7 +33,7 @@ export function CourseCart2Button({
     // Check if user is logged in
     if (!isLoggedIn) {
       // Redirect to login page if not logged in
-      router.push(`/log-in`)
+      router.push(`/signup`)
       setIsAdding(false)
       return
     }
