@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { format, formatDistanceToNow } from "date-fns"
 import {
   Bold,
@@ -18,6 +20,7 @@ import {
   X,
   UserPlus,
   Trash2,
+  Paperclip,
 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
@@ -106,6 +109,7 @@ export default function TeamMembersPage() {
   const [editGroupMembers, setEditGroupMembers] = useState<string[]>([])
   const [editGroupName, setEditGroupName] = useState("")
   const [groupSearchQuery, setGroupSearchQuery] = useState("")
+  const [attachments, setAttachments] = useState<File[]>([])
 
   // Load email groups from localStorage
   useEffect(() => {
@@ -347,16 +351,20 @@ export default function TeamMembersPage() {
       const selectedUsersData = getSelectedUsersData()
       const emailAddresses = selectedUsersData.map((user) => user.email)
 
+      // Create FormData to support file attachments
+      const formData = new FormData()
+      formData.append("to", JSON.stringify(emailAddresses))
+      formData.append("subject", emailSubject)
+      formData.append("content", emailContent)
+
+      // Add attachments to FormData
+      attachments.forEach((file) => {
+        formData.append("attachments", file)
+      })
+
       const response = await fetch("/api/send-email", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          to: emailAddresses,
-          subject: emailSubject,
-          content: emailContent,
-        }),
+        body: formData, // Send FormData instead of JSON
       })
 
       if (response.ok) {
@@ -364,6 +372,7 @@ export default function TeamMembersPage() {
         setIsEmailDialogOpen(false)
         setEmailSubject("")
         setEmailContent("")
+        setAttachments([]) // Clear attachments
         setSelectedUsers([])
       } else {
         throw new Error("Failed to send email")
@@ -374,6 +383,23 @@ export default function TeamMembersPage() {
     } finally {
       setIsSendingEmail(false)
     }
+  }
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || [])
+    setAttachments((prev) => [...prev, ...files])
+  }
+
+  const removeAttachment = (index: number) => {
+    setAttachments((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return "0 Bytes"
+    const k = 1024
+    const sizes = ["Bytes", "KB", "MB", "GB"]
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
   }
 
   // Rich text editor functions
@@ -974,6 +1000,55 @@ export default function TeamMembersPage() {
               </div>
 
               <div className="space-y-2">
+                <Label>Attachments</Label>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Input type="file" multiple onChange={handleFileSelect} className="hidden" id="file-upload" />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => document.getElementById("file-upload")?.click()}
+                      className="flex items-center gap-2"
+                    >
+                      <Paperclip className="h-4 w-4" />
+                      Add Files
+                    </Button>
+                    <span className="text-xs text-gray-500">Max 25MB total</span>
+                  </div>
+
+                  {attachments.length > 0 && (
+                    <div className="space-y-1 max-h-32 overflow-y-auto">
+                      {attachments.map((file, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center justify-between p-2 bg-gray-50 dark:bg-zinc-800/50 rounded border text-sm"
+                        >
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <Paperclip className="h-3 w-3 text-gray-500 flex-shrink-0" />
+                            <span className="truncate">{file.name}</span>
+                            <span className="text-gray-500 text-xs flex-shrink-0">({formatFileSize(file.size)})</span>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeAttachment(index)}
+                            className="h-6 w-6 p-0 text-red-500 hover:text-red-700"
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                      <div className="text-xs text-gray-500 pt-1">
+                        Total: {formatFileSize(attachments.reduce((sum, file) => sum + file.size, 0))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-2">
                 <Label>Recipients ({selectedUsers.length})</Label>
                 <div className="max-h-24 overflow-y-auto p-2 bg-gray-50 dark:bg-zinc-800/50 rounded border text-sm">
                   {getSelectedUsersData().map((user, index) => (
@@ -1003,7 +1078,7 @@ export default function TeamMembersPage() {
                 ) : (
                   <>
                     <Mail className="h-4 w-4 mr-2" />
-                    Send Email
+                    Send Email {attachments.length > 0 && `(${attachments.length} files)`}
                   </>
                 )}
               </Button>
