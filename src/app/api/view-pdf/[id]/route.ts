@@ -2,9 +2,12 @@ import { getFullEnrollmentById } from "@/lib/enrollment-actions"
 import { generateEnrollmentPDF } from "@/lib/pdf-generator"
 import { type NextRequest, NextResponse } from "next/server"
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  request: NextRequest, 
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = params
+    const { id } = await params
 
     console.log(request.headers.get("user-agent"))
 
