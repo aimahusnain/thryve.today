@@ -1,10 +1,12 @@
 import { getFullEnrollmentById } from "@/lib/enrollment-actions"
 import { generateEnrollmentPDF } from "@/lib/pdf-generator"
-import { NextResponse } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 
-export async function GET({ params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const { id } = params
+
+    console.log(request.headers.get("user-agent"))
 
     // Get full enrollment data
     const fullEnrollment = await getFullEnrollmentById(id)
