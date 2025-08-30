@@ -3,7 +3,7 @@
 import React from "react"
 import { useState, useEffect } from "react"
 import { getEnrollmentDetails, deleteEnrollment, getFullEnrollmentById } from "@/lib/enrollment-actions"
-import { downloadEnrollmentPDF } from "@/lib/pdf-generator"
+import { downloadEnrollmentPDF, viewEnrollmentPDF } from "@/lib/pdf-generator"
 import { AppSidebar } from "@/components/dashboard/sidebar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -95,6 +95,34 @@ export default function OrdersPage() {
     setExpandedId(expandedId === id ? null : id)
   }
 
+  const handleViewPDF = async (enrollmentId: string) => {
+    try {
+      setDownloadingPdf(enrollmentId)
+
+      const fullEnrollment = await getFullEnrollmentById(enrollmentId)
+      await viewEnrollmentPDF(fullEnrollment)
+
+      toast.success("PDF Opened", {
+        description: "The enrollment agreement has been opened in a new tab.",
+        action: {
+          label: "Close",
+          onClick: () => console.log("Close"),
+        },
+      })
+    } catch (error) {
+      console.error("Error viewing PDF:", error)
+      toast.error("View Failed", {
+        description: "Failed to view the enrollment agreement. Please try again.",
+        action: {
+          label: "Close",
+          onClick: () => console.log("Close"),
+        },
+      })
+    } finally {
+      setDownloadingPdf(null)
+    }
+  }
+
   const handleDownloadPDF = async (enrollmentId: string) => {
     try {
       setDownloadingPdf(enrollmentId)
@@ -168,7 +196,7 @@ export default function OrdersPage() {
               </Button>
               <Button
                 variant="outline"
-                className="flex flex-row gap-2  bg-transparent"
+                className="flex flex-row gap-2 bg-transparent"
                 onClick={() => {
                   setLoading(true)
                   getEnrollmentDetails().then((data) => {
@@ -295,15 +323,30 @@ export default function OrdersPage() {
                                   className="h-8 w-8 p-0"
                                   onClick={(e) => {
                                     e.stopPropagation()
-                                    handleDownloadPDF(enrollment.id)
+                                    handleViewPDF(enrollment.id)
                                   }}
                                   disabled={downloadingPdf === enrollment.id}
+                                  title="View PDF in browser"
                                 >
                                   {downloadingPdf === enrollment.id ? (
                                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                                   ) : (
                                     <FileText className="h-4 w-4" />
                                   )}
+                                  <span className="sr-only">View PDF</span>
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 w-8 p-0"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleDownloadPDF(enrollment.id)
+                                  }}
+                                  disabled={downloadingPdf === enrollment.id}
+                                  title="Download PDF"
+                                >
+                                  <Download className="h-4 w-4" />
                                   <span className="sr-only">Download PDF</span>
                                 </Button>
                                 <DeleteConfirmationDialog

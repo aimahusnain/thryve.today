@@ -162,3 +162,30 @@ export async function downloadAllEnrollmentsPDF(enrollments: EnrollmentData[]) {
     throw new Error("Failed to download combined PDF")
   }
 }
+
+export async function viewEnrollmentPDF(enrollment: EnrollmentData) {
+  try {
+    const pdfBytes = await generateEnrollmentPDF(enrollment)
+    const fileName = `enrollment-${enrollment.studentName.replace(/\s+/g, "-")}-${enrollment.id.slice(0, 8)}.pdf`
+
+    const blob = new Blob([pdfBytes.buffer], { type: "application/pdf" })
+    const url = URL.createObjectURL(blob)
+
+    // Open in new tab instead of downloading
+    const newWindow = window.open(url, "_blank")
+    if (newWindow) {
+      newWindow.document.title = fileName
+    }
+
+    // Clean up the URL after a delay to allow the browser to load it
+    setTimeout(() => {
+      URL.revokeObjectURL(url)
+    }, 1000)
+  } catch (error) {
+    console.error("Error viewing PDF:", error)
+    if (error instanceof Error) {
+      throw new Error(`Failed to view PDF: ${error.message}`)
+    }
+    throw new Error("Failed to view PDF")
+  }
+}
