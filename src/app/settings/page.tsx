@@ -56,7 +56,7 @@ export default function DeleteAccount() {
             </AlertDialogTitle>
             <AlertDialogDescription className="text-zinc-600 dark:text-zinc-400">
               This action cannot be undone. Your account will be permanently
-              marked as deleted and you will be signed out.
+              deleted from our database and you will be signed out.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
