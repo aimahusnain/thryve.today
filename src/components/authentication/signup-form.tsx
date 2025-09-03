@@ -122,23 +122,33 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
           </div>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
-              <Label htmlFor="name">Full Name</Label>
+              <Label htmlFor="name">
+                Full Name <span className="text-red-500">*</span>
+              </Label>
               <Input id="name" name="name" placeholder="John Doe" required />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">
+                Email <span className="text-red-500">*</span>
+              </Label>
               <Input id="email" type="email" name="email" placeholder="name@example.com" required />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="telephone">Telephone</Label>
-              <Input id="telephone" type="tel" name="telephone" placeholder="(123) 456-7890" required />
+              <Label htmlFor="telephone">
+                Telephone <span className="font-bold">(optional)</span>
+              </Label>
+              <Input id="telephone" type="tel" name="telephone" placeholder="(123) 456-7890" />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">
+                Password <span className="text-red-500">*</span>
+              </Label>
               <Input name="password" id="password" type="password" placeholder="Create a password" required />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Label htmlFor="confirmPassword">
+                Confirm Password <span className="text-red-500">*</span>
+              </Label>
               <Input
                 name="confirmPassword"
                 id="confirmPassword"
@@ -157,4 +167,3 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
     </div>
   )
 }
-
