@@ -8,7 +8,14 @@ export async function GET(request: NextRequest) {
     const role = searchParams.get("role") as UserRole | null
 
     const users = await prisma.user.findMany({
-      where: role ? { role } : undefined,
+      where: {
+        // Filter out deleted users
+        isDeleted: {
+          not: true, // This will include users where isDeleted is false or null
+        },
+        // Apply role filter if provided
+        ...(role && { role }),
+      },
       select: {
         id: true,
         name: true,

@@ -5,13 +5,11 @@ import GoogleProvider from "next-auth/providers/google"
 import { PrismaClient } from "@prisma/client"
 import bcrypt from "bcrypt"
 
-// Extend the built-in types
 declare module "next-auth" {
   interface User {
     role?: string
     id: string
   }
-  
   interface Session extends DefaultSession {
     user: {
       id: string
@@ -20,7 +18,6 @@ declare module "next-auth" {
   }
 }
 
-// Also extend the JWT type
 declare module "next-auth/jwt" {
   interface JWT {
     role?: string
@@ -44,39 +41,35 @@ export const authOptions: NextAuthOptions = {
         }
 
         const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
-          include: {
-            accounts: true,  // Include the accounts to check auth providers
-          }
+          where: { email: credentials.email },
+          include: { accounts: true },
         })
 
-        if (!user) {
-          return null
+        if (!user) return null
+
+        // 🚨 Block deleted accounts
+        if (user.isDeleted) {
+          throw new Error("Account does not exist")
         }
 
-        // Check if this user has a Google account
         const hasGoogleAccount = user.accounts?.some(
-          account => account.provider === "google"
+          (account) => account.provider === "google"
         )
-
-        // If user originally signed up with Google and has no valid password
         if (hasGoogleAccount) {
           throw new Error("Please sign in with Google for this account")
         }
 
-        const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
-
-        if (!isPasswordValid) {
-          return null
-        }
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        )
+        if (!isPasswordValid) return null
 
         return {
           id: user.id,
           email: user.email,
           name: user.name,
-          role: user.role, // Include role in the return value
+          role: user.role,
         }
       },
     }),
@@ -87,10 +80,10 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 30 * 24 * 60 * 60,
   },
   jwt: {
-    maxAge: 60 * 60 * 24 * 30, // 30 days
+    maxAge: 60 * 60 * 24 * 30,
   },
   pages: {
     signIn: "/log-in",
@@ -101,31 +94,65 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account }) {
       if (account?.provider === "google") {
         if (!user.email) return false
-  
-        try {
-          // Check if user exists
-          const existingUser = await prisma.user.findUnique({
-            where: { email: user.email },
-          })
-  
-          if (!existingUser) {
-            // Create new user if they don't exist
-            const newUser = await prisma.user.create({
-              data: {
-                email: user.email,
-                name: user.name || "",
-                image: user.image || null,
-                // Set a placeholder password or null depending on your schema
-                password: await bcrypt.hash(Math.random().toString(36).slice(-8), 10),
-                // Default new users to USER role
-                role: "USER",
-              },
-            })
 
-            // Now create the account record to track the auth provider
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email },
+        })
+
+        // 🚨 Block deleted accounts
+        if (existingUser?.isDeleted) {
+          throw new Error("Account does not exist")
+        }
+
+        if (!existingUser) {
+          // create new user + account
+          const newUser = await prisma.user.create({
+            data: {
+              email: user.email,
+              name: user.name || "",
+              image: user.image || null,
+              password: await bcrypt.hash(
+                Math.random().toString(36).slice(-8),
+                10
+              ),
+              role: "USER",
+            },
+          })
+
+          await prisma.account.create({
+            data: {
+              userId: newUser.id,
+              type: account.type,
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+              access_token: account.access_token,
+              refresh_token: account.refresh_token,
+              expires_at: account.expires_at,
+              token_type: account.token_type,
+              scope: account.scope,
+              id_token: account.id_token,
+            },
+          })
+        } else if (
+          user.image &&
+          (!existingUser.image || existingUser.image !== user.image)
+        ) {
+          await prisma.user.update({
+            where: { email: user.email },
+            data: { image: user.image },
+          })
+
+          const existingAccount = await prisma.account.findFirst({
+            where: {
+              userId: existingUser.id,
+              provider: account.provider,
+            },
+          })
+
+          if (!existingAccount) {
             await prisma.account.create({
               data: {
-                userId: newUser.id,
+                userId: existingUser.id,
                 type: account.type,
                 provider: account.provider,
                 providerAccountId: account.providerAccountId,
@@ -135,59 +162,20 @@ export const authOptions: NextAuthOptions = {
                 token_type: account.token_type,
                 scope: account.scope,
                 id_token: account.id_token,
-              }
+              },
             })
-          } else if (user.image && (!existingUser.image || existingUser.image !== user.image)) {
-            // Update existing user's image if it changed or wasn't set before
-            await prisma.user.update({
-              where: { email: user.email },
-              data: { image: user.image }
-            })
-            
-            // Check if an account record already exists
-            const existingAccount = await prisma.account.findFirst({
-              where: {
-                userId: existingUser.id,
-                provider: account.provider,
-              }
-            })
-            
-            // Create account record if it doesn't exist
-            if (!existingAccount) {
-              await prisma.account.create({
-                data: {
-                  userId: existingUser.id,
-                  type: account.type,
-                  provider: account.provider,
-                  providerAccountId: account.providerAccountId,
-                  access_token: account.access_token,
-                  refresh_token: account.refresh_token,
-                  expires_at: account.expires_at,
-                  token_type: account.token_type,
-                  scope: account.scope,
-                  id_token: account.id_token,
-                }
-              })
-            }
           }
-          return true
-        } catch (error) {
-          console.error("Error in signIn callback:", error)
-          return false
         }
       }
       return true
     },
     async redirect({ url, baseUrl }) {
-      // Special handling for post-authentication redirection
       if (url.startsWith("/admin-dashboard") || url.startsWith("/dashboard")) {
-        return url;
+        return url
       }
-      
-      // Handle the URLs based on your routing structure
-      if (url.startsWith(baseUrl)) return url;
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      return baseUrl;
+      if (url.startsWith(baseUrl)) return url
+      if (url.startsWith("/")) return `${baseUrl}${url}`
+      return baseUrl
     },
     async jwt({ token, user, account }) {
       if (account && user) {
@@ -195,24 +183,15 @@ export const authOptions: NextAuthOptions = {
           ...token,
           accessToken: account.access_token,
           id: user.id,
-          role: (user).role, // Add user role to the token
+          role: user.role,
         }
       }
-
-      // If the token hasn't expired, return it
-      if (Date.now() < (typeof token.exp === 'number' ? token.exp : 0) * 1000) {
+      if (Date.now() < (typeof token.exp === "number" ? token.exp : 0) * 1000) {
         return token
       }
-
-      // Otherwise, refresh the token
-      try {
-        return {
-          ...token,
-          exp: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60, // 30 days
-        }
-      } catch (error) {
-        console.error("Error refreshing access token:", error)
-        return { ...token, error: "RefreshAccessTokenError" }
+      return {
+        ...token,
+        exp: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60,
       }
     },
     session: ({ session, token }) => {
@@ -221,7 +200,7 @@ export const authOptions: NextAuthOptions = {
         user: {
           ...session.user,
           id: token.id,
-          role: token.role, // Add role to the session
+          role: token.role,
         },
       }
     },
