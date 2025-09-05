@@ -96,14 +96,12 @@ export async function POST(request: NextRequest) {
         </head>
         <body style="margin: 0; padding: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; color: #334155;">
           <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); overflow: hidden;">
-             Header 
             <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
               <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                 ${subject}
               </h1>
             </div>
             
-             Content 
             <div style="padding: 40px 30px;">
               <div style="line-height: 1.7; color: #475569; font-size: 16px; margin-bottom: 30px;">
                 ${htmlContent}
@@ -122,7 +120,6 @@ export async function POST(request: NextRequest) {
               }
             </div>
             
-             Footer 
             <div style="background-color: #f1f5f9; padding: 25px 30px; border-top: 1px solid #e2e8f0;">
               <div style="text-align: center; color: #64748b; font-size: 14px;">
                 <p style="margin: 0 0 8px 0; font-weight: 500;">📧 Team Management Dashboard</p>
@@ -131,7 +128,6 @@ export async function POST(request: NextRequest) {
             </div>
           </div>
           
-           Footer spacing 
           <div style="text-align: center; margin-top: 20px; color: #94a3b8; font-size: 12px;">
             <p style="margin: 0;">Powered by Thryve.Today</p>
           </div>
