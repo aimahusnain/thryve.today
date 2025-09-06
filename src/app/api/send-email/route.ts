@@ -9,6 +9,7 @@ export async function POST(request: NextRequest) {
     const to = JSON.parse(formData.get("to") as string)
     const subject = formData.get("subject") as string
     const content = formData.get("content") as string
+    const batchSize = Number.parseInt(formData.get("batchSize") as string) || 3
 
     // Extract attachments
     const attachments = []
@@ -135,51 +136,69 @@ export async function POST(request: NextRequest) {
       </html>
     `
 
-    // Send emails with detailed tracking
     const emailResults = []
     const failedEmails = []
 
-    console.log(`Starting to send emails to ${to.length} recipients with ${attachments.length} attachments...`)
+    // Split recipients into batches
+    const batches = []
+    for (let i = 0; i < to.length; i += batchSize) {
+      batches.push(to.slice(i, i + batchSize))
+    }
 
-    for (let i = 0; i < to.length; i++) {
-      const email = to[i]
-      try {
-        console.log(`Sending email ${i + 1}/${to.length} to: ${email}`)
+    console.log(`Processing ${to.length} emails in ${batches.length} batches of ${batchSize}...`)
 
-        const result = await transporter.sendMail({
-          from: `"Thryve.Today" <${process.env.EMAIL_USER}>`,
-          to: email,
-          subject: subject,
-          html: emailTemplate,
-          text: content, // Plain text fallback
-          attachments: attachments, // Add attachments to the email
-        })
+    // Process each batch
+    for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+      const batch = batches[batchIndex]
+      console.log(`Processing batch ${batchIndex + 1}/${batches.length} with ${batch.length} recipients`)
 
-        emailResults.push({
-          email,
-          messageId: result.messageId,
-          status: "sent",
-          timestamp: new Date().toISOString(),
-          attachmentCount: attachments.length,
-        })
+      for (let i = 0; i < batch.length; i++) {
+        const email = batch[i]
+        try {
+          console.log(`Sending email to: ${email}`)
 
-        console.log(`✅ Email sent successfully to ${email} - Message ID: ${result.messageId}`)
-      } catch (emailError) {
-        const errorMsg =
-          typeof emailError === "object" && emailError !== null && "message" in emailError
-            ? (emailError as { message?: string }).message
-            : String(emailError)
-        console.error(`❌ Failed to send email to ${email}:`, errorMsg)
-        failedEmails.push({
-          email,
-          error: errorMsg,
-          timestamp: new Date().toISOString(),
-        })
+          const result = await transporter.sendMail({
+            from: `"Thryve.Today" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: subject,
+            html: emailTemplate,
+            text: content, // Plain text fallback
+            attachments: attachments, // Add attachments to the email
+          })
+
+          emailResults.push({
+            email,
+            messageId: result.messageId,
+            status: "sent",
+            timestamp: new Date().toISOString(),
+            attachmentCount: attachments.length,
+            batch: batchIndex + 1,
+          })
+
+          console.log(`✅ Email sent successfully to ${email} - Message ID: ${result.messageId}`)
+        } catch (emailError) {
+          const errorMsg =
+            typeof emailError === "object" && emailError !== null && "message" in emailError
+              ? (emailError as { message?: string }).message
+              : String(emailError)
+          console.error(`❌ Failed to send email to ${email}:`, errorMsg)
+          failedEmails.push({
+            email,
+            error: errorMsg,
+            timestamp: new Date().toISOString(),
+            batch: batchIndex + 1,
+          })
+        }
+
+        // Add small delay between emails to avoid rate limiting
+        if (i < batch.length - 1) {
+          await new Promise((resolve) => setTimeout(resolve, 100))
+        }
       }
 
-      // Add small delay between emails to avoid rate limiting
-      if (i < to.length - 1) {
-        await new Promise((resolve) => setTimeout(resolve, 100))
+      // Add delay between batches
+      if (batchIndex < batches.length - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 200))
       }
     }
 
@@ -187,7 +206,9 @@ export async function POST(request: NextRequest) {
     const successCount = emailResults.length
     const failureCount = failedEmails.length
 
-    console.log(`Email sending completed: ${successCount} successful, ${failureCount} failed`)
+    console.log(
+      `Email sending completed: ${successCount} successful, ${failureCount} failed across ${batches.length} batches`,
+    )
 
     if (successCount === 0) {
       return NextResponse.json(
@@ -195,6 +216,7 @@ export async function POST(request: NextRequest) {
           error: "Failed to send emails to all recipients",
           failedEmails,
           totalAttempted: to.length,
+          batchesProcessed: batches.length,
         },
         { status: 500 },
       )
@@ -204,13 +226,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: true,
-          message: `Email sent to ${successCount} out of ${to.length} recipients`,
+          message: `Email sent to ${successCount} out of ${to.length} recipients across ${batches.length} batches`,
           recipients: successCount,
           totalAttempted: to.length,
           successfulEmails: emailResults,
           failedEmails,
           partialSuccess: true,
           attachmentCount: attachments.length,
+          batchesProcessed: batches.length,
         },
         { status: 207 },
       ) // 207 Multi-Status
@@ -218,11 +241,12 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: `Email sent successfully to all ${successCount} recipients`,
+      message: `Email sent successfully to all ${successCount} recipients across ${batches.length} batches`,
       recipients: successCount,
       totalAttempted: to.length,
       emailResults,
       attachmentCount: attachments.length,
+      batchesProcessed: batches.length,
     })
   } catch (error) {
     console.error("❌ Email sending error:", error)
