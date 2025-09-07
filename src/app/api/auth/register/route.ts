@@ -19,6 +19,11 @@ export async function POST(request: Request) {
     })
 
     if (existingUser) {
+      // Check if the user is permanently deleted
+      if (existingUser.isDeleted === true) {
+        return NextResponse.json({ message: "User with this account is permanently deleted" }, { status: 403 })
+      }
+      
       return NextResponse.json({ message: "User with this email already exists" }, { status: 409 })
     }
 
@@ -52,4 +57,3 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: "Something went wrong" }, { status: 500 })
   }
 }
-

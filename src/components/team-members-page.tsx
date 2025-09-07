@@ -339,6 +339,7 @@ export default function TeamMembersPage() {
     toast.success("Group deleted successfully")
   }
 
+  // Handle email sending
   const handleSendEmail = async () => {
     if (!emailSubject.trim() || !emailContent.trim()) {
       toast.error("Please fill in both subject and content")
@@ -350,49 +351,35 @@ export default function TeamMembersPage() {
       const selectedUsersData = getSelectedUsersData()
       const emailAddresses = selectedUsersData.map((user) => user.email)
 
-      console.log(`[v0] Starting batch email send to ${emailAddresses.length} recipients`)
+      // Create FormData to support file attachments
+      const formData = new FormData()
+      formData.append("to", JSON.stringify(emailAddresses))
+      formData.append("subject", emailSubject)
+      formData.append("content", emailContent)
 
-      // Use the new batch API endpoint
-      const response = await fetch("/api/send-email-batch", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          emailAddresses,
-          subject: emailSubject,
-          content: emailContent,
-          attachments: attachments, // Note: File objects need to be handled differently in batch mode
-          batchSize: 3, // Process 3 emails per batch
-        }),
+      // Add attachments to FormData
+      attachments.forEach((file) => {
+        formData.append("attachments", file)
       })
 
-      const result = await response.json()
+      const response = await fetch("/api/send-email", {
+        method: "POST",
+        body: formData, // Send FormData instead of JSON
+      })
 
       if (response.ok) {
-        const { totalEmailsSent, totalEmailsAttempted, successfulBatches, failedBatches } = result
-
-        if (failedBatches > 0) {
-          toast.success(
-            `Email sent to ${totalEmailsSent} out of ${totalEmailsAttempted} users. ${failedBatches} batches had issues.`,
-          )
-        } else {
-          toast.success(`Email sent successfully to all ${totalEmailsSent} users in ${successfulBatches} batches!`)
-        }
-
+        toast.success(`Email sent to ${selectedUsersData.length} users successfully!`)
         setIsEmailDialogOpen(false)
         setEmailSubject("")
         setEmailContent("")
-        setAttachments([])
+        setAttachments([]) // Clear attachments
         setSelectedUsers([])
-
-        console.log(`[v0] Batch email completed: ${totalEmailsSent}/${totalEmailsAttempted} sent`)
       } else {
-        throw new Error(result.error || "Failed to send batch emails")
+        throw new Error("Failed to send email")
       }
     } catch (error) {
-      console.error("[v0] Batch email error:", error)
-      toast.error("Failed to send emails. Please try again.")
+      toast.error("Failed to send email. Please try again.")
+      console.error(error)
     } finally {
       setIsSendingEmail(false)
     }
