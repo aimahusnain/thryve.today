@@ -74,6 +74,12 @@ export default function Navbar() {
     }
   }, [session])
 
+  // 🔑 helper to close menu and navigate
+  const handleMenuClose = (href?: string) => {
+    setIsMenuOpen(false)
+    if (href) window.location.href = href
+  }
+
   if (pathname.startsWith("/admin-dashboard")) return null
 
   const copyEmail = async () => {
@@ -386,27 +392,21 @@ export default function Navbar() {
                   {navLinks.map((link, index) => renderMobileNavLink(link, index))}
 
                   {/* Courses */}
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: navLinks.length * 0.1 }}
-                  >
-                    <Link href="/courses" className="w-full">
-                      <div
-                        className="flex items-center justify-between group w-full"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        <div className="flex flex-col items-start">
-                          <span className="text-2xl font-medium text-foreground">Courses</span>
-                          <span className="text-sm text-muted-foreground group-hover:text-[#2db188] transition-colors">
-                            Explore our courses
-                          </span>
-                        </div>
-                        <motion.div whileHover={{ x: 5 }} className="text-[#2db188]">
-                          <ChevronRight />
-                        </motion.div>
+                  <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
+                    <div
+                      className="flex items-center justify-between group w-full cursor-pointer"
+                      onClick={() => handleMenuClose("/courses")}
+                    >
+                      <div className="flex flex-col items-start">
+                        <span className="text-2xl font-medium text-foreground">Courses</span>
+                        <span className="text-sm text-muted-foreground group-hover:text-[#2db188] transition-colors">
+                          Explore our courses
+                        </span>
                       </div>
-                    </Link>
+                      <motion.div whileHover={{ x: 5 }} className="text-[#2db188]">
+                        <ChevronRight />
+                      </motion.div>
+                    </div>
                   </motion.div>
                 </div>
 
@@ -418,7 +418,7 @@ export default function Navbar() {
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="flex items-center space-x-3 text-foreground"
+                        className="flex items-center space-x-3 text-foreground cursor-pointer"
                         onClick={copyEmail}
                       >
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
@@ -441,6 +441,7 @@ export default function Navbar() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="flex items-center space-x-3 text-foreground"
+                        onClick={() => setIsMenuOpen(false)}
                       >
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                           <PhoneCall className="w-5 h-5 text-[#2db188]" />
@@ -456,10 +457,7 @@ export default function Navbar() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="flex items-center space-x-3 text-foreground cursor-pointer"
-                        onClick={() => {
-                          setIsMenuOpen(false)
-                          window.location.href = "/settings"
-                        }}
+                        onClick={() => handleMenuClose("/settings")}
                       >
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                           <Settings className="w-5 h-5 text-[#2db188]" />
@@ -478,32 +476,34 @@ export default function Navbar() {
                       ) : session ? (
                         <>
                           <UserNav />
-                          <Link href="/cart">
-                            <Button className="relative" size="sm">
-                              <ShoppingCart />
-                              {cartItemsCount > 0 && (
-                                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                                  {cartItemsCount}
-                                </span>
-                              )}
-                            </Button>
-                          </Link>
-                          <Link href={session.user.role === "ADMIN" ? "/admin-dashboard" : "/dashboard"}>
-                            <Button variant="default">Dashboard</Button>
-                          </Link>
+                          <Button className="relative" size="sm" onClick={() => handleMenuClose("/cart")}>
+                            <ShoppingCart />
+                            {cartItemsCount > 0 && (
+                              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                                {cartItemsCount}
+                              </span>
+                            )}
+                          </Button>
+                          <Button
+                            variant="default"
+                            onClick={() =>
+                              handleMenuClose(session.user.role === "ADMIN" ? "/admin-dashboard" : "/dashboard")
+                            }
+                          >
+                            Dashboard
+                          </Button>
                         </>
                       ) : (
                         <>
-                          <Link href="/signup">
-                            <Button className="bg-[#2db188] text-white hover:bg-[#35dba8] rounded-full">
-                              Get Started
-                            </Button>
-                          </Link>
-                          <Link href="/log-in">
-                            <Button variant="ghost" className="rounded-full">
-                              Sign In
-                            </Button>
-                          </Link>
+                          <Button
+                            className="bg-[#2db188] text-white hover:bg-[#35dba8] rounded-full"
+                            onClick={() => handleMenuClose("/signup")}
+                          >
+                            Get Started
+                          </Button>
+                          <Button variant="ghost" className="rounded-full" onClick={() => handleMenuClose("/log-in")}>
+                            Sign In
+                          </Button>
                         </>
                       )}
                     </div>
