@@ -6,7 +6,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { AnimatePresence, motion } from "framer-motion"
-import { Menu, X, Mail, Copy, Check, ChevronRight, PhoneCall, ShoppingCart } from "lucide-react"
+import { Menu, X, Mail, Copy, Check, ChevronRight, PhoneCall, ShoppingCart, Settings } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggler"
@@ -63,13 +63,9 @@ export default function Navbar() {
       }
     }
 
-    // Initial fetch
     fetchCartItemsCount()
 
-    // Set up interval to check every second
     const intervalId = setInterval(fetchCartItemsCount, 1000)
-
-    // Set up event listener for cart updates
     window.addEventListener("cart-updated", fetchCartItemsCount)
 
     return () => {
@@ -78,8 +74,6 @@ export default function Navbar() {
     }
   }, [session])
 
-  // Hide navbar on /dashboard/* routes
-  // if (pathname.startsWith("/dashboard")) return null;
   if (pathname.startsWith("/admin-dashboard")) return null
 
   const copyEmail = async () => {
@@ -93,14 +87,13 @@ export default function Navbar() {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  // Render either Goy component (for home page) or Link to home page section (for other pages)
   const renderNavLink = (link: { href: string; title: string }) => {
     if (isHomePage) {
       return (
         <Goy
           id={link.href}
           key={link.href}
-          className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-[#2DB188] after:transition-transform after:duration-300 after:ease-&lsqb;cubic-bezier(0.65_0.05_0.36_1)&rsqb; hover:after:origin-bottom-left hover:after:scale-x-100"
+          className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-[#2DB188] after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100"
         >
           {link.title}
         </Goy>
@@ -110,7 +103,7 @@ export default function Navbar() {
         <Link
           key={link.href}
           href={`/#${link.href}`}
-          className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-[#2DB188] after:transition-transform after:duration-300 after:ease-&lsqb;cubic-bezier(0.65_0.05_0.36_1)&rsqb; hover:after:origin-bottom-left hover:after:scale-x-100"
+          className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-[#2DB188] after:transition-transform after:duration-300 hover:after:origin-bottom-left hover:after:scale-x-100"
         >
           {link.title}
         </Link>
@@ -259,7 +252,7 @@ export default function Navbar() {
                 {isMenuOpen ? <X className="w-5 h-5 text-foreground" /> : <Menu className="w-5 h-5 text-foreground" />}
               </button>
 
-              {/* Desktop CTA Container - Appears on scroll */}
+              {/* Desktop CTA Container */}
               <motion.div
                 className="hidden lg:flex items-center space-x-4 pl-4 border-l border-border"
                 animate={{
@@ -320,7 +313,7 @@ export default function Navbar() {
             </div>
           </motion.div>
 
-          {/* Desktop Original CTA Buttons - Visible before scroll */}
+          {/* Desktop CTA Buttons (before scroll) */}
           <motion.div
             initial={{ y: 0, opacity: 1 }}
             animate={{
@@ -388,12 +381,11 @@ export default function Navbar() {
                 transition={{ delay: 0.1, duration: 0.2 }}
                 className="h-full overflow-auto"
               >
-                {/* Navigation Links with Animations */}
+                {/* Navigation Links */}
                 <div className="px-8 py-8 space-y-6">
-                  {/* Main navigation links (using Goy or Link based on current page) */}
                   {navLinks.map((link, index) => renderMobileNavLink(link, index))}
 
-                  {/* Courses link (direct link) */}
+                  {/* Courses */}
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -418,11 +410,11 @@ export default function Navbar() {
                   </motion.div>
                 </div>
 
-                {/* Bottom Actions Section */}
+                {/* Bottom Actions */}
                 <div className="absolute bottom-0 left-0 right-0 bg-background/80 backdrop-blur-sm border-t border-border">
                   <div className="px-6 py-8 grid grid-cols-2 gap-5">
                     <div className="flex flex-col w-full items-start justify-center gap-3">
-                      {/* Contact Info */}
+                      {/* Email */}
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -443,7 +435,7 @@ export default function Navbar() {
                         )}
                       </motion.div>
 
-                      {/* Phone Contact */}
+                      {/* Phone */}
                       <motion.a
                         href="tel:+19794847983"
                         initial={{ opacity: 0, y: 20 }}
@@ -454,59 +446,67 @@ export default function Navbar() {
                           <PhoneCall className="w-5 h-5 text-[#2db188]" />
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-sm font-medium">Phone</span>
+                          <span className="text-sm font-medium">Call Us</span>
                           <span className="text-xs">+1 (979) 484-7983</span>
                         </div>
                       </motion.a>
+
+                      {/* Settings */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex items-center space-x-3 text-foreground cursor-pointer"
+                        onClick={() => {
+                          setIsMenuOpen(false)
+                          window.location.href = "/settings"
+                        }}
+                      >
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Settings className="w-5 h-5 text-[#2db188]" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">Settings</span>
+                          <span className="text-xs">Manage account</span>
+                        </div>
+                      </motion.div>
                     </div>
 
-                    {/* Action Buttons */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 }}
-                      className="flex flex-col w-full items-center justify-center gap-3"
-                    >
+                    {/* Right Side */}
+                    <div className="flex flex-col items-end gap-3">
                       {isLoading ? (
-                        <div className="h-12 w-full rounded-full bg-muted animate-pulse" />
+                        <div className="h-9 w-20 rounded-full bg-muted animate-pulse" />
                       ) : session ? (
-                        <div className="flex gap-4 items-center justify-center w-full">
-                          <Link href={session.user.role === "ADMIN" ? "/admin-dashboard" : "/dashboard"}>
-                            <Button>Dashboard</Button>
-                          </Link>
+                        <>
+                          <UserNav />
                           <Link href="/cart">
                             <Button className="relative" size="sm">
                               <ShoppingCart />
                               {cartItemsCount > 0 && (
-                                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center z-50 transform scale-110">
+                                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                                   {cartItemsCount}
                                 </span>
                               )}
                             </Button>
                           </Link>
-                        </div>
+                          <Link href={session.user.role === "ADMIN" ? "/admin-dashboard" : "/dashboard"}>
+                            <Button variant="default">Dashboard</Button>
+                          </Link>
+                        </>
                       ) : (
                         <>
-                          <Link href="/log-in" className="w-full">
-                            <Button
-                              onClick={() => setIsMenuOpen(false)}
-                              variant="ghost"
-                              className="w-full rounded-full h-12 text-base"
-                            >
-                              Sign In
+                          <Link href="/signup">
+                            <Button className="bg-[#2db188] text-white hover:bg-[#35dba8] rounded-full">
+                              Get Started
                             </Button>
                           </Link>
-                          <Link href="/signup" className="w-full">
-                            <Button
-                              onClick={() => setIsMenuOpen(false)}
-                              className="w-full rounded-full h-12 text-white text-base bg-[#2db188] hover:bg-[#35dba8]"
-                            >
-                              Get Started
+                          <Link href="/log-in">
+                            <Button variant="ghost" className="rounded-full">
+                              Sign In
                             </Button>
                           </Link>
                         </>
                       )}
-                    </motion.div>
+                    </div>
                   </div>
                 </div>
               </motion.div>
