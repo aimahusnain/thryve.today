@@ -60,9 +60,9 @@ export default function Home() {
             </motion.div>
 
             {/* Main Image */}
-            {/* <div className="relative h-[400px] sm:h-[500px] md:h-[600px] lg:h-[750px]">
+            <div className="relative h-[400px] sm:h-[500px] md:h-[600px] lg:h-[750px]">
               <Image
-              src="/nursing-herosection-image-transparent.png"
+              src="/nursing_herosection_image.jpg"
               alt="Nursing Herosection Image"
               draggable={false}
               fill
@@ -70,10 +70,10 @@ export default function Home() {
               priority
               sizes="(max-width: 1024px) 100vw, 50vw"
               />
-            </div> */}
+            </div>
 
             {/* Heroimages */}
-            <div className="mb-12 flex w-full h-fit sm:h-[450px] md:mb-16 relative">
+            {/* <div className="mb-12 flex w-full h-fit sm:h-[450px] md:mb-16 relative">
               <div className="relative left-2 top-12 z-10 overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800 shadow-lg md:left-12 md:top-12 -ml-16">
                 <Image
                   src="/nursing-herosection-image-transparent.png"
@@ -92,7 +92,7 @@ export default function Home() {
                   height={500}
                 />
               </div>
-            </div>
+            </div> */}
 
             {/* Mentors Card */}
             {/* <motion.div
