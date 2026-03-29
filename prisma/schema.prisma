@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+model Enrollment {
+  id                    String        @id @default(uuid()) @map("_id") @db.Uuid
+  studentName           String
+  dateOfBirth           String
+  address               String
+  cityStateZip          String
+  phoneHome             String
+  phoneCell             String
+  email                 String
+  socialSecurity        String?
+  stateId               String?
+  emergencyContact      String?
+  emergencyRelationship String?
+  emergencyPhone        String?
+  studentSignature      String
+  studentSignatureDate  DateTime
+  directorSignature     String
+  directorSignatureDate DateTime
+  guardianSignature     String?
+  guardianSignatureDate DateTime?
+  paymentStatus         PaymentStatus @default(PENDING)
+  paymentId             String?       // This can be either a Stripe session ID or a course ID
+  paymentAmount         Float?
+  paymentDate           DateTime?
+  courseId              String?       @db.Uuid  // Add this field to directly link to a course
+  userId                String?       // Add this field to directly link to a user
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  documents             EnrollmentDocument[]
+
+  @@index([userId, courseId])
+}
+
+model EnrollmentDocument {
+  id               String     @id @default(uuid()) @map("_id") @db.Uuid
+  enrollmentId     String     @db.Uuid
+  enrollment       Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  originalFileName String
+  storedFileName   String
+  mimeType         String?
+  sizeBytes        Int?
+  createdAt        DateTime   @default(now())
+
+  @@index([enrollmentId])
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  telephone     String?
+  emailVerified DateTime?
+  image         String?
+  password      String
+  accounts      Account[]
+  role          UserRole  @default(USER)
+  session       Session[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  cart          Cart?
+  isDeleted     Boolean?   @default(false)
+}
+
+model Courses {
+  id                String     @id @default(uuid()) @map("_id") @db.Uuid
+  name              String
+  duration          String
+  price             Float
+  description       String
+  classroom         String?
+  Lab               String?
+  Clinic            String?
+  WhoShouldAttend   String[]
+  ProgramHighlights String[]
+  startingDates     String?    // New optional field for multiple starting dates
+  status            Status     @default(DRAFT)
+  Note              String?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  cartItems         CartItem[]
+}
+
+enum Status {
+  DRAFT
+  ACTIVE
+}
+
+model Cart {
+  id        String      @id @default(uuid()) @map("_id") @db.Uuid
+  userId    String @unique
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(uuid()) @map("_id") @db.Uuid
+  cartId    String   @db.Uuid
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  courseId  String   @db.Uuid
+  course    Courses  @relation(fields: [courseId], references: [id])
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
