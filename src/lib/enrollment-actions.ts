@@ -3,7 +3,6 @@
 import { prisma } from "@/lib/prisma"
 import type { Enrollment } from "@prisma/client"
 import { revalidatePath } from "next/cache"
-import { deleteEnrollmentUploadDirectory } from "@/lib/enrollment-document-storage"
 
 export async function getEnrollments(): Promise<Enrollment[]> {
   try {
@@ -98,7 +97,6 @@ export async function updateEnrollmentPaymentStatus(
 
 export async function deleteEnrollment(id: string) {
   try {
-    await deleteEnrollmentUploadDirectory(id)
     await prisma.enrollment.delete({
       where: {
         id,

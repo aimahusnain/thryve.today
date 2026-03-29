@@ -46,6 +46,7 @@ model EnrollmentDocument {
   enrollment       Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
   originalFileName String
   storedFileName   String
+  fileData         Bytes
   mimeType         String?
   sizeBytes        Int?
   createdAt        DateTime   @default(now())

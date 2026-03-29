@@ -1,13 +1,8 @@
 import { randomUUID } from "crypto"
-import { writeFile } from "fs/promises"
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { requireAdminSession } from "@/lib/admin-auth"
-import {
-  ensureEnrollmentUploadDir,
-  getStoredFileAbsolutePath,
-  sanitizeStoredFileName,
-} from "@/lib/enrollment-document-storage"
+import { sanitizeStoredFileName } from "@/lib/enrollment-document-storage"
 
 const MAX_BYTES = 15 * 1024 * 1024
 const ALLOWED_MIME = new Set([
@@ -95,8 +90,6 @@ export async function POST(
     return NextResponse.json({ error: "No files provided" }, { status: 400 })
   }
 
-  await ensureEnrollmentUploadDir(enrollmentId)
-
   const created: { id: string; originalFileName: string }[] = []
 
   for (const file of files) {
@@ -117,15 +110,14 @@ export async function POST(
 
     const safeBase = sanitizeStoredFileName(file.name)
     const storedFileName = `${randomUUID()}_${safeBase}`
-    const absPath = getStoredFileAbsolutePath(enrollmentId, storedFileName)
     const buffer = Buffer.from(await file.arrayBuffer())
-    await writeFile(absPath, buffer)
 
     const row = await prisma.enrollmentDocument.create({
       data: {
         enrollmentId,
         originalFileName: file.name.slice(0, 500),
         storedFileName,
+        fileData: buffer,
         mimeType,
         sizeBytes: file.size,
       },
