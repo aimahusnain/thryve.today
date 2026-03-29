@@ -33,7 +33,7 @@ export async function GET(
 
   const disposition = `attachment; filename*=UTF-8''${encodeURIComponent(doc.originalFileName)}`
 
-  return new NextResponse(buffer, {
+  return new NextResponse(new Uint8Array(buffer), {
     status: 200,
     headers: {
       "Content-Type": doc.mimeType || "application/octet-stream",
