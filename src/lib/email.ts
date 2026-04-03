@@ -2,12 +2,12 @@ import nodemailer from "nodemailer"
 
 // Setup transporter for Office365
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || "smtp.office365.com",
-  port: Number(process.env.EMAIL_PORT) || 587,
-  secure: false,
+  host: process.env.EMAIL_SERVER_HOST || "smtp.office365.com",
+  port: Number(process.env.EMAIL_SERVER_PORT) || 587,
+  secure: process.env.EMAIL_SERVER_SECURE === "true",
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.EMAIL_SERVER_USER,
+    pass: process.env.EMAIL_SERVER_PASSWORD,
   },
   tls: {
     rejectUnauthorized: false,
@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
 export async function sendEmail(to: string, subject: string, html: string) {
   try {
     const info = await transporter.sendMail({
-      from: `"Thryve" <${process.env.EMAIL_USER}>`,
+      from: `"Thryve" <${process.env.EMAIL_FROM || process.env.EMAIL_SERVER_USER}>`,
       to,
       subject,
       html,

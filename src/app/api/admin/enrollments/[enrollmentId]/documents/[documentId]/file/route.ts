@@ -21,7 +21,11 @@ export async function GET(
     return NextResponse.json({ error: "Document not found" }, { status: 404 })
   }
 
-  const disposition = `attachment; filename*=UTF-8''${encodeURIComponent(doc.originalFileName)}`
+  // For images, use `inline` so the UI can render thumbnails / expanded previews.
+  // For non-images (e.g. PDFs in legacy data), keep it as `attachment`.
+  const isImage = doc.mimeType?.startsWith("image/")
+  const dispositionType = isImage ? "inline" : "attachment"
+  const disposition = `${dispositionType}; filename*=UTF-8''${encodeURIComponent(doc.originalFileName)}`
 
   const bytes =
     doc.fileData instanceof Buffer ? new Uint8Array(doc.fileData) : new Uint8Array(doc.fileData as any)

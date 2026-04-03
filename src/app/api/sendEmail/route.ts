@@ -15,19 +15,19 @@ export async function POST(req: NextRequest) {
 
     // ✅ Use Office 365 SMTP instead of Gmail
     const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST, // smtp.office365.com
-      port: parseInt(process.env.EMAIL_PORT || "587"),
-      secure: false, // STARTTLS
+      host: process.env.EMAIL_SERVER_HOST, // smtp.office365.com
+      port: parseInt(process.env.EMAIL_SERVER_PORT || "587"),
+      secure: process.env.EMAIL_SERVER_SECURE === "true", // STARTTLS
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.EMAIL_SERVER_USER,
+        pass: process.env.EMAIL_SERVER_PASSWORD,
       },
     });
 
     const mailOptions = {
-      from: process.env.EMAIL_USER, // ✅ Must be your verified mailbox
+      from: process.env.EMAIL_FROM || process.env.EMAIL_SERVER_USER, // ✅ Must be your verified mailbox
       replyTo: email, // ✅ so replies go to the sender
-      to: process.env.EMAIL_USER,
+      to: process.env.EMAIL_SERVER_USER,
       subject: `New Message From ${firstname} ${lastname} - Thryve.today`,
       html: `
 <div style="max-width: 600px; margin: 40px auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.06); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;">

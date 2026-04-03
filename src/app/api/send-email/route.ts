@@ -48,12 +48,12 @@ export async function POST(request: NextRequest) {
     }
 
     const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST || "smtp.office365.com",
-      port: Number.parseInt(process.env.EMAIL_PORT || "587"),
-      secure: false, // true for 465, false for other ports
+      host: process.env.EMAIL_SERVER_HOST || "smtp.office365.com",
+      port: Number.parseInt(process.env.EMAIL_SERVER_PORT || "587"),
+      secure: process.env.EMAIL_SERVER_SECURE === "true", // true for 465, false for other ports
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.EMAIL_SERVER_USER,
+        pass: process.env.EMAIL_SERVER_PASSWORD,
       },
       tls: {
         rejectUnauthorized: false,
@@ -147,7 +147,7 @@ export async function POST(request: NextRequest) {
         console.log(`Sending email ${i + 1}/${to.length} to: ${email}`)
 
         const result = await transporter.sendMail({
-          from: `"Thryve.Today" <${process.env.EMAIL_USER}>`,
+          from: `"Thryve.Today" <${process.env.EMAIL_FROM || process.env.EMAIL_SERVER_USER}>`,
           to: email,
           subject: subject,
           html: emailTemplate,
