@@ -60,3 +60,47 @@ export async function sendOtpEmail(to: string, otp: string) {
   `
   return await sendEmail(to, subject, html)
 }
+
+// Send purchase confirmation email
+export async function sendPurchaseConfirmationEmail(to: string, userName: string, courseNames: string[]) {
+  const courseList = courseNames.map((course) => `<div style="margin-bottom: 8px;">• ${course}</div>`).join("")
+
+  const subject = "Purchase Confirmation - Thryve.Today"
+  const html = `
+<div style="max-width: 600px; margin: 40px auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.06); font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;">
+  <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 48px 40px; position: relative;">
+    <div style="color: white; font-size: 13px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.9; margin-bottom: 12px;">Purchase Confirmed</div>
+    <div style="color: white; font-size: 24px; font-weight: 600;">Thryve.Today Medical Training</div>
+  </div>
+  <div style="padding: 48px 40px;">
+    <div style="margin-bottom: 30px;">
+      <div style="color: #1e293b; font-size: 20px; font-weight: 600; margin-bottom: 16px;">Hello ${userName},</div>
+      <div style="color: #475569; font-size: 16px; line-height: 1.6;">
+        Thank you for your purchase! Your enrollment is now complete.
+      </div>
+    </div>
+
+    <div style="background: #f0fdf4; border-radius: 16px; padding: 32px; margin-bottom: 30px;">
+      <div style="color: #059669; font-size: 14px; font-weight: 600; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px;">Courses Purchased</div>
+      <div style="color: #334155; font-size: 15px; line-height: 1.8;">
+        ${courseList}
+      </div>
+    </div>
+
+    <div style="text-align: center; margin: 32px 0;">
+      <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://thryve.today'}/dashboard" style="display: inline-block; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px;">
+        View My Courses
+      </a>
+    </div>
+
+    <div style="color: #64748b; font-size: 14px; line-height: 1.6;">
+      You can access your courses by logging into your account. If you have any questions, please contact our support team.
+    </div>
+  </div>
+  <div style="padding: 24px; text-align: center; color: #94a3b8; font-size: 14px; border-top: 1px solid #f1f5f9;">
+    <p style="margin: 0;">© ${new Date().getFullYear()} Thryve.Today. All rights reserved.</p>
+  </div>
+</div>
+  `
+  return await sendEmail(to, subject, html)
+}
