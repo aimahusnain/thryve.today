@@ -10,12 +10,17 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { format } from "date-fns"
 import { DeleteConfirmationDialog } from "@/components/delete-confirmation-dialog"
 import { EnrollmentDocumentsSection } from "@/components/admin/enrollment-documents-section"
 import {
-  ChevronDown,
-  ChevronUp,
   Download,
   Phone,
   User,
@@ -26,6 +31,7 @@ import {
   RefreshCcw,
   FileText,
   FolderOpen,
+  Eye,
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -46,10 +52,10 @@ interface Enrollment {
 }
 
 export default function OrdersPage() {
-  const [expandedId, setExpandedId] = useState<string | null>(null)
   const [enrollments, setEnrollments] = useState<Enrollment[]>([])
   const [loading, setLoading] = useState(true)
   const [downloadingPdf, setDownloadingPdf] = useState<string | null>(null)
+  const [selectedEnrollment, setSelectedEnrollment] = useState<Enrollment | null>(null)
 
   // Fetch enrollment data
   useEffect(() => {
@@ -91,11 +97,6 @@ export default function OrdersPage() {
   const completedCount = enrollments.filter((e) => e.paymentStatus === "COMPLETED").length
   const pendingCount = enrollments.filter((e) => e.paymentStatus === "PENDING").length
   const failedCount = enrollments.filter((e) => e.paymentStatus === "FAILED").length
-
-  // Toggle expanded row
-  const toggleExpand = (id: string) => {
-    setExpandedId(expandedId === id ? null : id)
-  }
 
   const handleViewPDF = async (enrollmentId: string) => {
     try {
@@ -286,10 +287,7 @@ export default function OrdersPage() {
                     ) : (
                       enrollments.map((enrollment) => (
                         <React.Fragment key={enrollment.id}>
-                          <TableRow
-                            className="cursor-pointer hover:bg-muted/50"
-                            onClick={() => toggleExpand(enrollment.id)}
-                          >
+                          <TableRow>
                             <TableCell>
                               <div>
                                 <div className="font-medium">{enrollment.studentName}</div>
@@ -360,141 +358,15 @@ export default function OrdersPage() {
                                   variant="ghost"
                                   size="sm"
                                   className="h-8 w-8 p-0"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    toggleExpand(enrollment.id)
-                                  }}
+                                  onClick={() => setSelectedEnrollment(enrollment)}
+                                  title="View details"
                                 >
-                                  {expandedId === enrollment.id ? (
-                                    <ChevronUp className="h-4 w-4" />
-                                  ) : (
-                                    <ChevronDown className="h-4 w-4" />
-                                  )}
-                                  <span className="sr-only">
-                                    {expandedId === enrollment.id ? "Collapse" : "Expand"}
-                                  </span>
+                                  <Eye className="h-4 w-4" />
+                                  <span className="sr-only">View details</span>
                                 </Button>
                               </div>
                             </TableCell>
                           </TableRow>
-                          {expandedId === enrollment.id && (
-                            <TableRow className="bg-muted/30">
-                              <TableCell colSpan={6} className="p-0">
-                                <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                  {/* Student Information */}
-                                  <div className="space-y-3">
-                                    <h3 className="font-semibold flex items-center gap-2">
-                                      <User className="h-4 w-4" />
-                                      Student Information
-                                    </h3>
-                                    <div className="space-y-2">
-                                      <div className="flex items-start gap-2">
-                                        <User className="h-4 w-4 text-muted-foreground mt-0.5" />
-                                        <div>
-                                          <p className="text-sm font-medium">Name</p>
-                                          <p className="text-sm text-muted-foreground">{enrollment.studentName}</p>
-                                        </div>
-                                      </div>
-                                      <div className="flex items-start gap-2">
-                                        <Mail className="h-4 w-4 text-muted-foreground mt-0.5" />
-                                        <div>
-                                          <p className="text-sm font-medium">Email</p>
-                                          <p className="text-sm text-muted-foreground">{enrollment.email}</p>
-                                        </div>
-                                      </div>
-                                      <div className="flex items-start gap-2">
-                                        <Phone className="h-4 w-4 text-muted-foreground mt-0.5" />
-                                        <div>
-                                          <p className="text-sm font-medium">Phone</p>
-                                          <p className="text-sm text-muted-foreground">{enrollment.phoneCell}</p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  {/* Payment Details */}
-                                  <div className="space-y-3">
-                                    <h3 className="font-semibold flex items-center gap-2">
-                                      <CreditCard className="h-4 w-4" />
-                                      Payment Details
-                                    </h3>
-                                    <div className="space-y-2">
-                                      <div className="flex items-start gap-2">
-                                        <div className="h-4 w-4 text-muted-foreground mt-0.5" />
-                                        <div>
-                                          <p className="text-sm font-medium">Status</p>
-                                          <p className="text-sm">
-                                            <Badge
-                                              variant="outline"
-                                              className={`${
-                                                enrollment.paymentStatus === "COMPLETED"
-                                                  ? "bg-green-100 text-green-800 hover:bg-green-100"
-                                                  : enrollment.paymentStatus === "FAILED"
-                                                    ? "bg-red-100 text-red-800 hover:bg-red-100"
-                                                    : "bg-orange-100 text-orange-800 hover:bg-orange-100"
-                                              }`}
-                                            >
-                                              {enrollment.paymentStatus === "COMPLETED"
-                                                ? "Completed/PAID"
-                                                : enrollment.paymentStatus === "PENDING"
-                                                  ? "Pending/UNPAID"
-                                                  : "Failed/CANNOT PAY"}
-                                            </Badge>
-                                          </p>
-                                        </div>
-                                      </div>
-                                      <div className="flex items-start gap-2">
-                                        <div className="h-4 w-4 text-muted-foreground mt-0.5" />
-                                        <div>
-                                          <p className="text-sm font-medium">Amount</p>
-                                          <p className="text-sm text-muted-foreground">
-                                            {formatCurrency(enrollment.paymentAmount)}
-                                          </p>
-                                        </div>
-                                      </div>
-                                      {enrollment.paymentDate && (
-                                        <div className="flex items-start gap-2">
-                                          <Clock className="h-4 w-4 text-muted-foreground mt-0.5" />
-                                          <div>
-                                            <p className="text-sm font-medium">Payment Date</p>
-                                            <p className="text-sm text-muted-foreground">
-                                              {formatDate(enrollment.paymentDate)}
-                                            </p>
-                                          </div>
-                                        </div>
-                                      )}
-                                      {enrollment.courseName && (
-                                        <div className="flex items-start gap-2">
-                                          <div className="h-4 w-4 text-muted-foreground mt-0.5" />
-                                          <div>
-                                            <p className="text-sm font-medium">Course</p>
-                                            <p className="text-sm text-muted-foreground">{enrollment.courseName}</p>
-                                          </div>
-                                        </div>
-                                      )}
-                                      <div className="flex items-start gap-2">
-                                        <Calendar className="h-4 w-4 text-muted-foreground mt-0.5" />
-                                        <div>
-                                          <p className="text-sm font-medium">Enrollment Date</p>
-                                          <p className="text-sm text-muted-foreground">
-                                            {formatDate(enrollment.createdAt)}
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div className="md:col-span-2 border-t pt-4 space-y-3">
-                                    <h3 className="font-semibold flex items-center gap-2 text-sm">
-                                      <FolderOpen className="h-4 w-4" />
-                                      Order documents
-                                    </h3>
-                                    <EnrollmentDocumentsSection enrollmentId={enrollment.id} />
-                                  </div>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          )}
                         </React.Fragment>
                       ))
                     )}
@@ -503,6 +375,132 @@ export default function OrdersPage() {
               )}
             </CardContent>
           </Card>
+
+          {/* Enrollment Details Dialog */}
+          <Dialog open={!!selectedEnrollment} onOpenChange={() => setSelectedEnrollment(null)}>
+            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Enrollment Details</DialogTitle>
+                <DialogDescription>
+                  View detailed information about this enrollment
+                </DialogDescription>
+              </DialogHeader>
+              {selectedEnrollment && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Student Information */}
+                  <div className="space-y-3">
+                    <h3 className="font-semibold flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      Student Information
+                    </h3>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <User className="h-4 w-4 text-muted-foreground mt-0.5" />
+                        <div>
+                          <p className="text-sm font-medium">Name</p>
+                          <p className="text-sm text-muted-foreground">{selectedEnrollment.studentName}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Mail className="h-4 w-4 text-muted-foreground mt-0.5" />
+                        <div>
+                          <p className="text-sm font-medium">Email</p>
+                          <p className="text-sm text-muted-foreground">{selectedEnrollment.email}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <Phone className="h-4 w-4 text-muted-foreground mt-0.5" />
+                        <div>
+                          <p className="text-sm font-medium">Phone</p>
+                          <p className="text-sm text-muted-foreground">{selectedEnrollment.phoneCell}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Payment Details */}
+                  <div className="space-y-3">
+                    <h3 className="font-semibold flex items-center gap-2">
+                      <CreditCard className="h-4 w-4" />
+                      Payment Details
+                    </h3>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <div className="h-4 w-4 text-muted-foreground mt-0.5" />
+                        <div>
+                          <p className="text-sm font-medium">Status</p>
+                          <p className="text-sm">
+                            <Badge
+                              variant="outline"
+                              className={`${
+                                selectedEnrollment.paymentStatus === "COMPLETED"
+                                  ? "bg-green-100 text-green-800 hover:bg-green-100"
+                                  : selectedEnrollment.paymentStatus === "FAILED"
+                                    ? "bg-red-100 text-red-800 hover:bg-red-100"
+                                    : "bg-orange-100 text-orange-800 hover:bg-orange-100"
+                              }`}
+                            >
+                              {selectedEnrollment.paymentStatus === "COMPLETED"
+                                ? "Completed/PAID"
+                                : selectedEnrollment.paymentStatus === "PENDING"
+                                  ? "Pending/UNPAID"
+                                  : "Failed/CANNOT PAY"}
+                            </Badge>
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <div className="h-4 w-4 text-muted-foreground mt-0.5" />
+                        <div>
+                          <p className="text-sm font-medium">Amount</p>
+                          <p className="text-sm text-muted-foreground">
+                            {formatCurrency(selectedEnrollment.paymentAmount)}
+                          </p>
+                        </div>
+                      </div>
+                      {selectedEnrollment.paymentDate && (
+                        <div className="flex items-start gap-2">
+                          <Clock className="h-4 w-4 text-muted-foreground mt-0.5" />
+                          <div>
+                            <p className="text-sm font-medium">Payment Date</p>
+                            <p className="text-sm text-muted-foreground">
+                              {formatDate(selectedEnrollment.paymentDate)}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                      {selectedEnrollment.courseName && (
+                        <div className="flex items-start gap-2">
+                          <div className="h-4 w-4 text-muted-foreground mt-0.5" />
+                          <div>
+                            <p className="text-sm font-medium">Course</p>
+                            <p className="text-sm text-muted-foreground">{selectedEnrollment.courseName}</p>
+                          </div>
+                        </div>
+                      )}
+                      <div className="flex items-start gap-2">
+                        <Calendar className="h-4 w-4 text-muted-foreground mt-0.5" />
+                        <div>
+                          <p className="text-sm font-medium">Enrollment Date</p>
+                          <p className="text-sm text-muted-foreground">
+                            {formatDate(selectedEnrollment.createdAt)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-2 border-t pt-4 space-y-3">
+                    <h3 className="font-semibold flex items-center gap-2 text-sm">
+                      <FolderOpen className="h-4 w-4" />
+                      Order documents
+                    </h3>
+                    <EnrollmentDocumentsSection enrollmentId={selectedEnrollment.id} />
+                  </div>
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
         </div>
       </SidebarInset>
     </SidebarProvider>
