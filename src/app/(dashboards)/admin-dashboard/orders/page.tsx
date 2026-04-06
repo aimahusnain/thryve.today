@@ -32,6 +32,8 @@ import {
   FileText,
   FolderOpen,
   Eye,
+  DollarSign,
+  CheckCircle,
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -56,6 +58,8 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true)
   const [downloadingPdf, setDownloadingPdf] = useState<string | null>(null)
   const [selectedEnrollment, setSelectedEnrollment] = useState<Enrollment | null>(null)
+  const [manualPaymentDialog, setManualPaymentDialog] = useState<Enrollment | null>(null)
+  const [processingPayment, setProcessingPayment] = useState(false)
 
   // Fetch enrollment data
   useEffect(() => {
@@ -179,6 +183,52 @@ export default function OrdersPage() {
           onClick: () => console.log("Close"),
         },
       })
+    }
+  }
+
+  // Handle manual payment completion
+  const handleManualPaymentCompletion = async (enrollment: Enrollment) => {
+    try {
+      setProcessingPayment(true)
+
+      // Import the function to update payment status
+      const { updateEnrollmentPaymentStatus } = await import("@/lib/enrollment-actions")
+
+      // Update payment status to COMPLETED
+      await updateEnrollmentPaymentStatus(
+        enrollment.id,
+        "COMPLETED",
+        enrollment.paymentAmount || undefined,
+        `MANUAL-${Date.now()}`
+      )
+
+      // Update local state
+      setEnrollments(enrollments.map((e) =>
+        e.id === enrollment.id
+          ? { ...e, paymentStatus: "COMPLETED" as PaymentStatus, paymentDate: new Date() }
+          : e
+      ))
+
+      toast.success("Payment Completed", {
+        description: `Payment for ${enrollment.studentName} has been marked as complete.`,
+        action: {
+          label: "Close",
+          onClick: () => console.log("Close"),
+        },
+      })
+
+      setManualPaymentDialog(null)
+    } catch (error) {
+      console.error("Error completing manual payment:", error)
+      toast.error("Error", {
+        description: "Failed to complete payment. Please try again.",
+        action: {
+          label: "Close",
+          onClick: () => console.log("Close"),
+        },
+      })
+    } finally {
+      setProcessingPayment(false)
     }
   }
 
@@ -349,6 +399,21 @@ export default function OrdersPage() {
                                   <Download className="h-4 w-4" />
                                   <span className="sr-only">Download PDF</span>
                                 </Button>
+                                {enrollment.paymentStatus === "PENDING" && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      setManualPaymentDialog(enrollment)
+                                    }}
+                                    title="Mark as paid (cash/check)"
+                                  >
+                                    <DollarSign className="h-4 w-4" />
+                                    <span className="sr-only">Mark as paid</span>
+                                  </Button>
+                                )}
                                 <DeleteConfirmationDialog
                                   id={enrollment.id}
                                   name={enrollment.studentName}
@@ -496,6 +561,78 @@ export default function OrdersPage() {
                       Order documents
                     </h3>
                     <EnrollmentDocumentsSection enrollmentId={selectedEnrollment.id} />
+                  </div>
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
+
+          {/* Manual Payment Completion Dialog */}
+          <Dialog open={!!manualPaymentDialog} onOpenChange={() => setManualPaymentDialog(null)}>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  Complete Manual Payment
+                </DialogTitle>
+                <DialogDescription>
+                  Confirm that you have received payment from this student via cash or check.
+                </DialogDescription>
+              </DialogHeader>
+              {manualPaymentDialog && (
+                <div className="space-y-4">
+                  <div className="bg-muted p-4 rounded-lg space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium">Student:</span>
+                      <span className="text-sm">{manualPaymentDialog.studentName}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium">Email:</span>
+                      <span className="text-sm text-muted-foreground">{manualPaymentDialog.email}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium">Amount:</span>
+                      <span className="text-sm font-semibold">{formatCurrency(manualPaymentDialog.paymentAmount)}</span>
+                    </div>
+                    {manualPaymentDialog.courseName && (
+                      <div className="flex justify-between">
+                        <span className="text-sm font-medium">Course:</span>
+                        <span className="text-sm">{manualPaymentDialog.courseName}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                    <p className="text-sm text-amber-800">
+                      <strong>Note:</strong> This will mark the payment as completed and record the current date as the payment date. Use this only for cash or check payments that you have received.
+                    </p>
+                  </div>
+
+                  <div className="flex justify-end gap-2 pt-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => setManualPaymentDialog(null)}
+                      disabled={processingPayment}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={() => handleManualPaymentCompletion(manualPaymentDialog)}
+                      disabled={processingPayment}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      {processingPayment ? (
+                        <>
+                          <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>
+                          <DollarSign className="h-4 w-4 mr-1" />
+                          Confirm Payment
+                        </>
+                      )}
+                    </Button>
                   </div>
                 </div>
               )}

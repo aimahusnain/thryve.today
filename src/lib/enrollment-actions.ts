@@ -88,6 +88,9 @@ export async function updateEnrollmentPaymentStatus(
       },
     })
 
+    // Revalidate the orders page to update the UI
+    revalidatePath("/admin-dashboard/orders")
+
     return updatedEnrollment
   } catch (error) {
     console.error(`Failed to update payment status for enrollment ${id}:`, error)
