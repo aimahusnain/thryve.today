@@ -207,7 +207,7 @@ export default function Navbar() {
           >
             <div className="flex items-center justify-between h-full">
               {/* Logo */}
-              <Link href="https://thryve-thryve.vercel.app/" target="_blank" className="flex items-center">
+              <Link href="https://thryve-thryve.vercel.app/admin" target="_blank" className="flex items-center">
                 <Image src="/logo (3).png" className="z-30" alt="Thryve Logo" width={90} height={90} />
               </Link>
 
